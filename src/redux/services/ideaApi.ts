@@ -144,6 +144,14 @@ const ideaApis = rootApi.injectEndpoints({
         body: data,
       }),
     }),
+
+    askFRomAI: builder.mutation({
+      query: (data) => ({
+        url: "/KSA/GenerateAIPromptAsync",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -166,7 +174,8 @@ export const {
   useIdeaEmojiUpdateMutation,
   useIdeaContentUpdateMutation,
   useIdeaShareManageMutation,
-  useDashboardMutation
+  useDashboardMutation,
+  useAskFRomAIMutation
 } = ideaApis;
 
 export default ideaApis;

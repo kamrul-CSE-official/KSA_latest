@@ -11,7 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useWorkspaceListMutation } from "@/redux/services/ideaApi";
+import { useDashboardMutation, useWorkspaceListMutation } from "@/redux/services/ideaApi";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useEffect } from "react";
@@ -28,6 +28,20 @@ export function NavWorkspaces() {
   const loggedInUser = useSelector((state: RootState) => state.user.userData);
   const [workspaceReq, { isLoading, data: workspaces }] =
     useWorkspaceListMutation();
+
+      const [
+        workspaceDashbordReq,
+        { data: workspaceData, isLoading: workspaceLoading },
+      ] = useDashboardMutation();
+
+
+      useEffect(()=>{
+        workspaceDashbordReq({})
+      },[])
+
+
+
+
   useEffect(() => {
     workspaceReq({
       Type: 0,

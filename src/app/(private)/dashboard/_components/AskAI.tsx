@@ -11,13 +11,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Bot, User, Loader2, Clipboard, Zap } from "lucide-react";
+import { Bot, Loader2, Clipboard, Zap } from "lucide-react";
 import { toast } from "sonner";
-import AskAIModel from "@/utils/AskAIModel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import axios from "axios";
+import { getBaseUrl } from "@/config/envConfig";
 
 function AskAI({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -36,13 +37,19 @@ function AskAI({ children }: { children: React.ReactNode }) {
 
   const handleAskAI = async () => {
     if (!prompt.trim()) return;
+
     setLoading(true);
     setConversations([...conversations, { prompt, response: "" }]);
 
     try {
-      const response = await AskAIModel(prompt);
-      setConversations((prev:any) =>
-        prev.map((c:any, i:number) =>
+      const res = await axios.post(
+        `${getBaseUrl()}/KSA/GenerateAIPromptAsync?text=${prompt}. give me only normal text like chat, chat should be friendly, add emoji.`
+      );
+      //  console.log("Response from backend::: ",res?.data);
+
+      const response = res?.data;
+      setConversations((prev: any) =>
+        prev.map((c: any, i: number) =>
           i === prev.length - 1 ? { ...c, response } : c
         )
       );
