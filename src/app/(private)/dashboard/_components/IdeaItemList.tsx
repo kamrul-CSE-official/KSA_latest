@@ -27,18 +27,21 @@ interface IWorkspace {
   WorkSpaceName: string;
 }
 
-function WorkspaceItemList({
-  workspaceList,
+function IdeaItemList({
+  ItemsList,
   layoutMode,
 }: {
-  workspaceList: IWorkspace[];
+  ItemsList: IWorkspace[];
   layoutMode: "grid" | "list";
 }) {
   const router = useRouter();
 
+  console.log("LLLLLL  : ", ItemsList);
 
-  const OnClickWorkspaceItem = (workspaceId: number) => {
-    router.push(`/dashboard/workspace?workspaceId=${workspaceId}`);
+  const OnClickWorkspaceItem = (workspaceId: number, IdeaID: number) => {
+    router.push(
+      `/dashboard/document/?ideaId=${IdeaID}&workspaceId=${workspaceId}`
+    );
   };
 
   return (
@@ -49,7 +52,7 @@ function WorkspaceItemList({
           : "space-y-4"
       }`}
     >
-      {workspaceList?.map((workspace, index) => (
+      {ItemsList?.map((workspace: any, index: number) => (
         <motion.div
           key={index}
           whileHover={{ scale: 1.05 }}
@@ -59,7 +62,9 @@ function WorkspaceItemList({
             className={`cursor-pointer hover:shadow-lg transition-shadow duration-300 ${
               layoutMode === "list" ? "flex items-center gap-4 p-4" : ""
             }`}
-            onClick={() => OnClickWorkspaceItem(workspace.WorkSpaceID)}
+            onClick={() =>
+              OnClickWorkspaceItem(workspace.WorkSpaceID, workspace.IdeaID)
+            }
           >
             <CardHeader>
               <motion.div
@@ -80,7 +85,7 @@ function WorkspaceItemList({
               <CardTitle className="flex items-center gap-2">
                 <span>{workspace.Emoji || "😊"}</span>
                 <span className="text-lg font-semibold">
-                  {workspace.WorkSpaceName}
+                  {workspace.Title} ff{workspace.IdeaID}
                 </span>
               </CardTitle>
               <CardDescription className="mt-2">
@@ -99,4 +104,4 @@ function WorkspaceItemList({
   );
 }
 
-export default memo(WorkspaceItemList);
+export default memo(IdeaItemList);

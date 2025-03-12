@@ -129,6 +129,21 @@ const ideaApis = rootApi.injectEndpoints({
         body: data,
       }),
     }),
+    ideaShareManage: builder.mutation({
+      query: (data) => ({
+        url: "/KSA/IdeaShareManage",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    dashboard: builder.mutation({
+      query: (data) => ({
+        url: "/KSA/Dashboard",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -149,7 +164,9 @@ export const {
   useIdeaTitleUpdateMutation,
   useIdeaCoverImgUpdateMutation,
   useIdeaEmojiUpdateMutation,
-  useIdeaContentUpdateMutation
+  useIdeaContentUpdateMutation,
+  useIdeaShareManageMutation,
+  useDashboardMutation
 } = ideaApis;
 
 export default ideaApis;

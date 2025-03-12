@@ -16,7 +16,8 @@ import { imageBaseUrl } from "@/config/envConfig";
 import { useIdeaContentUpdateMutation } from "@/redux/services/ideaApi";
 import { useSearchParams } from "next/navigation";
 import debounce from "lodash.debounce";
-import { Check, Loader2, Save } from "lucide-react";
+// import MentionTool from "./MentionTool";
+// import { handleMentions } from "./mentionHandler";
 
 interface RichTextEditorProps {
   initialData?: any;
@@ -38,7 +39,6 @@ function RichTextEditor({ initialData, onSave }: RichTextEditorProps) {
 
   const [ideaContentUpdateReq] = useIdeaContentUpdateMutation();
 
-  // Create a stable save function with useRef + useCallback
   const saveDocument = useCallback(
     debounce(async () => {
       if (!editorRef.current) return;
@@ -59,7 +59,6 @@ function RichTextEditor({ initialData, onSave }: RichTextEditorProps) {
 
         setSaveStatus("saved");
 
-        // Reset to idle after 2 seconds
         setTimeout(() => {
           setSaveStatus("idle");
         }, 2000);
@@ -75,113 +74,119 @@ function RichTextEditor({ initialData, onSave }: RichTextEditorProps) {
     [ideaContentUpdateReq, workspaceId, ideaId, onSave]
   );
 
-  // Initialize editor only once
-  useEffect(() => {
-    if (editorInstanceRef.current || !initialData) return;
-
-    const editor = new EditorJS({
-      holder: "editorjs",
-      placeholder: "Write your ideas here...",
-      autofocus: true,
-      data: initialData,
-      onChange: () => {
-        saveDocument();
-      },
-      onReady: () => {
-        setEditorReady(true);
-      },
-      tools: {
-        header: Header,
-        paragraph: Paragraph,
-        list: List,
-        table: Table,
-        image: {
-          class: ImageTool,
-          config: {
-            uploader: {
-              async uploadByFile(file: File) {
-                try {
-                  const formData = new FormData();
-                  formData.append("file", file);
-                  const response = await axios.post(
-                    `${imageBaseUrl()}/FileUpload/ImageUpload`,
-                    formData,
-                    {
-                      headers: { "Content-Type": "multipart/form-data" },
-                    }
-                  );
-                  return response.data
-                    ? {
-                        success: 1,
-                        file: {
-                          url: `${imageBaseUrl()}/images/${response.data}`,
-                        },
-                      }
-                    : { success: 0 };
-                } catch (error) {
-                  console.error("Image upload error:", error);
-                  return { success: 0 };
-                }
-              },
-              async uploadByUrl(url: string) {
-                try {
-                  const response = await axios.post(
-                    `${imageBaseUrl()}/FileUpload/ImageUpload`,
-                    { url }
-                  );
-                  return response.data
-                    ? {
-                        success: 1,
-                        file: {
-                          url: `${imageBaseUrl()}/images/${response.data}`,
-                        },
-                      }
-                    : { success: 0 };
-                } catch (error) {
-                  console.error("Image upload error:", error);
-                  return { success: 0 };
-                }
-              },
-            },
-          },
-        },
-        quote: Quote,
-        code: CodeTool,
-        inlineCode: InlineCode,
-      },
-    });
-
-    editorRef.current = editor;
-    editorInstanceRef.current = true;
-
-    return () => {
-      saveDocument.cancel();
-      if (
-        editorRef.current &&
-        typeof editorRef.current.destroy === "function"
-      ) {
-        editorRef.current.destroy();
-        editorRef.current = null;
-        editorInstanceRef.current = false;
-      }
-    };
+  const destroyEditor = useCallback(() => {
+    saveDocument.cancel();
+    if (editorRef.current && typeof editorRef.current.destroy === "function") {
+      editorRef.current.destroy();
+      editorRef.current = null;
+      editorInstanceRef.current = false;
+    }
   }, [saveDocument]);
 
-  // Handle initialData changes without reinitializing the editor
   useEffect(() => {
-    if (
-      editorRef.current &&
-      initialData &&
-      JSON.stringify(initialData) !== JSON.stringify(initialDataRef.current)
-    ) {
-      initialDataRef.current = initialData;
-      editorRef.current.render(initialData);
+    return () => {
+      destroyEditor();
+    };
+  }, [destroyEditor]);
+
+  useEffect(() => {
+    if (editorRef.current) {
+      destroyEditor();
+      editorInstanceRef.current = false;
     }
-  }, [initialData]);
+
+    setTimeout(() => {
+      if (!editorInstanceRef.current && initialData) {
+        initialDataRef.current = initialData;
+
+        const editor = new EditorJS({
+          holder: "editorjs",
+          placeholder: "Write your ideas here...",
+          autofocus: true,
+          data: initialData,
+          onChange: () => {
+            saveDocument();
+          },
+          onReady: () => {
+            setEditorReady(true);
+          },
+          tools: {
+            header: Header,
+            paragraph: Paragraph,
+            list: List,
+            table: Table,
+            // mention: MentionTool,
+            image: {
+              class: ImageTool,
+              config: {
+                uploader: {
+                  async uploadByFile(file: File) {
+                    try {
+                      const formData = new FormData();
+                      formData.append("file", file);
+                      const response = await axios.post(
+                        `${imageBaseUrl()}/FileUpload/ImageUpload`,
+                        formData,
+                        {
+                          headers: { "Content-Type": "multipart/form-data" },
+                        }
+                      );
+                      return response.data
+                        ? {
+                            success: 1,
+                            file: {
+                              url: `${imageBaseUrl()}/images/${response.data}`,
+                            },
+                          }
+                        : { success: 0 };
+                    } catch (error) {
+                      console.error("Image upload error:", error);
+                      return { success: 0 };
+                    }
+                  },
+                  async uploadByUrl(url: string) {
+                    try {
+                      const response = await axios.post(
+                        `${imageBaseUrl()}/FileUpload/ImageUpload`,
+                        { url }
+                      );
+                      return response.data
+                        ? {
+                            success: 1,
+                            file: {
+                              url: `${imageBaseUrl()}/images/${response.data}`,
+                            },
+                          }
+                        : { success: 0 };
+                    } catch (error) {
+                      console.error("Image upload error:", error);
+                      return { success: 0 };
+                    }
+                  },
+                },
+              },
+            },
+            quote: Quote,
+            code: CodeTool,
+            inlineCode: InlineCode,
+          },
+        });
+
+        editorRef.current = editor;
+        editorInstanceRef.current = true;
+      }
+    }, 50);
+  }, [initialData, destroyEditor, saveDocument]);
+
+  useEffect(() => {
+    return () => {
+      destroyEditor();
+    };
+  }, [destroyEditor]);
 
   return (
-    <div className="relative rounded-md border">
-      <div className="absolute top-2 right-2 z-10 flex items-center gap-2 px-3 py-1 rounded-full bg-background/80 backdrop-blur-sm text-sm">
+    <div className="relative rounded-md overflow-x-hidden">
+      {/* <div className="absolute top-2 right-2 z-10 flex items-center gap-2 px-3 py-1 rounded-full bg-background/80 backdrop-blur-sm text-sm overflow-x-hidden">
         {saveStatus === "saving" && (
           <>
             <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
@@ -200,10 +205,15 @@ function RichTextEditor({ initialData, onSave }: RichTextEditorProps) {
             <span className="text-red-500">Retry saving...</span>
           </>
         )}
-      </div>
+      </div> */}
       <div id="editorjs" className="p-4 min-h-[300px]"></div>
     </div>
   );
 }
 
-export default memo(RichTextEditor);
+export default memo(RichTextEditor, (prevProps, nextProps) => {
+  return (
+    JSON.stringify(prevProps.initialData) ===
+    JSON.stringify(nextProps.initialData)
+  );
+});

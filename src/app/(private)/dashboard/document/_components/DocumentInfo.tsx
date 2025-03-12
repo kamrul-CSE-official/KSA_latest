@@ -158,7 +158,7 @@ function DocumentInfo() {
   );
 
   return (
-    <div>
+    <div className="w-full">
       {/* Cover Picker */}
       <CoverPicker
         setNewCover={(cover) => {
@@ -206,7 +206,7 @@ function DocumentInfo() {
           type="text"
           placeholder="Untitled Document"
           value={documentTitle}
-          className="font-bold text-4xl outline-none"
+          className="font-bold text-4xl outline-none w-full"
           onChange={(e) => setDocumentTitle(e.target.value)}
           onBlur={(e) => updateIdeaTitle(e.target.value)}
         />
