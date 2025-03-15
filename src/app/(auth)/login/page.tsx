@@ -60,9 +60,10 @@ export default function LoginPage() {
       } else {
         toast.error("Invalid credentials. Please try again!");
       }
-    } catch (error: unknown) {  
+    } catch (error: unknown) {
       if (typeof error === "object" && error !== null && "data" in error) {
-        const errorMessage = (error as { data: { message: string } }).data.message;
+        const errorMessage = (error as { data: { message: string } }).data
+          .message;
         toast.error(errorMessage || "Invalid credentials. Please try again!");
       } else {
         toast.error("Something went wrong. Please try again!");
@@ -147,7 +148,11 @@ export default function LoginPage() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full cursor-pointer" disabled={isLoading}>
+                <Button
+                  type="submit"
+                  className="w-full cursor-pointer"
+                  disabled={isLoading}
+                >
                   {isLoading ? (
                     "Loading..."
                   ) : (

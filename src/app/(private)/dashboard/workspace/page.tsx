@@ -53,6 +53,7 @@ interface IWorkspaceDetails {
   IdeaId: string;
   IdeaTitle: string;
   IdeaEnterdOn: string;
+  EnterdBy: string;
   WorkSpaceName: string;
   ShareTypeName: "Public" | "Private" | "Custom";
 }
@@ -311,16 +312,19 @@ export default function WorkspacePage() {
                     })()}
                   </span>
                 </div>
-                <Share>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="flex items-center gap-1.5"
-                  >
-                    <Share2 size={16} className="text-primary/70" />
-                    <span>Share</span>
-                  </Button>
-                </Share>
+                {Number(userData?.EmpID) ==
+                  Number(workspaceData[0]?.EnterdBy) && (
+                  <Share>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex items-center gap-1.5"
+                    >
+                      <Share2 size={16} className="text-primary/70" />
+                      <span>Share</span>
+                    </Button>
+                  </Share>
+                )}
               </div>
 
               {/* Shared Users Avatars */}

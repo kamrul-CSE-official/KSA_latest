@@ -10,7 +10,7 @@ export default function ScrollToTop() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
-      setIsVisible(scrollTop > 300);
+      setIsVisible(scrollTop > 1000);
     };
 
     window.addEventListener("scroll", handleScroll);

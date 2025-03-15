@@ -16,8 +16,9 @@ import { imageBaseUrl } from "@/config/envConfig";
 import { useIdeaContentUpdateMutation } from "@/redux/services/ideaApi";
 import { useSearchParams } from "next/navigation";
 import debounce from "lodash.debounce";
-// import MentionTool from "./MentionTool";
-// import { handleMentions } from "./mentionHandler";
+import MentionTool from "./mention/MentionTool";
+import { Check, Loader2, Save } from "lucide-react";
+import "./mention/mention.css";
 
 interface RichTextEditorProps {
   initialData?: any;
@@ -114,8 +115,17 @@ function RichTextEditor({ initialData, onSave }: RichTextEditorProps) {
             header: Header,
             paragraph: Paragraph,
             list: List,
-            table: Table,
-            // mention: MentionTool,
+            table: {
+              // @ts-ignore
+              class: Table,
+              inlineToolbar: true,
+              config: {
+                rows: 2,
+                cols: 3,
+                className: "custom-editor-table",
+              },
+            },
+            mention: MentionTool,
             image: {
               class: ImageTool,
               config: {
@@ -186,7 +196,7 @@ function RichTextEditor({ initialData, onSave }: RichTextEditorProps) {
 
   return (
     <div className="relative rounded-md overflow-x-hidden">
-      {/* <div className="absolute top-2 right-2 z-10 flex items-center gap-2 px-3 py-1 rounded-full bg-background/80 backdrop-blur-sm text-sm overflow-x-hidden">
+      <div className="absolute top-2 right-2 z-10 flex items-center gap-2 px-3 py-1 rounded-full bg-background/80 backdrop-blur-sm text-sm overflow-x-hidden">
         {saveStatus === "saving" && (
           <>
             <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
@@ -205,7 +215,7 @@ function RichTextEditor({ initialData, onSave }: RichTextEditorProps) {
             <span className="text-red-500">Retry saving...</span>
           </>
         )}
-      </div> */}
+      </div>
       <div id="editorjs" className="p-4 min-h-[300px]"></div>
     </div>
   );

@@ -42,9 +42,15 @@ function AskAI({ children }: { children: React.ReactNode }) {
     setConversations([...conversations, { prompt, response: "" }]);
 
     try {
+      const prompt =
+        "Hey there! 😊 Let's have a fun and engaging conversation. Keep it friendly, natural, and add some cool emojis! 🎉✨";
+
       const res = await axios.post(
-        `${getBaseUrl()}/KSA/GenerateAIPromptAsync?text=${prompt}. give me only normal text like chat, chat should be friendly, add emoji.`
+        `${getBaseUrl()}/KSA/GenerateAIPromptAsync?text=${encodeURIComponent(
+          prompt
+        )}`
       );
+
       //  console.log("Response from backend::: ",res?.data);
 
       const response = res?.data;

@@ -48,8 +48,8 @@ export function NavMain() {
               <AskAI>
                 {/* Wrap content with a single div to avoid multiple children */}
                 <div className="w-full cursor-pointer flex items-start justify-start">
-                  <p className="flex items-center gap-2">
-                    <span>{item.icon}</span> {item.title}
+                  <p className="flex items-center gap-2 font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                    <span className="text-orange-400">{item.icon}</span> {item.title}
                   </p>
                 </div>
               </AskAI>

@@ -178,4 +178,26 @@ h6.ce-header {
 
 
 
+.ce-block__content table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ce-block__content table td,
+.ce-block__content table th {
+  min-width: 100px; /* Adjust minimum width */
+  padding: 8px; /* Add padding */
+  border: 1px solid #ddd; /* Optional: Add border for visibility */
+  text-align: left;
+}
+
+.custom-editor-table td,
+.custom-editor-table th {
+  min-width: 120px;
+  padding: 10px;
+}
+
+
+
+
 
