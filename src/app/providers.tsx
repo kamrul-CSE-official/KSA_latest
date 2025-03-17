@@ -13,7 +13,7 @@ function RootProviders({ children }: { children: ReactNode }) {
       <IgnoreNestingErrorBoundary>
         <Provider store={store}>
           {children}
-          <Toaster />
+          <Toaster position="top-right" />
           <ScrollToTop />
         </Provider>
       </IgnoreNestingErrorBoundary>

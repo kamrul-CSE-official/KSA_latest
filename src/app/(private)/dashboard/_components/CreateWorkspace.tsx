@@ -44,7 +44,7 @@ function CreateWorkspace({ children }: { children: ReactNode }) {
         CompanyID: userData?.CompanyID || 1,
         CoverImg: coverImage,
         Emoji: emoji || "😊",
-        Status: 1,
+        Status: 2,
         EnterdBy: userData?.EmpID,
       }).then((res) => {
         if (res?.data?.[0]?.WorkSpaceID) {

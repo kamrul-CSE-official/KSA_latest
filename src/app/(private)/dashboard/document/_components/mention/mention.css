@@ -1,38 +1,231 @@
-.mention-tag {
-  background-color: #d1e7ff !important;
-  color: #007bff !important;
-  padding: 2px 4px !important;
-  border-radius: 4px !important;
-  font-weight: bold !important;
-  cursor: pointer !important;
-  display: inline-block !important;
-}
-
+/* Base styles for the mention dropdown */
 .mention-dropdown {
   position: absolute;
-  background: white;
-  border: 1px solid #ddd;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  max-height: 200px;
+  z-index: 9999 !important;
+  background-color: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-height: 250px;
   overflow-y: auto;
-  z-index: 9999;
+  width: 250px;
+  padding: 0.5rem;
+  animation: fadeIn 0.2s ease-out;
 }
 
+/* Mention item styling */
 .mention-item {
-  padding: 8px;
+  display: flex;
+  align-items: center;/* Base styles for the mention dropdown */
+  .mention-dropdown {
+    position: absolute;
+    z-index: 10000;
+    background-color: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-height: 250px;
+    overflow-y: auto;
+    width: 250px;
+    padding: 0.5rem;
+    animation: fadeIn 0.2s ease-out;
+  }
+  
+  /* Mention item styling */
+  .mention-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    margin-bottom: 0.25rem;
+    user-select: none;
+    position: relative;
+    z-index: 10000;
+  }
+  
+  .mention-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .mention-item:hover {
+    background-color: hsl(var(--accent));
+  }
+  
+  .mention-item-active {
+    background-color: hsl(var(--accent));
+  }
+  
+  /* Avatar styling */
+  .mention-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+  }
+  
+  /* Name styling */
+  .mention-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: hsl(var(--foreground));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Mention tag styling */
+  .mention-tag {
+    display: inline-flex;
+    align-items: center;
+    background-color: hsl(var(--primary) / 0.1);
+    color: hsl(var(--primary));
+    border-radius: 0.25rem;
+    padding: 0 0.375rem;
+    font-weight: 500;
+    cursor: default;
+    user-select: none;
+    white-space: nowrap;
+    margin: 0 1px;
+    border: 1px solid hsl(var(--primary) / 0.2);
+  }
+  
+  /* Dark mode support */
+  .dark .mention-tag {
+    background-color: hsl(var(--primary) / 0.2);
+  }
+  
+  /* Animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Scrollbar styling */
+  .mention-dropdown::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .mention-dropdown::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .mention-dropdown::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 3px;
+  }
+  
+  .mention-dropdown::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.5);
+  }
+  
+  
+  padding: 0.5rem;
+  border-radius: 0.375rem;
   cursor: pointer;
+  transition: background-color 0.15s ease;
+  margin-bottom: 0.25rem;
+}
+
+.mention-item:last-child {
+  margin-bottom: 0;
 }
 
 .mention-item:hover {
-  background: #f1f1f1;
+  background-color: hsl(var(--accent));
 }
 
-.mention-class {
-    background-color: #eaf5ff;
-    color: #007bff;
-    font-weight: bold;
-    padding: 2px 4px;
-    border-radius: 4px;
+.mention-item-active {
+  background-color: hsl(var(--accent));
+}
+
+/* Avatar styling */
+.mention-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* Name styling */
+.mention-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: hsl(var(--foreground));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mention tag styling */
+.mention-tag {
+  display: inline-flex;
+  align-items: center;
+  background-color: hsl(var(--primary)/0.1);
+  color: hsl(var(--primary));
+  border-radius: 0.25rem;
+  padding: 0 0.375rem;
+  font-weight: 500;
+  cursor: default;
+  user-select: none;
+  white-space: nowrap;
+  margin: 0 1px;
+}
+
+/* Dark mode support */
+.dark .mention-tag {
+  background-color: hsl(var(--primary)/0.2);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
   }
-  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scrollbar styling */
+.mention-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.mention-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mention-dropdown::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--muted-foreground)/0.3);
+  border-radius: 3px;
+}
+
+.mention-dropdown::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--muted-foreground)/0.5);
+}

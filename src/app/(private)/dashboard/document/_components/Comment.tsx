@@ -141,7 +141,7 @@ function Comment({ children }: { children: ReactNode }) {
                                   <span>•</span>
                                   <span className="flex items-center gap-1">
                                     <Clock className="h-3 w-3" />
-                                    {format(new Date(comm?.CreatedAt), "MMM do, yyyy")}
+                                    {format(new Date(comm?.CreatedAt), "MMM do, yyyy, hh:mm a")}
                                   </span>
                                 </div>
                               </div>

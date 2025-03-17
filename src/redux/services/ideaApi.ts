@@ -152,6 +152,13 @@ const ideaApis = rootApi.injectEndpoints({
         body: data,
       }),
     }),
+    getIdeaWhrowWorkspace: builder.mutation({
+      query: (data) => ({
+        url: "/KSA/GetIdeaThrowWorkspace",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -175,7 +182,8 @@ export const {
   useIdeaContentUpdateMutation,
   useIdeaShareManageMutation,
   useDashboardMutation,
-  useAskFRomAIMutation
+  useAskFRomAIMutation,
+  useGetIdeaWhrowWorkspaceMutation
 } = ideaApis;
 
 export default ideaApis;

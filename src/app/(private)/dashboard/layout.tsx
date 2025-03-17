@@ -49,9 +49,7 @@ export default function Page({ children }: { children: ReactNode }) {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <div className="ml-auto px-3">
-            {/* <NavActions /> */}
-          </div>
+          <div className="ml-auto px-3">{/* <NavActions /> */}</div>
         </header>
         <div className="flex flex-1 flex-col gap-4 px-4 py-10">{children}</div>
       </SidebarInset>

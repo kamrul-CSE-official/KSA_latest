@@ -13,7 +13,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 
 import {
-  useAskFRomAIMutation,
   useCommentSendMutation,
   useGetIdeaDetailsMutation,
   useIdeaShareManageMutation,
@@ -51,6 +50,7 @@ import {
   Loader2,
   PlusCircle,
   Sparkles,
+  Logs,
 } from "lucide-react";
 
 import DocumentInfo from "./_components/DocumentInfo";
@@ -93,6 +93,8 @@ type Template = {
 
 // Component for the shared users avatars
 function SharedUsers({
+  setRefreshTrigger,
+  refreshTrigger,
   sharedPeople,
   currentUser,
   onAddUser,
@@ -100,6 +102,8 @@ function SharedUsers({
   sharedPeople: any;
   currentUser: any;
   onAddUser: boolean;
+  setRefreshTrigger: any;
+  refreshTrigger: any;
 }) {
   return (
     <div className="flex items-center mb-4">
@@ -121,15 +125,27 @@ function SharedUsers({
           <AvatarFallback>{currentUser?.FullName?.charAt(0)}</AvatarFallback>
         </Avatar> */}
       </div>
-      <ShareDoc>
+      <ShareDoc
+        setRefreshTrigger={setRefreshTrigger}
+        refreshTrigger={refreshTrigger}
+      >
         <Button
           variant="outline"
           size="sm"
           className="rounded-full h-8 w-8 p-0"
           disabled={!onAddUser}
         >
-          <PlusCircle className="h-4 w-4" />
-          <span className="sr-only">Add user</span>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <PlusCircle className="h-4 w-4" />
+                <span className="sr-only">Add user</span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Share someone</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </Button>
       </ShareDoc>
     </div>
@@ -141,10 +157,14 @@ function TemplateSelector({
   templates,
   onSelectTemplate,
   onAIGenerate,
+  setTempOpen,
+  tempOpen,
 }: {
   templates: Template[];
   onSelectTemplate: (data: any) => void;
   onAIGenerate: () => void;
+  setTempOpen: (open: boolean) => void;
+  tempOpen: boolean;
 }) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
@@ -175,9 +195,18 @@ function TemplateSelector({
 
   return (
     <div className="bg-white/95 dark:bg-gray-900/95 border border-gray-200 dark:border-gray-800 rounded-xl shadow-lg backdrop-blur-md p-4 min-w-3xl">
-      <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-        Choose a template to get started
-      </h3>
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+          Choose a template to get started
+        </h3>
+        <Button
+          variant="ghost"
+          onClick={() => setTempOpen(!tempOpen)}
+          size="icon"
+        >
+          X
+        </Button>
+      </div>
 
       {/* Category tabs with horizontal scrolling */}
       {categories.length > 0 && (
@@ -315,6 +344,8 @@ function DocumentEditor() {
   const [initialData, setInitialData] = useState<any>(null);
   const [savedContent, setSavedContent] = useState<any>(null);
   const [isLoadingDocument, setIsLoadingDocument] = useState(true);
+  const [tempOpen, setTempOpen] = useState<boolean>(false);
+  const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
 
   // API hooks
   const [getIdeaDetailsReq] = useGetIdeaDetailsMutation();
@@ -349,7 +380,7 @@ function DocumentEditor() {
     if (ideaId) {
       shareReq({ Type: 3, IdeaID: ideaId });
     }
-  }, [ideaId, shareReq]);
+  }, [ideaId, shareReq, refreshTrigger]);
 
   // Fetch comments
   useEffect(() => {
@@ -456,9 +487,11 @@ function DocumentEditor() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="container mx-auto px-4 py-2">
       {/* Shared users section */}
       <SharedUsers
+        refreshTrigger={refreshTrigger}
+        setRefreshTrigger={setRefreshTrigger}
         sharedPeople={sharedPeople}
         currentUser={userDetails}
         onAddUser={canShareDocument}
@@ -509,7 +542,7 @@ function DocumentEditor() {
 
       {/* Template selector */}
       <AnimatePresence>
-        {documentData?.Content == null && (
+        {documentData?.Content == null && tempOpen && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -520,10 +553,29 @@ function DocumentEditor() {
               templates={template?.templates}
               onSelectTemplate={setInitialData}
               onAIGenerate={() => setAiDialogOpen(true)}
+              setTempOpen={setTempOpen}
+              tempOpen={tempOpen}
             />
           </motion.div>
         )}
       </AnimatePresence>
+
+      {documentData?.Content == null && (
+        <Button
+          onClick={() => setTempOpen(!tempOpen)}
+          className="fixed bottom-8 right-32 z-40 p-3 flex items-center justify-center rounded-full shadow-lg"
+          size="icon"
+        >
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>{tempOpen ? "X" : <Logs />}</TooltipTrigger>
+              <TooltipContent>
+                <p>Select a templates</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </Button>
+      )}
 
       {/* Comments button */}
       <Comment>

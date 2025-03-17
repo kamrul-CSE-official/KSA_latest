@@ -98,9 +98,12 @@ export default function WorkspacePage() {
 
         if (response?.data) {
           setSharedUsers(response.data);
+        } else {
+          router.push("/dashboard");
         }
       } catch (error) {
         console.error("Failed to fetch shared users:", error);
+        router.push("/dashboard");
       }
     };
 

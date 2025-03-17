@@ -96,7 +96,8 @@ function RichTextEditor({ initialData, onSave }: RichTextEditorProps) {
       editorInstanceRef.current = false;
     }
 
-    setTimeout(() => {
+    // Add a small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
       if (!editorInstanceRef.current && initialData) {
         initialDataRef.current = initialData;
 
@@ -110,6 +111,7 @@ function RichTextEditor({ initialData, onSave }: RichTextEditorProps) {
           },
           onReady: () => {
             setEditorReady(true);
+            console.log("Editor is ready");
           },
           tools: {
             header: Header,
@@ -125,7 +127,9 @@ function RichTextEditor({ initialData, onSave }: RichTextEditorProps) {
                 className: "custom-editor-table",
               },
             },
-            mention: MentionTool,
+            mention: {
+              class: MentionTool,
+            },
             image: {
               class: ImageTool,
               config: {
@@ -175,10 +179,11 @@ function RichTextEditor({ initialData, onSave }: RichTextEditorProps) {
                   },
                 },
               },
+              // @ts-ignore
+              quote: Quote,
+              code: CodeTool,
+              inlineCode: InlineCode,
             },
-            quote: Quote,
-            code: CodeTool,
-            inlineCode: InlineCode,
           },
         });
 
@@ -186,17 +191,13 @@ function RichTextEditor({ initialData, onSave }: RichTextEditorProps) {
         editorInstanceRef.current = true;
       }
     }, 50);
+
+    return () => clearTimeout(timer);
   }, [initialData, destroyEditor, saveDocument]);
 
-  useEffect(() => {
-    return () => {
-      destroyEditor();
-    };
-  }, [destroyEditor]);
-
   return (
-    <div className="relative rounded-md overflow-x-hidden">
-      <div className="absolute top-2 right-2 z-10 flex items-center gap-2 px-3 py-1 rounded-full bg-background/80 backdrop-blur-sm text-sm overflow-x-hidden">
+    <div className="relative rounded-md overflow-x-hidden border border-border">
+      <div className="absolute top-2 right-2 z-10 flex items-center gap-2 px-3 py-1 rounded-full bg-background/80 backdrop-blur-sm text-sm overflow-x-hidden shadow-sm">
         {saveStatus === "saving" && (
           <>
             <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
@@ -216,7 +217,10 @@ function RichTextEditor({ initialData, onSave }: RichTextEditorProps) {
           </>
         )}
       </div>
-      <div id="editorjs" className="p-4 min-h-[300px]"></div>
+      <div
+        id="editorjs"
+        className="p-4 min-h-[300px] prose prose-sm max-w-none"
+      ></div>
     </div>
   );
 }
