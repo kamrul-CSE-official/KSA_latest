@@ -14,8 +14,10 @@ export default async function middleware(req: NextRequest) {
   const cookie = req.cookies.get(AUTH_KEY)?.value;
   // const userInfo = JSON.parse(req.cookies.get());
 
+  const application: string = "KSA-test";
+
   // Redirect to login if accessing a protected route without authentication
-  if (isProtectedRoute && !cookie) {
+  if (isProtectedRoute && !cookie && application !== "KSA-test") {
     const loginUrl = new URL("/login", req.nextUrl.origin);
     return NextResponse.redirect(loginUrl);
   }

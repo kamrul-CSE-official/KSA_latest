@@ -123,6 +123,9 @@ export default function WorkspacePage() {
 
         if (response?.data) {
           setWorkspaceData(response.data);
+          console.log("DDD::: ",response);
+        } else {
+          router.push("/dashboard");
         }
       } catch (error) {
         console.error("Failed to fetch workspace details:", error);
@@ -130,7 +133,7 @@ export default function WorkspacePage() {
     };
 
     getWorkspaceDetails();
-  }, [workspaceId, fetchWorkspaceDetails, refreshTrigger]); // Added refreshTrigger to dependencies
+  }, [workspaceId, fetchWorkspaceDetails, refreshTrigger, router]);
 
   const handleCreateDocument = async () => {
     if (!workspaceId || !userData?.CompanyID || !userData?.EmpID) {
