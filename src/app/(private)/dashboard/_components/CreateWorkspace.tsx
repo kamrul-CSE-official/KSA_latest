@@ -40,11 +40,11 @@ function CreateWorkspace({ children }: { children: ReactNode }) {
       await createWorkspace({
         Type: 1,
         WorkSpaceName: workspaceName,
-        ShareTypeID: 1,
+        ShareTypeID: 2,
         CompanyID: userData?.CompanyID || 1,
         CoverImg: coverImage,
         Emoji: emoji || "😊",
-        Status: 2,
+        Status: 1,
         EnterdBy: userData?.EmpID,
       }).then((res) => {
         if (res?.data?.[0]?.WorkSpaceID) {

@@ -449,7 +449,7 @@ function DocumentEditor() {
     setAiError(null);
 
     try {
-      const fullPrompt = `Generate template for editor.js in JSON format for ${prompt} with emoji and detailed explanations for each topic. The response should be valid JSON that can be parsed.`;
+      const fullPrompt = `Generate template for titptap text editor for ${prompt} with emoji and detailed explanations for each topic. The response should be valid JSON that can be parsed.`;
 
       const response = await axios.post(
         `${getBaseUrl()}/KSA/GenerateAIPromptAsync?text=${encodeURIComponent(
