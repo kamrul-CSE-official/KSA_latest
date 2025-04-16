@@ -521,4 +521,3 @@ export default memo(RichTextEditor, (prevProps, nextProps) => {
   // Only re-render if initialData has changed significantly
   return prevProps.initialData?.time === nextProps.initialData?.time
 })
-
