@@ -1,4 +1,6 @@
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
   output: "export",
   reactStrictMode: true,
   trailingSlash: true,
@@ -6,5 +8,4 @@ const nextConfig = {
     domains: ["www.naturub.com"],
   },
 };
-
 export default nextConfig;
