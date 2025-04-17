@@ -2,9 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  useDashboardMutation,
-} from "@/redux/services/ideaApi";
+import { useDashboardMutation } from "@/redux/services/ideaApi";
 import { RootState } from "@/redux/store";
 import { AlignLeft, LayoutGrid } from "lucide-react";
 import Link from "next/link";
@@ -15,7 +13,6 @@ import CreateWorkspace from "./CreateWorkspace";
 
 function WorkspaceList() {
   const { userData } = useSelector((state: RootState) => state.user);
- 
 
   const [
     workspaceDashbordReq,
@@ -27,10 +24,9 @@ function WorkspaceList() {
       Type: 1,
       EmpID: userData?.EmpID,
     });
-  },[userData?.EmpID]);
+  }, [userData?.EmpID]);
 
-
-
+  console.log("EmpID: ", userData?.EmpID, ", Workspace: ", workspaceData);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [layoutMode, setLayoutMode] = useState<"grid" | "list">("grid");
@@ -39,7 +35,6 @@ function WorkspaceList() {
   // Calculate total pages dynamically
   const totalItems = workspaceData?.length || 0;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-
 
   const handlePrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNextPage = () =>

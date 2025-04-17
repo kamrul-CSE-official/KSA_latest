@@ -1,53 +1,56 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { type ReactNode, useState, useCallback, memo } from "react"
-import { motion } from "framer-motion"
-import EmojiPicker, { type EmojiClickData, Theme } from "emoji-picker-react"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { type ReactNode, useState, useCallback, memo } from "react";
+import { motion } from "framer-motion";
+import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface EmojiPickerComponentProps {
-  children: ReactNode
-  setEmojiIcon: (emoji: string) => void
+  children: ReactNode;
+  setEmojiIcon: (emoji: string) => void;
 }
 
-const EmojiPickerComponent: React.FC<EmojiPickerComponentProps> = ({ children, setEmojiIcon }) => {
-  const [open, setOpen] = useState(false)
+const EmojiPickerComponent = memo(({
+  children,
+  setEmojiIcon,
+}: EmojiPickerComponentProps) => {
+  const [open, setOpen] = useState(false);
 
-  // Handle emoji selection
-  const handleEmojiClick = useCallback(
-    (emojiData: EmojiClickData) => {
-      setEmojiIcon(emojiData.emoji) // Set the selected emoji
-      setOpen(false) // Close the emoji picker
-    },
-    [setEmojiIcon],
-  )
+  const handleEmojiClick = useCallback((emojiData: EmojiClickData) => {
+    setEmojiIcon(emojiData.emoji);
+    setOpen(false);
+  }, [setEmojiIcon]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <div className="cursor-pointer">{children}</div>
+        <div className="cursor-pointer relative z-[50]">
+          {children}
+        </div>
       </PopoverTrigger>
       <PopoverContent
-        className="p-0 border-none shadow-xl"
+        className="p-0 border-none shadow-xl w-auto"
         side="bottom"
         align="start"
         sideOffset={5}
-        style={{ width: "auto", maxWidth: "350px" }}
+        style={{ zIndex: 1000 }} // Higher than CoverPicker's dialog
       >
         <motion.div
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -5 }}
           transition={{ duration: 0.15 }}
-          className="emoji-picker-container"
         >
           <EmojiPicker
             onEmojiClick={handleEmojiClick}
-            lazyLoadEmojis={true}
+            lazyLoadEmojis
             searchPlaceHolder="Search emoji..."
-            width="100%"
-            height="350px"
+            width={350}
+            height={350}
             skinTonesDisabled
             previewConfig={{
               showPreview: true,
@@ -57,8 +60,9 @@ const EmojiPickerComponent: React.FC<EmojiPickerComponentProps> = ({ children, s
         </motion.div>
       </PopoverContent>
     </Popover>
-  )
-}
+  );
+});
 
-export default memo(EmojiPickerComponent)
+EmojiPickerComponent.displayName = "EmojiPickerComponent";
 
+export default EmojiPickerComponent;

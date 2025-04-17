@@ -36,36 +36,43 @@ function CreateWorkspace({ children }: { children: ReactNode }) {
       return;
     }
 
+    if (!userData?.EmpID || !userData?.CompanyID) {
+      toast.error("User information is missing.");
+      return;
+    }
+
     try {
-      await createWorkspace({
+      const response = await createWorkspace({
         Type: 1,
         WorkSpaceName: workspaceName,
-        ShareTypeID: 1,
-        CompanyID: userData?.CompanyID || 1,
+        ShareTypeID: 2,
+        CompanyID: userData.CompanyID,
         CoverImg: coverImage,
-        Emoji: emoji || "😊",
+        Emoji: emoji,
         Status: 1,
-        EnterdBy: userData?.EmpID,
-      }).then((res) => {
-        if (res?.data?.[0]?.WorkSpaceID) {
-          toast.success("Workspace created successfully!");
-          setOpen(false);
-          router.push(
-            `/dashboard/workspace?workspaceId=${res?.data?.[0]?.WorkSpaceID}`
-          );
-        } else {
-          toast.error("Failed to create workspace. Please try again.");
-        }
-      });
+        EnterdBy: userData.EmpID,
+      }).unwrap();
+
+      // console.log("Res: ",response?.[0]?.WorkSpaceID);
+      if (response?.[0]?.WorkSpaceID) {
+        toast.success("Workspace created successfully!");
+        router.push(
+          `/dashboard/workspace?workspaceId=${response?.[0]?.WorkSpaceID}`
+        );
+        setOpen(false);
+      } else {
+        throw new Error("Failed to create workspace");
+      }
     } catch (error) {
-      toast.error("An error occurred. Please try again.");
+      console.log("Error: ", error);
+      toast.error("Failed to create workspace. Please try again.");
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-w-[850px] sm:max-w-[600px] md:max-w-[750px] lg:max-w-[850px] p-0 overflow-hidden">
+      <DialogContent className="max-w-[850px] p-0 overflow-hidden">
         <AnimatePresence>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -81,7 +88,6 @@ function CreateWorkspace({ children }: { children: ReactNode }) {
             </DialogHeader>
 
             <div className="shadow-lg rounded-xl w-full">
-              {/* Cover Image Section */}
               <CoverPicker setNewCover={setCoverImage}>
                 <motion.div
                   className="relative group cursor-pointer"
@@ -100,7 +106,6 @@ function CreateWorkspace({ children }: { children: ReactNode }) {
                 </motion.div>
               </CoverPicker>
 
-              {/* Input Section */}
               <div className="p-6">
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
@@ -134,7 +139,7 @@ function CreateWorkspace({ children }: { children: ReactNode }) {
                         animate={{ scale: 1 }}
                         className="text-lg"
                       >
-                        {emoji || <SmilePlus />}
+                        {emoji || <SmilePlus size={20} />}
                       </motion.span>
                     </Button>
                   </EmojiPickerComponent>
@@ -144,10 +149,10 @@ function CreateWorkspace({ children }: { children: ReactNode }) {
                     value={workspaceName}
                     onChange={(e) => setWorkspaceName(e.target.value)}
                     className="h-10 text-base"
+                    maxLength={50}
                   />
                 </motion.div>
 
-                {/* Action Buttons */}
                 <motion.div
                   className="mt-8 flex justify-end gap-4"
                   initial={{ opacity: 0, y: 10 }}
@@ -167,17 +172,10 @@ function CreateWorkspace({ children }: { children: ReactNode }) {
                     className="px-5"
                   >
                     {isLoading ? (
-                      <motion.div
-                        className="flex items-center"
-                        animate={{ opacity: [0.6, 1] }}
-                        transition={{
-                          repeat: Number.POSITIVE_INFINITY,
-                          duration: 0.8,
-                        }}
-                      >
+                      <div className="flex items-center">
                         Creating{" "}
                         <Loader2 className="ml-2 h-4 w-4 animate-spin" />
-                      </motion.div>
+                      </div>
                     ) : (
                       "Create"
                     )}

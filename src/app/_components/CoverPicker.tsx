@@ -37,21 +37,27 @@ function CoverPicker({
     setOpen(false);
   };
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     if (event.target.files) {
       const uploadedUrls = await uploadImages(event.target.files);
       if (uploadedUrls.length > 0) {
-        setSelectedCover(uploadedUrls[0] || "/assets/cover.jpg"); 
+        setSelectedCover(uploadedUrls[0] || "/assets/cover.jpg");
       }
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="w-full">{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] md:max-w-[700px]">
+      <DialogTrigger asChild className="w-full">
+        {children}
+      </DialogTrigger>
+      <DialogContent className="max-w-[700px]" style={{ zIndex: 950 }}>
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Choose a Cover</DialogTitle>
+          <DialogTitle className="text-xl font-bold">
+            Choose a Cover
+          </DialogTitle>
           <DialogDescription className="text-muted-foreground pt-2">
             Select or upload a cover image for your workspace.
           </DialogDescription>
@@ -74,7 +80,9 @@ function CoverPicker({
                 >
                   <div
                     className={`absolute inset-0 border-2 rounded-lg z-10 ${
-                      selectedCover === cover?.imageUrl ? "border-primary" : "border-transparent"
+                      selectedCover === cover?.imageUrl
+                        ? "border-primary"
+                        : "border-transparent"
                     }`}
                   >
                     {selectedCover === cover?.imageUrl && (
@@ -107,7 +115,9 @@ function CoverPicker({
                 >
                   <div
                     className={`absolute inset-0 border-2 rounded-lg z-10 ${
-                      selectedCover === url ? "border-primary" : "border-transparent"
+                      selectedCover === url
+                        ? "border-primary"
+                        : "border-transparent"
                     }`}
                   >
                     {selectedCover === url && (
@@ -135,7 +145,10 @@ function CoverPicker({
                 whileTap={{ scale: 0.98 }}
                 className="relative rounded-lg overflow-hidden cursor-pointer border border-dashed border-gray-400 flex items-center justify-center aspect-video"
               >
-                <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center justify-center w-full h-full">
+                <label
+                  htmlFor="file-upload"
+                  className="cursor-pointer flex flex-col items-center justify-center w-full h-full"
+                >
                   <Upload className="h-6 w-6 text-gray-500" />
                   <span className="text-gray-500 text-sm">Upload Image</span>
                   <input
@@ -152,14 +165,22 @@ function CoverPicker({
         </ScrollArea>
 
         {/* Uploading/Error Messages */}
-        {uploading && <p className="text-sm text-blue-500 mt-2">Uploading image...</p>}
+        {uploading && (
+          <p className="text-sm text-blue-500 mt-2">Uploading image...</p>
+        )}
         {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
 
         <DialogFooter className="gap-2 sm:gap-0 mt-4">
           <DialogClose asChild>
-            <Button type="button" variant="outline">Cancel</Button>
+            <Button type="button" variant="outline">
+              Cancel
+            </Button>
           </DialogClose>
-          <Button type="button" onClick={handleUpdateCover} disabled={!selectedCover}>
+          <Button
+            type="button"
+            onClick={handleUpdateCover}
+            disabled={!selectedCover}
+          >
             Apply Cover
           </Button>
         </DialogFooter>

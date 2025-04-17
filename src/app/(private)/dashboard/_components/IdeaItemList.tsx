@@ -85,7 +85,7 @@ function IdeaItemList({
               <CardTitle className="flex items-center gap-2">
                 <span>{workspace.Emoji || "😊"}</span>
                 <span className="text-lg font-semibold">
-                  {workspace.Title} ff{workspace.IdeaID}
+                  {workspace.Title} 
                 </span>
               </CardTitle>
               <CardDescription className="mt-2">
