@@ -49,13 +49,15 @@ const Share = ({ children }: { children: ReactNode }) => {
   const [shareReq, { isLoading: shareLoading, isSuccess: shareSuccess }] = useWorkspaceShareManageMutation()
   const [requestForSuggestUser, { isLoading: suggestPeopleLoading, data: suggestPeopleData }] = useGetEmpMutation()
 
+  const userDetails = useSelector((state:RootState)=> state.user.userData);
+
   // Fetch suggested users on component mount
   useEffect(() => {
     if (loggedInUser?.SectionName || loggedInUser?.SubCostCenter) {
       requestForSuggestUser({
         EmpID: "",
         Name: "",
-        SectionID: "",
+        SectionID: userDetails?.SectionID || "",
         DepartmentID: "",
         Page: 1,
         Limit: 6,
@@ -63,6 +65,7 @@ const Share = ({ children }: { children: ReactNode }) => {
       reset();
     }
   }, [loggedInUser, requestForSuggestUser])
+  console.log("USER DETAILS::::::: ", userDetails)
 
   // Fetch shared users whenever the workspace ID changes or after updates
   useEffect(() => {
@@ -168,7 +171,7 @@ const Share = ({ children }: { children: ReactNode }) => {
       <DialogContent className="w-full max-w-3xl max-h-[90vh] flex flex-col p-4 md:p-6">
         <DialogHeader>
           <DialogTitle className="text-lg md:text-xl mb-4 flex items-center gap-2">
-            <UserPlus className="h-5 w-5" /> Share Workspace
+            <UserPlus className="h-5 w-5" /> Share Workspace 
           </DialogTitle>
         </DialogHeader>
 

@@ -8,6 +8,7 @@ export interface IUserinfo {
   UserName: string;
   iat: number;
   exp: number;
+  SectionID: number;
 
   $id?: string;
   Company?: string;

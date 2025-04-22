@@ -15,6 +15,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import FullScreenButton from "@/components/shared/FullScreenButton";
 
 export default function Page({ children }: { children: ReactNode }) {
   const daysOfWeek: string[] = [
@@ -43,17 +44,18 @@ export default function Page({ children }: { children: ReactNode }) {
                   <BreadcrumbPage className="line-clamp-1">
                     {new Date().getDate()}/{new Date().getMonth()}/
                     {new Date().getFullYear()},{" "}
-                    {daysOfWeek[new Date().getDay()]}
+                    {daysOfWeek[new Date().getDay()]} 
                   </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
           <div className="ml-auto px-3">
-            {/* <NavActions /> */}
+            {/* <NavActions /> */} 
+            <FullScreenButton />
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 px-4 py-10">{children}</div>
+        <div className="flex flex-1 flex-col gap-4 px-4">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

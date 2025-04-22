@@ -1,92 +1,110 @@
-"use client"
+"use client";
 
-import { type ReactNode, useEffect, useState } from "react"
-import { useSelector } from "react-redux"
-import { useSearchParams } from "next/navigation"
-import { toast } from "sonner"
-import { BookOpen, Lock, Search, Trash, UserPlus } from "lucide-react"
+import { type ReactNode, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+import { BookOpen, Lock, Search, Trash, UserPlus } from "lucide-react";
 
-import type { RootState } from "@/redux/store"
-import { useCreateADocumentMutation, useIdeaShareManageMutation } from "@/redux/services/ideaApi"
-import { useGetEmpMutation } from "@/redux/services/userApi"
+import type { RootState } from "@/redux/store";
+import {
+  useCreateADocumentMutation,
+  useIdeaShareManageMutation,
+} from "@/redux/services/ideaApi";
+import { useGetEmpMutation } from "@/redux/services/userApi";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { Skeleton } from "@/components/ui/skeleton"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 
-type ShareType = "public" | "private"
+type ShareType = "public" | "private";
 type User = {
-  EmpID: string
-  Name: string
-  Image: string
-  DesignationName: string
-  Department?: string
-  Section?: string
-}
+  EmpID: string;
+  Name: string;
+  Image: string;
+  DesignationName: string;
+  Department?: string;
+  Section?: string;
+};
 
 type SharedUser = {
-  EMP_ID: string
-  PersonName: string
-  ITEM_IMAGE: string
-}
+  EMP_ID: string;
+  PersonName: string;
+  ITEM_IMAGE: string;
+};
 
 const ShareDoc = ({ children }: { children: ReactNode }) => {
-  const [selectedUsers, setSelectedUsers] = useState<SharedUser[]>([])
-  const [refreshTrigger, setRefreshTrigger] = useState(true)
-  const [shareType, setShareType] = useState<ShareType>("private")
-  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedUsers, setSelectedUsers] = useState<SharedUser[]>([]);
+  const [refreshTrigger, setRefreshTrigger] = useState(true);
+  const [shareType, setShareType] = useState<ShareType>("private");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const loggedInUser = useSelector((state: RootState) => state.user.userData)
-  const [re, {reset}] = useCreateADocumentMutation()
-  const searchParams = useSearchParams()
-  const workspaceId = searchParams.get("workspaceId")
-  const ideaId = searchParams.get("ideaId")
+  const loggedInUser = useSelector((state: RootState) => state.user.userData);
+  const [re, { reset }] = useCreateADocumentMutation();
+  const searchParams = useSearchParams();
+  const workspaceId = searchParams.get("workspaceId");
+  const ideaId = searchParams.get("ideaId");
 
-  const [shareReq, { isLoading: shareLoading, isSuccess: shareSuccess }] = useIdeaShareManageMutation()
-  const [requestForSuggestUser, { isLoading: suggestPeopleLoading, data: suggestPeopleData }] = useGetEmpMutation()
-
+  const [shareReq, { isLoading: shareLoading, isSuccess: shareSuccess }] =
+    useIdeaShareManageMutation();
+  const [
+    requestForSuggestUser,
+    { isLoading: suggestPeopleLoading, data: suggestPeopleData },
+  ] = useGetEmpMutation();
+  const userDetails = useSelector((state: RootState) => state.user.userData);
   // Fetch suggested users on component mount
   useEffect(() => {
     if (loggedInUser?.SectionName || loggedInUser?.SubCostCenter) {
       requestForSuggestUser({
         EmpID: "",
         Name: "",
-        SectionID: "",
+        SectionID: userDetails?.SectionID,
         DepartmentID: "",
         Page: 1,
         Limit: 6,
-      })
+      });
       reset();
     }
-  }, [loggedInUser, requestForSuggestUser])
+  }, [loggedInUser, requestForSuggestUser]);
 
   // Fetch shared users whenever the workspace ID changes or after updates
   useEffect(() => {
     const fetchSharedPersons = async () => {
-      if (!ideaId) return
+      if (!ideaId) return;
 
       try {
-        const req = await shareReq({ Type: 3, IdeaID: ideaId })
+        const req = await shareReq({ Type: 3, IdeaID: ideaId });
         if (req?.data) {
-          setSelectedUsers(req.data)
+          setSelectedUsers(req.data);
           reset();
         }
       } catch (error) {
-        toast.error("Failed to fetch shared users")
+        toast.error("Failed to fetch shared users");
       }
-    }
+    };
 
-    fetchSharedPersons()
-  }, [ideaId, shareReq, refreshTrigger])
+    fetchSharedPersons();
+  }, [ideaId, shareReq, refreshTrigger]);
 
   // Handle search input changes
   const handleSearch = (query: string) => {
-    setSearchQuery(query)
+    setSearchQuery(query);
 
     requestForSuggestUser({
       EmpID: isNaN(Number(query)) ? "" : query,
@@ -95,36 +113,36 @@ const ShareDoc = ({ children }: { children: ReactNode }) => {
       DepartmentID: "",
       Page: 1,
       Limit: 6,
-    })
-  }
+    });
+  };
 
   // Handle sharing type changes (public/private)
   const handleShareTypeChange = async (type: ShareType) => {
     if (!workspaceId) {
-      toast.error("Workspace ID is missing!")
-      return
+      toast.error("Workspace ID is missing!");
+      return;
     }
 
-    setShareType(type)
+    setShareType(type);
 
     try {
       await shareReq({
         Type: 4,
         ShareTypeID: type === "public" ? 1 : 2,
         IdeaID: Number(ideaId),
-      })
+      });
       reset();
-      toast.success(`Workspace is now ${type}`)
+      toast.success(`Workspace is now ${type}`);
     } catch (error) {
-      toast.error(`Failed to set workspace to ${type}`)
+      toast.error(`Failed to set workspace to ${type}`);
     }
-  }
+  };
 
   // Handle adding a user to share with
   const handleAddUser = async (user: User) => {
     if (!ideaId) {
-      toast.error("Workspace ID is missing!")
-      return
+      toast.error("Workspace ID is missing!");
+      return;
     }
 
     try {
@@ -132,21 +150,21 @@ const ShareDoc = ({ children }: { children: ReactNode }) => {
         Type: 1,
         IdeaID: ideaId,
         PersonId: user.EmpID,
-      })
+      });
       reset();
-      toast.success(`${user.Name} has been added`)
-      setRefreshTrigger(!refreshTrigger)
-      setSearchQuery("")
+      toast.success(`${user.Name} has been added`);
+      setRefreshTrigger(!refreshTrigger);
+      setSearchQuery("");
     } catch (error) {
-      toast.error(`Failed to add ${user.Name}`)
+      toast.error(`Failed to add ${user.Name}`);
     }
-  }
+  };
 
   // Handle removing a user from sharing
   const handleRemoveUser = async (user: SharedUser) => {
     if (!ideaId) {
-      toast.error("Workspace ID is missing!")
-      return
+      toast.error("Workspace ID is missing!");
+      return;
     }
 
     try {
@@ -154,14 +172,14 @@ const ShareDoc = ({ children }: { children: ReactNode }) => {
         Type: 2,
         IdeaID: ideaId,
         PersonId: user.EMP_ID,
-      })
+      });
       reset();
-      toast.success(`User has been removed`)
-      setRefreshTrigger(!refreshTrigger)
+      toast.success(`User has been removed`);
+      setRefreshTrigger(!refreshTrigger);
     } catch (error) {
-      toast.error("Failed to remove user")
+      toast.error("Failed to remove user");
     }
-  }
+  };
 
   return (
     <Dialog>
@@ -196,7 +214,10 @@ const ShareDoc = ({ children }: { children: ReactNode }) => {
                   Array(4)
                     .fill(0)
                     .map((_, i) => (
-                      <div key={i} className="flex items-center gap-3 p-3 border rounded-lg">
+                      <div
+                        key={i}
+                        className="flex items-center gap-3 p-3 border rounded-lg"
+                      >
                         <Skeleton className="w-12 h-12 rounded-full" />
                         <div className="space-y-2">
                           <Skeleton className="h-4 w-32" />
@@ -212,19 +233,30 @@ const ShareDoc = ({ children }: { children: ReactNode }) => {
                       className="flex items-center gap-3 p-3 border rounded-lg shadow-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition"
                     >
                       <Avatar className="w-12 h-12 border">
-                        <AvatarImage src={`data:image/jpeg;base64,${user.Image}`} alt={user.Name} />
-                        <AvatarFallback>{user.Name.substring(0, 2)}</AvatarFallback>
+                        <AvatarImage
+                          src={`data:image/jpeg;base64,${user.Image}`}
+                          alt={user.Name}
+                        />
+                        <AvatarFallback>
+                          {user.Name.substring(0, 2)}
+                        </AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col overflow-hidden">
                         <p className="font-medium truncate">{user.Name}</p>
-                        <small className="text-muted-foreground">ID: {user.EmpID}</small>
-                        <small className="text-muted-foreground truncate">{user.DesignationName}</small>
+                        <small className="text-muted-foreground">
+                          ID: {user.EmpID}
+                        </small>
+                        <small className="text-muted-foreground truncate">
+                          {user.DesignationName}
+                        </small>
                       </div>
                     </div>
                   ))
                 ) : (
                   <p className="text-center text-muted-foreground col-span-2 py-8">
-                    {searchQuery ? "No results found" : "Search for people to share with"}
+                    {searchQuery
+                      ? "No results found"
+                      : "Search for people to share with"}
                   </p>
                 )}
               </div>
@@ -243,14 +275,21 @@ const ShareDoc = ({ children }: { children: ReactNode }) => {
                         <TooltipTrigger asChild>
                           <div className="flex items-center gap-2 border rounded-full pl-1 pr-1 py-1 bg-muted/30">
                             <Avatar className="h-6 w-6">
-                              <AvatarImage src={`data:image/jpeg;base64,${user?.ITEM_IMAGE}`} alt={user?.PersonName} />
-                              <AvatarFallback>{user?.PersonName?.substring(0, 2)}</AvatarFallback>
+                              <AvatarImage
+                                src={`data:image/jpeg;base64,${user?.ITEM_IMAGE}`}
+                                alt={user?.PersonName}
+                              />
+                              <AvatarFallback>
+                                {user?.PersonName?.substring(0, 2)}
+                              </AvatarFallback>
                             </Avatar>
-                            <span className="text-sm truncate max-w-[100px]">{user?.PersonName}</span>
+                            <span className="text-sm truncate max-w-[100px]">
+                              {user?.PersonName}
+                            </span>
                             <Button
                               onClick={(e) => {
-                                e.stopPropagation()
-                                handleRemoveUser(user)
+                                e.stopPropagation();
+                                handleRemoveUser(user);
                               }}
                               className="h-6 w-6 rounded-full p-0"
                               size="sm"
@@ -275,7 +314,9 @@ const ShareDoc = ({ children }: { children: ReactNode }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div
                 className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                  shareType === "public" ? "ring-2 ring-primary bg-primary/5" : "hover:bg-muted/50"
+                  shareType === "public"
+                    ? "ring-2 ring-primary bg-primary/5"
+                    : "hover:bg-muted/50"
                 }`}
                 onClick={() => handleShareTypeChange("public")}
               >
@@ -285,12 +326,16 @@ const ShareDoc = ({ children }: { children: ReactNode }) => {
                   </div>
                   <h3 className="font-semibold">Public</h3>
                 </div>
-                <p className="text-sm text-muted-foreground">Anyone in your organization can view this workspace</p>
+                <p className="text-sm text-muted-foreground">
+                  Anyone in your organization can view this workspace
+                </p>
               </div>
 
               <div
                 className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                  shareType === "private" ? "ring-2 ring-primary bg-primary/5" : "hover:bg-muted/50"
+                  shareType === "private"
+                    ? "ring-2 ring-primary bg-primary/5"
+                    : "hover:bg-muted/50"
                 }`}
                 onClick={() => handleShareTypeChange("private")}
               >
@@ -300,15 +345,16 @@ const ShareDoc = ({ children }: { children: ReactNode }) => {
                   </div>
                   <h3 className="font-semibold">Private</h3>
                 </div>
-                <p className="text-sm text-muted-foreground">Only people you share with can access this workspace</p>
+                <p className="text-sm text-muted-foreground">
+                  Only people you share with can access this workspace
+                </p>
               </div>
             </div>
           </TabsContent>
         </Tabs>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default ShareDoc
-
+export default ShareDoc;

@@ -13,7 +13,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSelector } from "react-redux";
 
 import {
-  useAskFRomAIMutation,
   useCommentSendMutation,
   useGetIdeaDetailsMutation,
   useIdeaShareManageMutation,
@@ -102,24 +101,68 @@ function SharedUsers({
   onAddUser: boolean;
 }) {
   return (
-    <div className="flex items-center mb-4">
+    <div className="w-full flex items-center justify-center mb-2">
       <div className="flex -space-x-2 overflow-hidden mr-2">
-        {sharedPeople?.map((person: any, i: number) => (
-          <Avatar key={i} className="border-2 border-background w-8 h-8">
-            <AvatarImage
-              src={`data:image/jpeg;base64,${person?.ITEM_IMAGE}`}
-              alt={person?.PersonName}
-            />
-            <AvatarFallback>{person?.PersonName?.charAt(0)}</AvatarFallback>
-          </Avatar>
-        ))}
-        {/* <Avatar className="border-2 border-background w-8 h-8">
+        {sharedPeople?.map((person: any, i: number) =>
+          currentUser?.ImageBase64 !== person?.ITEM_IMAGE && 
+          currentUser?.PersonName !== currentUser?.FullName ? (
+            <TooltipProvider key={i}>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Avatar className="border-2 border-background w-8 h-8">
+                    <AvatarImage
+                      src={`data:image/jpeg;base64,${person?.ITEM_IMAGE}`}
+                      alt={person?.PersonName}
+                    />
+                    <AvatarFallback>
+                      {person?.PersonName?.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{person?.PersonName}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : (
+            ""
+          )
+        )}
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <Avatar className="border-2 border-background w-8 h-8">
+                <AvatarImage
+                  src={
+                    currentUser?.ImageBase64
+                      ? `data:image/jpeg;base64,${currentUser?.ImageBase64}`
+                      : undefined
+                  }
+                  alt={currentUser?.FullName}
+                />
+                <AvatarFallback>
+                  {currentUser?.FullName?.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{currentUser?.FullName}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <Avatar className="border-2 border-background w-8 h-8">
           <AvatarImage
-            src={currentUser?.ImageBase64 ? `data:image/jpeg;base64,${currentUser?.ImageBase64}` : undefined}
+            src={
+              currentUser?.ImageBase64
+                ? `data:image/jpeg;base64,${currentUser?.ImageBase64}`
+                : undefined
+            }
             alt={currentUser?.FullName}
           />
           <AvatarFallback>{currentUser?.FullName?.charAt(0)}</AvatarFallback>
-        </Avatar> */}
+        </Avatar>
       </div>
       <ShareDoc>
         <Button
@@ -406,12 +449,6 @@ function DocumentEditor() {
 
   const canShareDocument =
     Number(userDetails?.EmpID) === Number(documentData?.EnterdBy);
-  console.log(
-    "Logedin User: ",
-    userDetails?.EmpID,
-    " Document user: ",
-    documentData?.EnterdBy
-  );
 
   const generateFromAI = async (prompt: string) => {
     setAiLoading(true);
@@ -456,7 +493,7 @@ function DocumentEditor() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="container mx-auto px-4">
       {/* Shared users section */}
       <SharedUsers
         sharedPeople={sharedPeople}

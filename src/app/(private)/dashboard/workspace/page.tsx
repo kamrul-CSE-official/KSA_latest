@@ -24,11 +24,22 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
 
 import {
   Building2,
   Calendar,
+  Delete,
   Edit,
+  Edit2Icon,
   FileText,
   Loader2,
   Plus,
@@ -39,6 +50,7 @@ import {
 import IdeaInfo from "./_components/IdeaInfo";
 import WorkspaceUpdate from "./_components/WorkspaceUpdate";
 import Share from "./_components/share";
+import UpdateWorkspaceName from "./_components/updateWorkspaceName";
 
 interface IWorkspaceDetails {
   CoverImg: string;
@@ -207,21 +219,31 @@ export default function WorkspacePage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="container mx-auto px-4 py-6"
+      className="container mx-auto px-4"
     >
       {/* Workspace Header Card */}
       <Card className="overflow-hidden mb-8 shadow-lg border-muted/40">
         <div className="relative h-64 sm:h-72 md:h-80">
-          <WorkspaceUpdate>
-            <Button
-              size="sm"
-              variant="secondary"
-              className="absolute top-4 left-4 z-10 bg-black/20 hover:bg-black/40 text-white border-white/20"
-            >
-              <Edit className="h-4 w-4 mr-1" />
-              Edit
-            </Button>
-          </WorkspaceUpdate>
+          {Number(userData?.EmpID) == Number(workspaceData[0]?.EnterdBy) && (
+            <Menubar className="absolute top-4 left-4 z-10 bg-black/20 hover:bg-black/40 text-white border-white/20">
+              <MenubarMenu>
+                <MenubarTrigger className="flex items-center justify-center gap-2">
+                  Update <Edit2Icon size={15} />
+                </MenubarTrigger>
+                <MenubarContent>
+                  <UpdateWorkspaceName>
+                    <MenubarItem>Update Workspace Name</MenubarItem>
+                  </UpdateWorkspaceName>
+                  <MenubarItem>Update Cover Photo</MenubarItem>
+                  <MenubarSeparator />
+                  <MenubarItem className="bg-red-500 text-white">
+                    Delete Workspace <Delete color="white" />
+                  </MenubarItem>
+                  <MenubarSeparator />
+                </MenubarContent>
+              </MenubarMenu>
+            </Menubar>
+          )}
 
           {typeof window !== "undefined" && (
             <motion.div
@@ -238,7 +260,7 @@ export default function WorkspacePage() {
             </motion.div>
           )}
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+          {/* <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" /> */}
 
           <div className="absolute bottom-0 left-0 p-6 text-white">
             <motion.div
