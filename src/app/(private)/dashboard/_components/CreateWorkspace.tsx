@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import CoverPicker from "@/app/_components/CoverPicker";
 import EmojiPickerComponent from "./EmojiPickerComponent";
+import { encrypt } from "@/service/encryption";
 
 function CreateWorkspace({ children }: { children: ReactNode }) {
   const [coverImage, setCoverImage] = useState("/assets/cover.png");
@@ -57,7 +58,7 @@ function CreateWorkspace({ children }: { children: ReactNode }) {
       if (response?.[0]?.WorkSpaceID) {
         toast.success("Workspace created successfully!");
         router.push(
-          `/dashboard/workspace?workspaceId=${response?.[0]?.WorkSpaceID}`
+          `/dashboard/workspace?workspaceId=${encrypt(response?.[0]?.WorkSpaceID)}`
         );
         setOpen(false);
       } else {
@@ -81,11 +82,6 @@ function CreateWorkspace({ children }: { children: ReactNode }) {
             transition={{ duration: 0.3 }}
             className="rounded-xl w-full overflow-hidden"
           >
-            <DialogHeader className="p-6 pb-2">
-              <DialogTitle className="text-2xl font-bold">
-                Create a workspace
-              </DialogTitle>
-            </DialogHeader>
 
             <div className="shadow-lg rounded-xl w-full">
               <CoverPicker setNewCover={setCoverImage}>

@@ -9,6 +9,7 @@ export interface IUserinfo {
   iat: number;
   exp: number;
   SectionID: number;
+  DepartmentID: number;
 
   $id?: string;
   Company?: string;
@@ -44,3 +45,21 @@ export interface IEmployee {
   ImageBase64: string;
 }
 
+
+export interface IWorkspaceDetails {
+  CoverImg: string;
+  Emoji: string;
+  EnterDept: string;
+  EnterImg: string;
+  EnterSec: string;
+  EnterdDesg: string;
+  EnterdName: string;
+  EnterdOn: string;
+  IdeaEmoji: string;
+  IdeaId: string;
+  IdeaTitle: string;
+  IdeaEnterdOn: string;
+  EnterdBy: string;
+  WorkSpaceName: string;
+  ShareTypeName: "Public" | "Private" | "Custom";
+}

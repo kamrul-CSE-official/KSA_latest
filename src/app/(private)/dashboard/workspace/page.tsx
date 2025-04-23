@@ -24,21 +24,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarTrigger,
-} from "@/components/ui/menubar";
 
 import {
   Building2,
   Calendar,
-  Delete,
-  Edit,
   Edit2Icon,
   FileText,
   Loader2,
@@ -48,27 +37,10 @@ import {
 } from "lucide-react";
 
 import IdeaInfo from "./_components/IdeaInfo";
-import WorkspaceUpdate from "./_components/WorkspaceUpdate";
 import Share from "./_components/share";
-import UpdateWorkspaceName from "./_components/updateWorkspaceName";
-
-interface IWorkspaceDetails {
-  CoverImg: string;
-  Emoji: string;
-  EnterDept: string;
-  EnterImg: string;
-  EnterSec: string;
-  EnterdDesg: string;
-  EnterdName: string;
-  EnterdOn: string;
-  IdeaEmoji: string;
-  IdeaId: string;
-  IdeaTitle: string;
-  IdeaEnterdOn: string;
-  EnterdBy: string;
-  WorkSpaceName: string;
-  ShareTypeName: "Public" | "Private" | "Custom";
-}
+import UpdateWorkspace from "../_components/UpdateWorkspace";
+import { decrypt, encrypt } from "@/service/encryption";
+import { IWorkspaceDetails } from "@/types/globelTypes";
 
 interface SharedUser {
   PersonName: string;
@@ -88,7 +60,7 @@ export default function WorkspacePage() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const searchParams = useSearchParams();
-  const workspaceId = searchParams.get("workspaceId");
+  const workspaceId = decrypt(searchParams?.get("workspaceId") || "");
   const { userData } = useSelector((state: RootState) => state.user);
   const router = useRouter();
 
@@ -117,7 +89,7 @@ export default function WorkspacePage() {
     };
 
     getSharedUsers();
-  }, [workspaceId, fetchSharedUsers]);
+  }, [workspaceId, fetchSharedUsers, refreshTrigger]);
 
   // Fetch workspace details
   useEffect(() => {
@@ -164,7 +136,9 @@ export default function WorkspacePage() {
         setRefreshTrigger((prev) => prev + 1);
         setIsCreatingDoc(false);
         router.push(
-          `/dashboard/document/?ideaId=${response.data[0].IdeaID}&workspaceId=${workspaceId}`
+          `/dashboard/document/?ideaId=${encrypt(
+            response.data[0].IdeaID
+          )}&workspaceId=${workspaceId}`
         );
       }
     } catch (error) {
@@ -225,24 +199,15 @@ export default function WorkspacePage() {
       <Card className="overflow-hidden mb-8 shadow-lg border-muted/40">
         <div className="relative h-64 sm:h-72 md:h-80">
           {Number(userData?.EmpID) == Number(workspaceData[0]?.EnterdBy) && (
-            <Menubar className="absolute top-4 left-4 z-10 bg-black/20 hover:bg-black/40 text-white border-white/20">
-              <MenubarMenu>
-                <MenubarTrigger className="flex items-center justify-center gap-2">
-                  Update <Edit2Icon size={15} />
-                </MenubarTrigger>
-                <MenubarContent>
-                  <UpdateWorkspaceName>
-                    <MenubarItem>Update Workspace Name</MenubarItem>
-                  </UpdateWorkspaceName>
-                  <MenubarItem>Update Cover Photo</MenubarItem>
-                  <MenubarSeparator />
-                  <MenubarItem className="bg-red-500 text-white">
-                    Delete Workspace <Delete color="white" />
-                  </MenubarItem>
-                  <MenubarSeparator />
-                </MenubarContent>
-              </MenubarMenu>
-            </Menubar>
+            <UpdateWorkspace
+              refreshTrigger={refreshTrigger}
+              setRefreshTrigger={setRefreshTrigger}
+              workspace={workspace}
+            >
+              <Button className="absolute top-4 left-4 z-10 bg-black/20 hover:bg-black/40 text-white border-white/20">
+                Update <Edit2Icon size={15} />
+              </Button>
+            </UpdateWorkspace>
           )}
 
           {typeof window !== "undefined" && (
@@ -336,7 +301,10 @@ export default function WorkspacePage() {
                 </div>
                 {Number(userData?.EmpID) ==
                   Number(workspaceData[0]?.EnterdBy) && (
-                  <Share>
+                  <Share
+                    refreshTrigger={refreshTrigger}
+                    setRefreshTrigger={setRefreshTrigger}
+                  >
                     <Button
                       size="sm"
                       variant="outline"

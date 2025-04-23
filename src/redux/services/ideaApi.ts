@@ -25,6 +25,20 @@ const ideaApis = rootApi.injectEndpoints({
         body: data,
       }),
     }),
+    updateWorkspace: builder.mutation({
+      query: (data) => ({
+        url: "/KSA/WorkSpace",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    deleteWorkspace: builder.mutation({
+      query: (data) => ({
+        url: "/KSA/WorkSpace",
+        method: "POST",
+        body: data,
+      }),
+    }),
     workspaceList: builder.mutation({
       query: (data) => ({
         url: "/KSA/WorkSpace",
@@ -175,7 +189,9 @@ export const {
   useIdeaContentUpdateMutation,
   useIdeaShareManageMutation,
   useDashboardMutation,
-  useAskFRomAIMutation
+  useAskFRomAIMutation,
+  useUpdateWorkspaceMutation,
+  useDeleteWorkspaceMutation
 } = ideaApis;
 
 export default ideaApis;

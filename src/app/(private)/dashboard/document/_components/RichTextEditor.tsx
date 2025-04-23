@@ -19,6 +19,7 @@ import debounce from "lodash.debounce";
 import MentionTool from "./mention/MentionTool";
 import { Check, Loader2, Save } from "lucide-react";
 import "./mention/mention.css";
+import { decrypt } from "@/service/encryption";
 
 interface RichTextEditorProps {
   initialData?: any;
@@ -35,8 +36,8 @@ function RichTextEditor({ initialData, onSave }: RichTextEditorProps) {
   const initialDataRef = useRef(initialData);
 
   const searchParams = useSearchParams();
-  const workspaceId = searchParams.get("workspaceId");
-  const ideaId = searchParams.get("ideaId");
+  const workspaceId = decrypt(searchParams.get("workspaceId") || "");
+  const ideaId = decrypt(searchParams.get("ideaId") || "");
 
   const [ideaContentUpdateReq] = useIdeaContentUpdateMutation();
 

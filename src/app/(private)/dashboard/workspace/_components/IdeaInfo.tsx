@@ -34,6 +34,7 @@ import {
 import { toast } from "sonner"
 
 import { BookOpen, Building2, Calendar, FileText, MoreHorizontal, Trash2, Users } from "lucide-react"
+import { encrypt } from "@/service/encryption"
 
 interface IIdea {
   Title: string
@@ -192,7 +193,7 @@ function IdeaInfo({
 
                 {/* Action Buttons */}
                 <div className="flex items-center gap-2 ml-auto">
-                  <Link href={`/dashboard/document?ideaId=${idea?.IdeaID}&workspaceId=${workspaceId}`}>
+                  <Link href={`/dashboard/document?ideaId=${encrypt(idea?.IdeaID)}&workspaceId=${workspaceId}`}>
                     <Button size="sm" className="flex items-center gap-1.5" variant="outline">
                       <BookOpen className="h-4 w-4" />
                       Open
@@ -209,7 +210,7 @@ function IdeaInfo({
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Document Options</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <Link href={`/dashboard/document?ideaId=${idea?.IdeaID}&workspaceId=${workspaceId}`}>
+                        <Link href={`/dashboard/document?ideaId=${encrypt(idea?.IdeaID)}&workspaceId=${workspaceId}`}>
                           <DropdownMenuItem>
                             <BookOpen className="h-4 w-4 mr-2" />
                             Open Document

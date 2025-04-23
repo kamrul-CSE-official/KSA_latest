@@ -32,6 +32,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { decrypt } from "@/service/encryption";
 
 type ShareType = "public" | "private";
 type User = {
@@ -58,8 +59,8 @@ const ShareDoc = ({ children }: { children: ReactNode }) => {
   const loggedInUser = useSelector((state: RootState) => state.user.userData);
   const [re, { reset }] = useCreateADocumentMutation();
   const searchParams = useSearchParams();
-  const workspaceId = searchParams.get("workspaceId");
-  const ideaId = searchParams.get("ideaId");
+  const workspaceId = decrypt(searchParams.get("workspaceId") || "");
+  const ideaId = decrypt(searchParams.get("ideaId") || "");
 
   const [shareReq, { isLoading: shareLoading, isSuccess: shareSuccess }] =
     useIdeaShareManageMutation();

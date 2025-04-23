@@ -22,3 +22,12 @@ export const reportBaseUrl = (): string => {
 export const imageBaseUrl = (): string => {
   return process.env.NEXT_PUBLIC_IMAGE_BASE_URL || "https://192.168.1.253:8080";
 };
+
+
+
+export const secret = (): string => {
+  return process.env.NEXT_PUBLIC_SECRET || "MyNameIsMdKamrulHasan";
+};
+export const random = (): number => {
+  return Number(process.env.NEXT_PUBLIC_RANDOM) || 15;
+};

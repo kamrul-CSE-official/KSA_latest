@@ -17,9 +17,13 @@ export function TeamSwitcher() {
         </div>
         <span className="truncate font-medium">Naturub Accessories BD</span>
       </Link>
-      <small className="px-1.5">
-        <TypeIt options={{loop: true, speed: 280, loopDelay: 20}}>Knowledge Share Web Application</TypeIt>
-      </small>
+      <Link href="/dashboard" className="p-0 m-0">
+        <small className="px-1.5">
+          <TypeIt options={{ loop: true, speed: 280, loopDelay: 20 }}>
+            Knowledge Share Web Application
+          </TypeIt>
+        </small>
+      </Link>
     </SidebarMenu>
   );
 }

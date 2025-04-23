@@ -18,6 +18,7 @@ import { RootState } from "@/redux/store";
 import Loading from "@/components/shared/Loading";
 import { useRouter } from "next/navigation";
 import { useDebounce } from "@/hooks/useDebounce"; // Custom debounce hook
+import { encrypt } from "@/service/encryption";
 
 interface IWorkspace {
   WorkSpaceName: string;
@@ -74,6 +75,7 @@ function Search({ children }: { children: React.ReactNode }) {
         setIsLoading(true);
         const response = await workspaceSearch({
           SearchKey: debouncedQuery,
+          EnterdBy: loggedInUser?.EmpID,
           Type: 4,
           Page: 1,
           Limit: 6,
@@ -96,7 +98,9 @@ function Search({ children }: { children: React.ReactNode }) {
     if (e.key === "ArrowDown") {
       setSelectedIndex((prev) => (prev + 1) % (data?.length || 1));
     } else if (e.key === "ArrowUp") {
-      setSelectedIndex((prev) => (prev - 1 + (data?.length || 1)) % (data?.length || 1));
+      setSelectedIndex(
+        (prev) => (prev - 1 + (data?.length || 1)) % (data?.length || 1)
+      );
     } else if (e.key === "Enter" && data?.[selectedIndex]) {
       handleItemClick(data[selectedIndex].WorkSpaceID);
     }
@@ -104,7 +108,7 @@ function Search({ children }: { children: React.ReactNode }) {
 
   // Handle item click
   const handleItemClick = (workspaceId: string) => {
-    router.push(`/dashboard/workspace?workspaceId=${workspaceId}`);
+    router.push(`/dashboard/workspace?workspaceId=${encrypt(workspaceId)}`);
     setIsDialogOpen(false); // Close the dialog
   };
 
@@ -160,4 +164,4 @@ function Search({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default memo(Search)
+export default memo(Search);

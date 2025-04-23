@@ -11,12 +11,16 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useDashboardMutation, useWorkspaceListMutation } from "@/redux/services/ideaApi";
+import {
+  useDashboardMutation,
+  useWorkspaceListMutation,
+} from "@/redux/services/ideaApi";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { encrypt } from "@/service/encryption";
 
 interface IWorkspace {
   WorkSpaceName: string;
@@ -29,18 +33,14 @@ export function NavWorkspaces() {
   const [workspaceReq, { isLoading, data: workspaces }] =
     useWorkspaceListMutation();
 
-      const [
-        workspaceDashbordReq,
-        { data: workspaceData, isLoading: workspaceLoading },
-      ] = useDashboardMutation();
+  const [
+    workspaceDashbordReq,
+    { data: workspaceData, isLoading: workspaceLoading },
+  ] = useDashboardMutation();
 
-
-      useEffect(()=>{
-        workspaceDashbordReq({})
-      },[])
-
-
-
+  useEffect(() => {
+    workspaceDashbordReq({});
+  }, []);
 
   useEffect(() => {
     workspaceReq({
@@ -64,7 +64,9 @@ export function NavWorkspaces() {
                 <motion.div whileHover={{ scale: 1.05 }}>
                   <SidebarMenuButton asChild={true}>
                     <Link
-                      href={`/dashboard/workspace?workspaceId=${workspace?.WorkSpaceID}`}
+                      href={`/dashboard/workspace?workspaceId=${encrypt(
+                        workspace?.WorkSpaceID
+                      )}`}
                     >
                       <span>{workspace.Emoji}</span>
                       <span>{workspace.WorkSpaceName}</span>

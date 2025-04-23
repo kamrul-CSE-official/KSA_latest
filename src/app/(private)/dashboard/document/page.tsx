@@ -58,6 +58,7 @@ import ShareDoc from "./_components/ShareDoc";
 import template from "./_components/templates.json";
 import axios from "axios";
 import { getBaseUrl } from "@/config/envConfig";
+import { decrypt } from "@/service/encryption";
 
 // Lazy load the rich text editor for better performance
 const RichTextEditor = lazy(() => import("./_components/RichTextEditor"));
@@ -104,7 +105,7 @@ function SharedUsers({
     <div className="w-full flex items-center justify-center mb-2">
       <div className="flex -space-x-2 overflow-hidden mr-2">
         {sharedPeople?.map((person: any, i: number) =>
-          currentUser?.ImageBase64 !== person?.ITEM_IMAGE && 
+          currentUser?.ImageBase64 !== person?.ITEM_IMAGE &&
           currentUser?.PersonName !== currentUser?.FullName ? (
             <TooltipProvider key={i}>
               <Tooltip>
@@ -343,8 +344,8 @@ function AIGenerateDialog({
 
 function DocumentEditor() {
   const searchParams = useSearchParams();
-  const workspaceId = searchParams.get("workspaceId");
-  const ideaId = searchParams.get("ideaId");
+  const workspaceId = decrypt(searchParams.get("workspaceId") || "");
+  const ideaId = decrypt(searchParams.get("ideaId") || "");
 
   // Dialog state
   const [aiDialogOpen, setAiDialogOpen] = useState(false);

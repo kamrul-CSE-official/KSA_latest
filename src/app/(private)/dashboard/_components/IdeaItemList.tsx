@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { motion } from "framer-motion";
+import { encrypt } from "@/service/encryption";
 
 interface IWorkspace {
   WorkSpaceID: number;
@@ -40,7 +41,7 @@ function IdeaItemList({
 
   const OnClickWorkspaceItem = (workspaceId: number, IdeaID: number) => {
     router.push(
-      `/dashboard/document/?ideaId=${IdeaID}&workspaceId=${workspaceId}`
+      `/dashboard/document/?ideaId=${encrypt(IdeaID)}&workspaceId=${workspaceId}`
     );
   };
 

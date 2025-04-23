@@ -15,6 +15,7 @@ import {
 } from "@/redux/services/ideaApi";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { decrypt } from "@/service/encryption";
 
 interface IIdea {
   Title: string;
@@ -34,8 +35,8 @@ function DocumentInfo() {
   const [exestingData, setExestingData] = useState<IIdea | null>(null);
 
   const searchParams = useSearchParams();
-  const workspaceId = searchParams.get("workspaceId");
-  const ideaId = searchParams.get("ideaId");
+  const workspaceId = decrypt(searchParams.get("workspaceId") || "");
+  const ideaId = decrypt(searchParams.get("ideaId") || "");
 
   const [updateIdeaReq] = useUpdateIdeaMutation();
   const [getIdeaDetailsReq] = useGetIdeaDetailsMutation();

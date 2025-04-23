@@ -25,6 +25,8 @@ export async function getUserInfo(): Promise<IUserinfo | null> {
         SubCostCenterID: decodedData.SubCostCenterID,
         UserID: decodedData.UserID,
         UserName: decodedData.UserName,
+        SectionID: decodedData.SectionID,
+        DepartmentID: decodedData.DepartmentID,
         iat: decodedData.iat,
         exp: decodedData.exp,
       };
