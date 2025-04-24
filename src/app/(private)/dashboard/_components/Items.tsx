@@ -44,7 +44,7 @@ function ItemsList() {
   return (
     <div>
       <div className="flex justify-between">
-        <h2 className="font-bold text-2xl">
+        {/* <h2 className="font-bold text-2xl">
           Hello,{" "}
           <Link
             className="text-blue-500 hover:underline"
@@ -52,11 +52,10 @@ function ItemsList() {
           >
             {userData?.FullName}
           </Link>
-        </h2>
+        </h2> */}
       </div>
 
-      <div className="mt-10 flex justify-between">
-        <h2 className="font-medium text-primary">Items</h2>
+      <div className="flex justify-between">
         <div className="flex gap-2">
           <Button
             variant="ghost"

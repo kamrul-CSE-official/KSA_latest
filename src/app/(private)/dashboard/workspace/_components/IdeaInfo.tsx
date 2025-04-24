@@ -34,7 +34,7 @@ import {
 import { toast } from "sonner"
 
 import { BookOpen, Building2, Calendar, FileText, MoreHorizontal, Trash2, Users } from "lucide-react"
-import { encrypt } from "@/service/encryption"
+import { decrypt, encrypt } from "@/service/encryption"
 
 interface IIdea {
   Title: string
@@ -98,7 +98,7 @@ function IdeaInfo({
 
       await deleteIdea({
         IdeaID: ideaId,
-        WorkSpaceID: Number(workspaceId),
+        WorkSpaceID: Number(decrypt(workspaceId)),
       })
 
       toast.success("Document deleted successfully")
@@ -219,7 +219,7 @@ function IdeaInfo({
                         <AlertDialogTrigger asChild>
                           <DropdownMenuItem className="text-destructive focus:text-destructive">
                             <Trash2 className="h-4 w-4 mr-2" />
-                            Delete Document
+                            Delete Document 
                           </DropdownMenuItem>
                         </AlertDialogTrigger>
                       </DropdownMenuContent>

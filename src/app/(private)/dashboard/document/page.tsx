@@ -102,7 +102,7 @@ function SharedUsers({
   onAddUser: boolean;
 }) {
   return (
-    <div className="w-full flex items-center justify-center mb-2">
+    <div className="w-full flex items-center justify-center mb-1">
       <div className="flex -space-x-2 overflow-hidden mr-2">
         {sharedPeople?.map((person: any, i: number) =>
           currentUser?.ImageBase64 !== person?.ITEM_IMAGE &&
@@ -130,7 +130,7 @@ function SharedUsers({
           )
         )}
 
-        <TooltipProvider>
+        {/* <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
               <Avatar className="border-2 border-background w-8 h-8">
@@ -151,7 +151,7 @@ function SharedUsers({
               <p>{currentUser?.FullName}</p>
             </TooltipContent>
           </Tooltip>
-        </TooltipProvider>
+        </TooltipProvider> */}
 
         <Avatar className="border-2 border-background w-8 h-8">
           <AvatarImage

@@ -41,7 +41,7 @@ function IdeaItemList({
 
   const OnClickWorkspaceItem = (workspaceId: number, IdeaID: number) => {
     router.push(
-      `/dashboard/document/?ideaId=${encrypt(IdeaID)}&workspaceId=${workspaceId}`
+      `/dashboard/document/?ideaId=${encrypt(IdeaID)}&workspaceId=${encrypt(workspaceId)}`
     );
   };
 

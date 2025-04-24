@@ -138,10 +138,7 @@ function DashboardPage() {
                 </h2>
                 <div className="space-y-4">
                   <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Quos, culpa mollitia! Ipsa laboriosam vitae omnis sunt,
-                    eaque, expedita amet sequi cum ipsum harum provident iusto
-                    enim quod ut eum illo?
+                    Comeing soon!
                   </p>
                 </div>
               </div>

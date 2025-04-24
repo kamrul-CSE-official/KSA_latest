@@ -138,7 +138,7 @@ export default function WorkspacePage() {
         router.push(
           `/dashboard/document/?ideaId=${encrypt(
             response.data[0].IdeaID
-          )}&workspaceId=${workspaceId}`
+          )}&workspaceId=${encrypt(workspaceId)}`
         );
       }
     } catch (error) {
@@ -403,7 +403,7 @@ export default function WorkspacePage() {
         </div>
 
         <AnimatePresence>
-          <div className="space-y-4">
+          <div className="space-y-4 mb-48">
             {workspaceData?.length > 0 ? (
               workspaceData.map((item, i) => (
                 <motion.div
