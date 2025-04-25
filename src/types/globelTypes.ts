@@ -63,3 +63,52 @@ export interface IWorkspaceDetails {
   WorkSpaceName: string;
   ShareTypeName: "Public" | "Private" | "Custom";
 }
+
+
+
+
+// Issues
+
+export interface User {
+  id: string
+  name: string
+  avatar: string
+}
+
+export interface Issue {
+  id: string
+  title: string
+  content: string
+  author: User
+  createdAt: string
+  tags: string[]
+  votes: number
+  solutions: Solution[]
+}
+
+export interface Solution {
+  id: string
+  author: User
+  content: string
+  createdAt: string
+  votes: number
+  reviews: Review[]
+  replies: Reply[]
+}
+
+export interface Review {
+  id: string
+  author: User
+  rating: number
+  comment: string
+  createdAt: string
+}
+
+export interface Reply {
+  id: string
+  author: User
+  content: string
+  createdAt: string
+  votes: number
+  replies: Reply[]
+}

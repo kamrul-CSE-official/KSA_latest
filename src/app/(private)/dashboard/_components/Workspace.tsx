@@ -25,7 +25,6 @@ function WorkspaceList() {
     });
   }, [userData?.EmpID]);
 
-
   const [currentPage, setCurrentPage] = useState(1);
   const [layoutMode, setLayoutMode] = useState<"grid" | "list">("grid");
   const itemsPerPage = 9;
@@ -40,10 +39,14 @@ function WorkspaceList() {
 
   return (
     <div>
-     
-
       <div className="flex justify-between">
-        <h2 className="font-medium text-primary">Workspaces</h2>
+        {workspaceData?.length > 0 ? (
+          <CreateWorkspace>
+            <Button className="mb-4">+ New Workspace</Button>
+          </CreateWorkspace>
+        ) : (
+          <h2 className="font-medium text-primary">Workspaces</h2>
+        )}
         <div className="flex gap-2">
           <Button
             variant="ghost"

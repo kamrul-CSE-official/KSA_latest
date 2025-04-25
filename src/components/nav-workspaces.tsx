@@ -54,7 +54,7 @@ export function NavWorkspaces() {
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Resent Workspaces</SidebarGroupLabel>
+      <SidebarGroupLabel>Recent Workspaces</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
           {isLoading && <div>Loading...</div>}
