@@ -29,6 +29,7 @@ import { AUTH_KEY } from "@/constant/storage.key";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import Loading from "@/components/shared/Loading";
 
 const formSchema = z.object({
   userName: z.string().min(3, "User name must be at least 3 characters long"),
@@ -78,6 +79,7 @@ export default function LoginPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
+      <Loading />
       <motion.div
         className="flex flex-col items-center text-center md:text-left"
         initial={{ opacity: 0 }}

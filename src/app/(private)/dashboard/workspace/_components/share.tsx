@@ -82,7 +82,13 @@ const Share = ({
 
   // Fetch suggested users on component mount
   useEffect(() => {
-    if (loggedInUser?.SectionName || loggedInUser?.SubCostCenter) {
+    // console.log("KKKKK::: ", userDetails);
+    if (
+      loggedInUser?.SectionName ||
+      loggedInUser?.SubCostCenter ||
+      userDetails?.DepartmentID ||
+      userDetails?.SectionID
+    ) {
       requestForSuggestUser({
         EmpID: "",
         Name: "",

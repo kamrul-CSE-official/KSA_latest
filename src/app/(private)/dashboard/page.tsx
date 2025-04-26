@@ -8,6 +8,7 @@ import WorkspaceList from "./_components/Workspace";
 import Items from "./_components/Items";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import IssueList from "./issues/_components/IssueList";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -43,7 +44,9 @@ const tabContentVariants = {
 
 function DashboardPage() {
   const { userData } = useSelector((state: RootState) => state.user);
-  const [currentTab, setCurrentTab] = React.useState("workspaces");
+  const [currentTab, setCurrentTab] = React.useState(
+    localStorage.getItem("currentTab") || "workspaces"
+  );
 
   return (
     <motion.div
@@ -91,6 +94,7 @@ function DashboardPage() {
                 <TabsTrigger
                   key={tab.value}
                   value={tab.value}
+                  onClick={() => localStorage.setItem("currentTab", tab.value)}
                   className="relative gap-2 transition-all"
                 >
                   <motion.span
@@ -130,18 +134,13 @@ function DashboardPage() {
           className="mt-4"
         >
           {currentTab === "issues" && (
-            <div className="p-6 bg-card rounded-xl shadow-sm border">
-              <div className="text-foreground">
-                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                  <FileWarning className="h-5 w-5 text-destructive" />
-                  Current Issues
-                </h2>
-                <div className="space-y-4">
-                  <p>
-                    Comeing soon!
-                  </p>
-                </div>
-              </div>
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Naturub Community</h1>
+              <p className="text-muted-foreground mb-8">
+                Create any issues or query, get answers, and help others solve
+                their problems
+              </p>
+              <IssueList />
             </div>
           )}
 

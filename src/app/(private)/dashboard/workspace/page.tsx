@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/tooltip";
 
 import {
+  ArrowLeft,
   Building2,
   Calendar,
   Edit2Icon,
@@ -41,6 +42,7 @@ import Share from "./_components/share";
 import UpdateWorkspace from "../_components/UpdateWorkspace";
 import { decrypt, encrypt } from "@/service/encryption";
 import { IWorkspaceDetails } from "@/types/globelTypes";
+import Link from "next/link";
 
 interface SharedUser {
   PersonName: string;
@@ -155,7 +157,7 @@ export default function WorkspacePage() {
 
   if (isLoadingWorkspace || !workspaceData) {
     return (
-      <div className="container mx-auto px-4 py-6">
+      <div>
         <Skeleton className="h-64 w-full rounded-xl mb-6" />
         <div className="space-y-4 p-4">
           <Skeleton className="h-10 w-3/4" />
@@ -195,6 +197,13 @@ export default function WorkspacePage() {
       transition={{ duration: 0.5 }}
       className="container mx-auto px-4"
     >
+      <Link
+        href="/dashboard/"
+        className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Back to dashboard
+      </Link>
       {/* Workspace Header Card */}
       <Card className="overflow-hidden mb-8 shadow-lg border-muted/40">
         <div className="relative h-64 sm:h-72 md:h-80">
