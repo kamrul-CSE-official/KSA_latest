@@ -1,16 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Lightbulb, MoveRight, Rocket, TrendingUp, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Lightbulb, Rocket, TrendingUp, Users } from "lucide-react";
+import Link from "next/link";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import AnimatedNumbers from "react-animated-numbers";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -44,6 +41,7 @@ const floatingBubbleVariants = {
 };
 
 export default function DashboardPage() {
+  const { userData } = useSelector((state: RootState) => state.user);
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-purple-50 via-teal-50 to-sky-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Decorative Background */}
@@ -84,7 +82,7 @@ export default function DashboardPage() {
             Welcome to Your Dashboard
           </h1>
           <p className="mt-4 text-slate-600 dark:text-slate-400">
-            Manage your knowledge, insights, and team collaborations
+            Manage your knowledge, issues, and team collaborations
           </p>
         </motion.div>
 
@@ -93,14 +91,37 @@ export default function DashboardPage() {
           <motion.div variants={itemVariants}>
             <div className="relative">
               <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-500 opacity-20 blur-xl"></div>
-              <Card className="relative bg-white/60 backdrop-blur-xl dark:bg-slate-900/60 border-0 shadow-lg">
+              <Card className="relative bg-white/60 backdrop-blur-xl dark:bg-slate-900/60 border-0 shadow-lg group">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-lg font-bold">Insights</CardTitle>
+                  <CardTitle className="text-lg font-bold">Issues</CardTitle>
                   <TrendingUp className="h-6 w-6 text-purple-500" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">14,234 Views</div>
-                  <p className="text-xs text-muted-foreground">This month</p>
+                <CardContent className="flex items-center justify-between group">
+                  <div>
+                    <h2 className="text-2xl font-bold flex items-center gap-2">
+                      <AnimatedNumbers
+                        includeComma
+                        transitions={(index) => ({
+                          type: "spring",
+                          duration: index + 0.3,
+                        })}
+                        animateToNumber={142698}
+                      />
+                      Issues
+                    </h2>
+                    <p className="text-xs text-muted-foreground">
+                      Total number of issues
+                    </p>
+                  </div>
+                  <Link href="/dashboard/issues">
+                    <Button
+                      variant="ghost"
+                      className="border border-purple-400 transition-all duration-300 ease-in-out group-hover:border-purple-600 group-hover:text-purple-600"
+                    >
+                      Explore
+                      <MoveRight className="ml-2 transition-all duration-300 ease-in-out group-hover:translate-x-1 group-hover:text-purple-600" />
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             </div>
@@ -113,15 +134,36 @@ export default function DashboardPage() {
               <Card className="relative bg-white/60 backdrop-blur-xl dark:bg-slate-900/60 border-0 shadow-lg">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-lg font-bold">
-                    Team Members
+                    Workspaces
                   </CardTitle>
                   <Users className="h-6 w-6 text-teal-500" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">128 Members</div>
-                  <p className="text-xs text-muted-foreground">
-                    Active this week
-                  </p>
+                <CardContent className="flex items-center justify-between group">
+                  <div>
+                    <h2 className="text-2xl font-bold flex items-center gap-2">
+                      <AnimatedNumbers
+                        includeComma
+                        transitions={(index) => ({
+                          type: "spring",
+                          duration: index + 0.3,
+                        })}
+                        animateToNumber={250}
+                      />
+                      Workspaces
+                    </h2>
+                    <p className="text-xs text-muted-foreground">
+                      Active workspaces
+                    </p>
+                  </div>
+                  <Link href="/dashboard/workspaces">
+                    <Button
+                      variant="ghost"
+                      className="border border-teal-400 transition-all duration-300 ease-in-out group-hover:border-teal-600 group-hover:text-teal-600"
+                    >
+                      Explore
+                      <MoveRight className="ml-2 transition-all duration-300 ease-in-out group-hover:translate-x-1 group-hover:text-teal-600" />
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             </div>
@@ -133,14 +175,35 @@ export default function DashboardPage() {
               <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-pink-400 to-indigo-400 opacity-20 blur-xl"></div>
               <Card className="relative bg-white/60 backdrop-blur-xl dark:bg-slate-900/60 border-0 shadow-lg">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-lg font-bold">Projects</CardTitle>
+                  <CardTitle className="text-lg font-bold">Ideas</CardTitle>
                   <Rocket className="h-6 w-6 text-pink-500" />
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">32 Ongoing</div>
-                  <p className="text-xs text-muted-foreground">
-                    Manage efficiently
-                  </p>
+                <CardContent className="flex items-center justify-between group">
+                  <div>
+                    <h2 className="text-2xl font-bold flex items-center gap-2">
+                      <AnimatedNumbers
+                        includeComma
+                        transitions={(index) => ({
+                          type: "spring",
+                          duration: index + 0.3,
+                        })}
+                        animateToNumber={32}
+                      />{" "}
+                      Ideas
+                    </h2>
+                    <p className="text-xs text-muted-foreground">
+                      Number of public ideas
+                    </p>
+                  </div>
+                  <Link href="/dashboard/ideas">
+                    <Button
+                      variant="ghost"
+                      className="border border-pink-400 transition-all duration-300 ease-in-out group-hover:border-pink-600 group-hover:text-pink-600"
+                    >
+                      Explore
+                      <MoveRight className="ml-2 transition-all duration-300 ease-in-out group-hover:translate-x-1 group-hover:text-pink-600" />
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             </div>
@@ -156,8 +219,8 @@ export default function DashboardPage() {
                   <Lightbulb size={20} className="text-orange-500" />
                 </div>
                 <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                  <strong>Tip:</strong> Stay connected and track your team's
-                  progress daily.
+                  Hi <strong>{userData?.FullName}</strong>, How are you doing
+                  today ?
                 </p>
               </div>
             </CardContent>

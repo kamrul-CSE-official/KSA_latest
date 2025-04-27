@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -30,12 +29,13 @@ export default function CreateIssuePage() {
 
       console.log(formData);
 
-      // await createIssue({
-      //   TITLE: formData.title,
-      //   CONTENT: formData.content,
-      //   USER_ID: userData.EmpID,
-      //   COMPANY_ID: userData.CompanyID,
-      // }).unwrap();
+      await createIssue({
+        TITLE: formData.title,
+        CONTENT: formData.content,
+        USER_ID: userData.EmpID,
+        COMPANY_ID: userData.CompanyID,
+        tags: formData.tags
+      }).unwrap();
 
       toast.success("Successfully created an issue!");
       // router.push("/dashboard");

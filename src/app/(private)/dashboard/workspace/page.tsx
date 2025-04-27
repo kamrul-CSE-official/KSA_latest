@@ -198,11 +198,11 @@ export default function WorkspacePage() {
       className="container mx-auto px-4"
     >
       <Link
-        href="/dashboard/"
+        href="/dashboard/workspaces/"
         className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to dashboard
+        Back to workspaces
       </Link>
       {/* Workspace Header Card */}
       <Card className="overflow-hidden mb-8 shadow-lg border-muted/40">

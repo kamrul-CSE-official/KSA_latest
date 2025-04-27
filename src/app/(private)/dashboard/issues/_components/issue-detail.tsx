@@ -52,7 +52,7 @@ export default function IssueDetail({ issue }: IssueDetailProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div>
       <div>
         <Link href="/dashboard/issues/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">
           <ArrowLeft className="mr-2 h-4 w-4" />

@@ -239,7 +239,7 @@ function WorkspaceItemList({
                       src={`data:image/jpeg;base64,${user.ITEM_IMAGE}`}
                       alt={user.PersonName || "User"}
                     />
-                    <AvatarFallback className="bg-gradient-to-br from-indigo-400 to-purple-500 text-white">
+                    <AvatarFallback className="bg-gradient-to-br from-indigo-400 to-purple-500">
                       {user.PersonName?.charAt(0) || "U"}
                     </AvatarFallback>
                   </Avatar>
@@ -308,13 +308,24 @@ function WorkspaceItemList({
             >
               <Card
                 onClick={() => handleWorkspaceClick(workspace.WorkSpaceID)}
-                className={`cursor-pointer overflow-hidden border border-gray-200/80 ${
+                className={`cursor-pointer overflow-hidden border border-white/20 ${
                   layoutMode === "list" ? "flex items-start" : ""
-                } group relative bg-white hover:bg-gray-50/50 transition-all duration-300 hover:shadow-xl hover:shadow-gray-200/60`}
+                } group relative bg-white/10 backdrop-blur-xl hover:bg-white/20 transition-all duration-300`}
                 style={{
                   borderRadius: layoutMode === "grid" ? "1rem" : "0.75rem",
+                  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
+                  border: "1px solid rgba(255, 255, 255, 0.18)",
+                  background: "rgba(255, 255, 255, 0.1)",
+                  backdropFilter: "blur(16px)",
+                  WebkitBackdropFilter: "blur(16px)",
                 }}
               >
+                {/* Glass overlay effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+                {/* Inner glow */}
+                <div className="absolute inset-0 rounded-inherit box-border border border-white/10 pointer-events-none"></div>
+
                 {layoutMode === "grid" ? (
                   <>
                     <div className="relative">
@@ -331,28 +342,26 @@ function WorkspaceItemList({
                               workspace.WorkSpaceID
                             )}`}
                           >
-                            <div className="flex items-center justify-center h-full text-6xl text-white/90">
+                            <div className="flex items-center justify-center h-full text-6xl/90">
                               {workspace.Emoji || "😊"}
                             </div>
                           </div>
                         )}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       </div>
+
                       <div className="absolute top-3 right-3 z-10">
                         {renderShareTypeIndicator(workspace)}
                       </div>
 
-                      {/* Owner badge */}
                       {workspace.EnterdBy === loggedInUserId && (
                         <div className="absolute top-3 left-3 z-10">
                           <Badge
                             variant="outline"
-                            className="bg-gradient-to-r from-violet-50 to-purple-100 border-purple-200 backdrop-blur-sm shadow-sm flex items-center gap-1"
+                            className="bg-white/30 border-white/40 backdrop-blur-md shadow-lg flex items-center gap-1"
                           >
-                            <User size={12} className="text-purple-500" />
-                            <span className="text-xs font-medium text-purple-600">
-                              Owner
-                            </span>
+                            <User size={12} className="text-white" />
+                            <span className="text-xs font-medium">Owner</span>
                           </Badge>
                         </div>
                       )}
@@ -368,10 +377,10 @@ function WorkspaceItemList({
                       >
                         <Badge
                           variant="outline"
-                          className="bg-white/90 backdrop-blur-sm shadow-sm border-gray-200 flex items-center gap-1.5 py-1.5"
+                          className="bg-white/40 backdrop-blur-md shadow-lg border-white/30 flex items-center gap-1.5 py-1.5"
                         >
-                          <Calendar size={12} className="text-gray-600" />
-                          <span className="text-xs font-medium text-gray-700">
+                          <Calendar size={12} className="text-white" />
+                          <span className="text-xs font-medium">
                             {format(
                               new Date(workspace.EnterdOn),
                               "MMM d, yyyy"
@@ -380,27 +389,28 @@ function WorkspaceItemList({
                         </Badge>
                       </motion.div>
                     </div>
+
                     <CardContent className="p-4">
                       <div className="flex items-center gap-2 mb-3">
                         <span className="text-2xl">
                           {workspace.Emoji || "😊"}
                         </span>
-                        <CardTitle className="text-lg font-semibold truncate text-gray-800">
+                        <CardTitle className="text-lg font-semibold truncate">
                           {workspace.WorkSpaceName}
                         </CardTitle>
                       </div>
                       <CardDescription className="space-y-3">
                         <div className="flex items-center gap-2">
-                          <Avatar className="w-6 h-6 ring-2 ring-gray-50">
+                          <Avatar className="w-6 h-6 ring-2 ring-white/30">
                             <AvatarImage
                               src={`data:image/png;base64,${workspace.IMAGE}`}
                               alt={workspace.FULL_NAME}
                             />
-                            <AvatarFallback className="bg-gradient-to-br from-gray-700 to-gray-900 text-white">
+                            <AvatarFallback className="bg-gradient-to-br from-gray-700 to-gray-900">
                               {workspace.FULL_NAME?.charAt(0) || "U"}
                             </AvatarFallback>
                           </Avatar>
-                          <p className="text-sm font-medium text-gray-700 truncate">
+                          <p className="text-sm font-medium truncate">
                             {workspace.FULL_NAME}
                           </p>
                         </div>
@@ -412,7 +422,7 @@ function WorkspaceItemList({
                   <>
                     <div className="flex-shrink-0 p-4">
                       {workspace.CoverImg ? (
-                        <div className="w-20 h-20 rounded-xl overflow-hidden shadow-md border border-gray-100">
+                        <div className="w-20 h-20 rounded-xl overflow-hidden shadow-lg border border-white/20">
                           <img
                             src={workspace.CoverImg || "/placeholder.svg"}
                             alt="Workspace Cover"
@@ -421,20 +431,21 @@ function WorkspaceItemList({
                         </div>
                       ) : (
                         <div
-                          className={`w-20 h-20 rounded-xl overflow-hidden shadow-md bg-gradient-to-br ${getRandomGradient(
+                          className={`w-20 h-20 rounded-xl overflow-hidden shadow-lg bg-gradient-to-br ${getRandomGradient(
                             workspace.WorkSpaceID
-                          )} flex items-center justify-center`}
+                          )} flex items-center justify-center border border-white/20`}
                         >
-                          <span className="text-3xl text-white">
+                          <span className="text-3xl">
                             {workspace.Emoji || "😊"}
                           </span>
                         </div>
                       )}
                     </div>
+
                     <div className="flex-1 p-4">
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2">
-                          <CardTitle className="text-lg font-semibold flex items-center gap-2 text-gray-800">
+                          <CardTitle className="text-lg font-semibold flex items-center gap-2">
                             <span className="text-2xl">
                               {workspace.Emoji || "😊"}
                             </span>
@@ -443,39 +454,38 @@ function WorkspaceItemList({
                           {workspace.EnterdBy === loggedInUserId && (
                             <Badge
                               variant="outline"
-                              className="bg-gradient-to-r from-violet-50 to-purple-100 border-purple-200 backdrop-blur-sm shadow-sm flex items-center gap-1 ml-2"
+                              className="bg-white/30 border-white/40 backdrop-blur-md shadow-lg flex items-center gap-1 ml-2"
                             >
-                              <User size={12} className="text-purple-500" />
-                              <span className="text-xs font-medium text-purple-600">
-                                Owner
-                              </span>
+                              <User size={12} className="text-white" />
+                              <span className="text-xs font-medium">Owner</span>
                             </Badge>
                           )}
                         </div>
                         {renderShareTypeIndicator(workspace)}
                       </div>
+
                       <CardDescription className="space-y-3">
                         <div className="flex items-center gap-3 flex-wrap">
                           <div className="flex items-center gap-2">
-                            <Avatar className="w-6 h-6 ring-2 ring-gray-50">
+                            <Avatar className="w-6 h-6 ring-2 ring-white/30">
                               <AvatarImage
                                 src={`data:image/png;base64,${workspace.IMAGE}`}
                                 alt={workspace.FULL_NAME}
                               />
-                              <AvatarFallback className="bg-gradient-to-br from-gray-700 to-gray-900 text-white">
+                              <AvatarFallback className="bg-gradient-to-br from-gray-700 to-gray-900">
                                 {workspace.FULL_NAME?.charAt(0) || "U"}
                               </AvatarFallback>
                             </Avatar>
-                            <p className="text-sm font-medium text-gray-700">
+                            <p className="text-sm font-medium">
                               {workspace.FULL_NAME}
                             </p>
                           </div>
                           <Badge
                             variant="outline"
-                            className="bg-gray-50/80 flex items-center gap-1.5"
+                            className="bg-white/30 border-white/40 backdrop-blur-md shadow-lg flex items-center gap-1.5"
                           >
-                            <Calendar size={12} className="text-gray-600" />
-                            <span className="text-xs font-medium text-gray-700">
+                            <Calendar size={12} className="text-white" />
+                            <span className="text-xs font-medium">
                               {format(
                                 new Date(workspace.EnterdOn),
                                 "MMM d, yyyy"
@@ -489,10 +499,16 @@ function WorkspaceItemList({
                   </>
                 )}
 
-                {/* Decorative corner accent */}
+                {/* Enhanced corner accent */}
                 <div className="absolute top-0 left-0 w-16 h-16 overflow-hidden pointer-events-none">
-                  <div className="absolute top-0 left-0 w-4 h-4 rounded-br-lg bg-gradient-to-br from-white/80 to-white/20 backdrop-blur-sm"></div>
+                  <div className="absolute top-0 left-0 w-6 h-6 rounded-br-lg bg-gradient-to-br from-white/30 to-transparent backdrop-blur-sm"></div>
                 </div>
+
+                {/* Subtle reflection */}
+                <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-b from-white/10 to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-500 pointer-events-none"></div>
+
+                {/* Hover shadow */}
+                <div className="absolute inset-0 rounded-inherit shadow-[0_0_0_1px_rgba(255,255,255,0.1)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </Card>
             </motion.div>
           ))}
@@ -522,7 +538,7 @@ function WorkspaceItemList({
         </p>
         {type === "my" && (
           <CreateWorkspace>
-            <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               Create Workspace
             </button>
           </CreateWorkspace>
@@ -534,23 +550,32 @@ function WorkspaceItemList({
   return (
     <div className="space-y-6">
       <Tabs defaultValue="my" className="w-full" onValueChange={setActiveTab}>
-        <div className="flex items-center justify-between mb-2">
-          <TabsList className="grid grid-cols-3 w-auto">
-            <TabsTrigger value="all" className="px-4">
+        <div className="flex items-center justify-between mb-4">
+          <TabsList className="bg-white/20 border-white/30 backdrop-blur-sm shadow-md border p-1 rounded-2xl">
+            <TabsTrigger
+              value="all"
+              className="px-5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
               All Workspaces
-              <Badge className="ml-2 bg-gray-100 text-gray-700 hover:bg-gray-200">
+              <Badge className="ml-2 bg-muted text-muted-foreground">
                 {workspaceList.length}
               </Badge>
             </TabsTrigger>
-            <TabsTrigger value="my" className="px-4">
+            <TabsTrigger
+              value="my"
+              className="px-5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
               My Workspaces
-              <Badge className="ml-2 bg-purple-100 text-purple-700 hover:bg-purple-200">
+              <Badge className="ml-2 bg-muted text-muted-foreground">
                 {myWorkspacesCount}
               </Badge>
             </TabsTrigger>
-            <TabsTrigger value="shared" className="px-4">
+            <TabsTrigger
+              value="shared"
+              className="px-5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
               Shared With Me
-              <Badge className="ml-2 bg-blue-100 text-blue-700 hover:bg-blue-200">
+              <Badge className="ml-2 bg-muted text-muted-foreground">
                 {sharedWorkspacesCount}
               </Badge>
             </TabsTrigger>
@@ -561,24 +586,7 @@ function WorkspaceItemList({
           {workspaceList.length > 0 ? (
             renderWorkspaceCards(workspaceList)
           ) : (
-            <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-                <Users className="h-8 w-8 text-gray-400" />
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-1">
-                No workspaces available
-              </h3>
-              <p className="text-sm text-gray-500 max-w-md mb-6">
-                Create your first workspace to start organizing your ideas and
-                collaborating with others.
-              </p>
-              <button
-                onClick={() => router.push("/dashboard/create-workspace")}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Create Workspace
-              </button>
-            </div>
+            <EmptyState router={router} />
           )}
         </TabsContent>
 
@@ -594,6 +602,29 @@ function WorkspaceItemList({
             : renderEmptyState("shared")}
         </TabsContent>
       </Tabs>
+    </div>
+  );
+}
+
+function EmptyState({ router }: { router: any }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 px-6 text-center bg-background/50 backdrop-blur-md border border-border rounded-3xl shadow-sm">
+      <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-6">
+        <Users className="h-8 w-8 text-muted-foreground" />
+      </div>
+      <h3 className="text-lg font-semibold text-foreground mb-2">
+        No workspaces available
+      </h3>
+      <p className="text-sm text-muted-foreground max-w-md mb-6">
+        Create your first workspace to start organizing your ideas and
+        collaborating with others.
+      </p>
+      <button
+        onClick={() => router.push("/dashboard/create-workspace")}
+        className="inline-flex items-center px-5 py-2 rounded-xl text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+      >
+        Create Workspace
+      </button>
     </div>
   );
 }
