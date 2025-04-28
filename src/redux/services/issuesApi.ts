@@ -10,9 +10,17 @@ const issuesApis = rootApi.injectEndpoints({
         body: data,
       }),
     }),
+    // Manage issues
+    manageIssues: builder.mutation({
+      query: (data) => ({
+        url: "/KSA/ManageIssues",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useCreateAIssueMutation } = issuesApis;
+export const { useCreateAIssueMutation, useManageIssuesMutation } = issuesApis;
 
 export default issuesApis;

@@ -86,6 +86,17 @@ export interface Issue {
   solutions: Solution[]
 }
 
+export interface IIssue {
+  ID: string | number
+  TITLE: string
+  CONTENT: string
+  USER_ID: number
+  CREATED_AT: string
+  TAGS?: string[]
+  VOTES?: number
+  solutions: Solution[]
+}
+
 export interface Solution {
   id: string
   author: User

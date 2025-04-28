@@ -34,11 +34,11 @@ export default function CreateIssuePage() {
         CONTENT: formData.content,
         USER_ID: userData.EmpID,
         COMPANY_ID: userData.CompanyID,
-        tags: formData.tags
+        tags: formData.tags,
       }).unwrap();
 
       toast.success("Successfully created an issue!");
-      // router.push("/dashboard");
+      router.push("/dashboard/issues");
     } catch (error) {
       console.error("Failed to create issue:", error);
       toast.error("Failed to create issue. Please try again.");
@@ -46,18 +46,22 @@ export default function CreateIssuePage() {
   };
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <Button
-        variant="ghost"
-        className="mb-4"
+    <div>
+      <h4
+        className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4 bg-none cursor-pointer"
         onClick={() => router.back()}
         aria-label="Go back"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back
-      </Button>
+      </h4>
 
-      <h1 className="text-3xl font-bold mb-8">Create New Issue</h1>
+      <h1
+        data-view-transition-name="page-title"
+        className="text-3xl font-bold mb-4"
+      >
+        Create New Issue
+      </h1>
       <CreateIssueForm onSubmit={handleSubmit} isSubmitting={isLoading} />
     </div>
   );

@@ -67,7 +67,7 @@ export default function IssueDetail({ issue }: IssueDetailProps) {
           ))}
         </div>
 
-        <h1 className="text-3xl font-bold mb-2">{issue.title}</h1>
+        <h1 data-view-transition-name="page-title" className="text-3xl font-bold mb-2">{issue.title}</h1>
 
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
           <Avatar className="h-6 w-6">

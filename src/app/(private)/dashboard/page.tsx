@@ -78,7 +78,7 @@ export default function DashboardPage() {
         animate="visible"
       >
         <motion.div className="text-center mb-12" variants={itemVariants}>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-teal-500 bg-clip-text text-transparent">
+          <h1 data-view-transition-name="page-title" className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-teal-500 bg-clip-text text-transparent">
             Welcome to Your Dashboard
           </h1>
           <p className="mt-4 text-slate-600 dark:text-slate-400">

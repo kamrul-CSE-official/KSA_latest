@@ -7,5 +7,8 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["www.naturub.com"],
   },
+  experimental: {
+    viewTransition: true,
+  }
 };
 export default nextConfig;

@@ -6,6 +6,8 @@ import { mockIssues } from "@/lib/mock-data";
 import type { Issue } from "@/types/globelTypes";
 import IssueDetail from "../_components/issue-detail";
 import { decrypt } from "@/service/encryption";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default function IssuePage() {
   const searchParams = useSearchParams();
@@ -33,8 +35,20 @@ export default function IssuePage() {
 
   if (!issue) {
     return (
-      <div className="container mx-auto py-8 px-4">
-        <h1 className="text-2xl font-bold mb-4">Issue not found</h1>
+      <div className="px-4">
+        <Link
+          href="/dashboard/issues"
+          className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to dashboard
+        </Link>
+        <h1
+          data-view-transition-name="page-title"
+          className="text-2xl font-bold mb-4"
+        >
+          Issue not found
+        </h1>
         <p>The issue you're looking for doesn't exist or has been removed.</p>
       </div>
     );

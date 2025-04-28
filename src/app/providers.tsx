@@ -1,5 +1,6 @@
 "use client";
 
+import { unstable_ViewTransition as ViewTransition } from "react";
 import { Toaster } from "sonner";
 import { store } from "@/redux/store";
 import React, { ReactNode } from "react";
@@ -12,7 +13,7 @@ function RootProviders({ children }: { children: ReactNode }) {
     <section suppressHydrationWarning>
       <IgnoreNestingErrorBoundary>
         <Provider store={store}>
-          {children}
+          <ViewTransition>{children}</ViewTransition>
           <Toaster />
           <ScrollToTop />
         </Provider>
