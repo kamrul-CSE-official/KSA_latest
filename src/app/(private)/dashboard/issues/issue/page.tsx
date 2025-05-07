@@ -3,24 +3,24 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { mockIssues } from "@/lib/mock-data";
-import type { Issue } from "@/types/globelTypes";
 import IssueDetail from "../_components/issue-detail";
 import { decrypt } from "@/service/encryption";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { useIssueDetailsMutation } from "@/redux/services/issuesApi";
 
 export default function IssuePage() {
   const searchParams = useSearchParams();
   const issueId = decrypt(searchParams?.get("issueId") || "") || "";
-  const [issue, setIssue] = useState<Issue | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [issueDetailsReq, { isLoading: loading, data: issueDetails }] =
+    useIssueDetailsMutation();
+
 
   useEffect(() => {
-    // In a real app, this would be an API call
     const currentIssueId = issueId as string;
-    const foundIssue = mockIssues.find((i) => i.id === currentIssueId);
-    setIssue(foundIssue || null);
-    setLoading(false);
+    issueDetailsReq({
+      ID: currentIssueId,
+    });
   }, [issueId]);
 
   if (loading) {
@@ -33,7 +33,7 @@ export default function IssuePage() {
     );
   }
 
-  if (!issue) {
+  if (!issueDetails) {
     return (
       <div className="px-4">
         <Link
@@ -56,7 +56,7 @@ export default function IssuePage() {
 
   return (
     <div className="container mx-auto px-4">
-      <IssueDetail issue={issue} />
+      <IssueDetail issue={issueDetails} />
     </div>
   );
 }

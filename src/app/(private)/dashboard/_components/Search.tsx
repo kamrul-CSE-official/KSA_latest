@@ -143,7 +143,7 @@ function Search({ children }: { children: React.ReactNode }) {
                   className={cn(
                     "px-4 py-2 rounded-md cursor-pointer transition",
                     selectedIndex === index
-                      ? "bg-primary text-white"
+                      ? "text-black dark:text-white border"
                       : "hover:bg-muted"
                   )}
                   onMouseEnter={() => setSelectedIndex(index)}

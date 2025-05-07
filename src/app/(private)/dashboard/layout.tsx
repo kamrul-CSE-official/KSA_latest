@@ -16,6 +16,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import FullScreenButton from "@/components/shared/FullScreenButton";
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
 
 export default function Page({ children }: { children: ReactNode }) {
   const daysOfWeek: string[] = [
@@ -52,6 +53,7 @@ export default function Page({ children }: { children: ReactNode }) {
           </div>
           <div className="ml-auto px-3">
             {/* <NavActions /> */} 
+            <ThemeToggle />
             <FullScreenButton />
           </div>
         </header>

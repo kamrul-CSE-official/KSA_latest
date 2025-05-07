@@ -97,6 +97,11 @@ h6.ce-header {
 }
 
 :root {
+  --color-primary: 29 78 216;
+  --color-secondary: 30 58 138;
+  --color-text: 15 23 42;
+  --color-background: 248 250 252;
+  /*  */
   --background: oklch(1 0 0);
   --foreground: oklch(0.13 0.028 261.692);
   --card: oklch(1 0 0);
@@ -133,6 +138,11 @@ h6.ce-header {
 }
 
 .dark {
+  --color-primary: 59 130 246;
+  --color-secondary: 96 165 250;
+  --color-text: 248 250 252;
+  --color-background: 15 23 42;
+  /*  */
   --background: oklch(0.13 0.028 261.692);
   --foreground: oklch(0.985 0.002 247.839);
   --card: oklch(0.13 0.028 261.692);
@@ -176,8 +186,6 @@ h6.ce-header {
   }
 }
 
-
-
 .ce-block__content table {
   width: 100%;
   border-collapse: collapse;
@@ -197,12 +205,11 @@ h6.ce-header {
   padding: 10px;
 }
 
-
-
-html, body {
+html,
+body {  
   overflow: auto; /* or scroll */
-  scrollbar-width: none;       /* Firefox */
-  -ms-overflow-style: none;    /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
   scroll-behavior: smooth;
 }
 
@@ -211,9 +218,9 @@ body::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
 
-
 @layer base {
-  html, body {
+  html,
+  body {
     overflow: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -224,7 +231,6 @@ body::-webkit-scrollbar {
     display: none;
   }
 }
-
 
 
 

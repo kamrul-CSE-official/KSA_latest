@@ -1,38 +1,41 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
-import TipTapEditor from "@/components/tiptap-editor"
-import TagInput from "@/components/tag-input"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import TipTapEditor from "@/components/tiptap-editor";
+import TagInput from "@/components/tag-input";
 
 interface CreateIssueFormProps {
-  onSubmit: (formData: any) => void
-  isSubmitting: boolean
+  onSubmit: (formData: any) => void;
+  isSubmitting: boolean;
 }
 
-export default function CreateIssueForm({ onSubmit, isSubmitting }: CreateIssueFormProps) {
-  const [title, setTitle] = useState("")
-  const [content, setContent] = useState("")
-  const [tags, setTags] = useState<string[]>([])
+export default function CreateIssueForm({
+  onSubmit,
+  isSubmitting,
+}: CreateIssueFormProps) {
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!title.trim() || !content.trim()) {
-      return
+      return;
     }
 
     onSubmit({
       title,
       content,
       tags,
-    })
-  }
+    });
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -47,9 +50,13 @@ export default function CreateIssueForm({ onSubmit, isSubmitting }: CreateIssueF
         />
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-2 prose">
         <Label htmlFor="content">Description</Label>
-        <TipTapEditor content={content} onChange={setContent} placeholder="Describe your issue in detail..." />
+        <TipTapEditor
+          content={content}
+          onChange={setContent}
+          placeholder="Describe your issue in detail..."
+        />
       </div>
 
       <div className="space-y-2">
@@ -60,16 +67,21 @@ export default function CreateIssueForm({ onSubmit, isSubmitting }: CreateIssueF
           placeholder="Add tags (e.g., next.js, react, typescript)"
           maxTags={5}
         />
-        <p className="text-xs text-muted-foreground">Add up to 5 tags to help others find your issue</p>
+        <p className="text-xs text-muted-foreground">
+          Add up to 5 tags to help others find your issue
+        </p>
       </div>
 
       <Separator />
 
       <div className="flex justify-end gap-2">
-        <Button type="submit" disabled={isSubmitting || !title.trim() || !content.trim()}>
+        <Button
+          type="submit"
+          disabled={isSubmitting || !title.trim() || !content.trim()}
+        >
           {isSubmitting ? "Creating..." : "Create Issue"}
         </Button>
       </div>
     </form>
-  )
+  );
 }

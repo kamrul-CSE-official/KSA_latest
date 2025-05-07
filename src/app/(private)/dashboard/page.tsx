@@ -8,6 +8,8 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import AnimatedNumbers from "react-animated-numbers";
+import { useNumberOfKsaMutation } from "@/redux/services/issuesApi";
+import { useEffect, useState } from "react";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -41,7 +43,37 @@ const floatingBubbleVariants = {
 };
 
 export default function DashboardPage() {
+  const [numberOfIssues, setNumberOfIssues] = useState<number>(0);
+  const [numberOfWorkspace, setNumberOfWorkspace] = useState<number>(0);
+  const [numberOfIdea, setNumberOfIdea] = useState<number>(0);
+  const [numberOfEmploys, setNumberOfEmploys] = useState<number>(0);
   const { userData } = useSelector((state: RootState) => state.user);
+  const [reqForNumber, { isLoading, data }] = useNumberOfKsaMutation();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const responses = await Promise.all([
+          reqForNumber({ Type: 1 }),
+          reqForNumber({ Type: 2 }),
+          reqForNumber({ Type: 3 }),
+          reqForNumber({ Type: 4 }),
+        ]);
+
+        console.log("ALL: ", responses[0].data[0].Total);
+
+        if (responses[0].data) setNumberOfIssues(responses[0].data[0].Total);
+        if (responses[1].data) setNumberOfWorkspace(responses[1].data[0].Total);
+        if (responses[2].data) setNumberOfIdea(responses[2].data[0].Total);
+        if (responses[3].data) setNumberOfEmploys(responses[3].data[0].Total);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [reqForNumber]);
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-purple-50 via-teal-50 to-sky-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Decorative Background */}
@@ -78,7 +110,10 @@ export default function DashboardPage() {
         animate="visible"
       >
         <motion.div className="text-center mb-12" variants={itemVariants}>
-          <h1 data-view-transition-name="page-title" className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-teal-500 bg-clip-text text-transparent">
+          <h1
+            data-view-transition-name="page-title"
+            className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-teal-500 bg-clip-text text-transparent"
+          >
             Welcome to Your Dashboard
           </h1>
           <p className="mt-4 text-slate-600 dark:text-slate-400">
@@ -99,14 +134,7 @@ export default function DashboardPage() {
                 <CardContent className="flex items-center justify-between group">
                   <div>
                     <h2 className="text-2xl font-bold flex items-center gap-2">
-                      <AnimatedNumbers
-                        includeComma
-                        transitions={(index) => ({
-                          type: "spring",
-                          duration: index + 0.3,
-                        })}
-                        animateToNumber={142698}
-                      />
+                      <strong>{numberOfIssues}</strong>
                       Issues
                     </h2>
                     <p className="text-xs text-muted-foreground">
@@ -141,18 +169,11 @@ export default function DashboardPage() {
                 <CardContent className="flex items-center justify-between group">
                   <div>
                     <h2 className="text-2xl font-bold flex items-center gap-2">
-                      <AnimatedNumbers
-                        includeComma
-                        transitions={(index) => ({
-                          type: "spring",
-                          duration: index + 0.3,
-                        })}
-                        animateToNumber={250}
-                      />
+                      <strong>{numberOfWorkspace}</strong>
                       Workspaces
                     </h2>
                     <p className="text-xs text-muted-foreground">
-                      Active workspaces
+                      Total number of workspaces
                     </p>
                   </div>
                   <Link href="/dashboard/workspaces">
@@ -181,18 +202,11 @@ export default function DashboardPage() {
                 <CardContent className="flex items-center justify-between group">
                   <div>
                     <h2 className="text-2xl font-bold flex items-center gap-2">
-                      <AnimatedNumbers
-                        includeComma
-                        transitions={(index) => ({
-                          type: "spring",
-                          duration: index + 0.3,
-                        })}
-                        animateToNumber={32}
-                      />{" "}
+                      <strong>{numberOfIdea}</strong>
                       Ideas
                     </h2>
                     <p className="text-xs text-muted-foreground">
-                      Number of public ideas
+                      Total number of issues ideas
                     </p>
                   </div>
                   <Link href="/dashboard/ideas">
@@ -219,8 +233,9 @@ export default function DashboardPage() {
                   <Lightbulb size={20} className="text-orange-500" />
                 </div>
                 <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                  Hi <strong>{userData?.FullName}</strong>, How are you doing
-                  today ?
+                  Hi <strong>{userData?.FullName}</strong>, You are very special
+                  around <strong>{numberOfEmploys}</strong>+ active employees. We are
+                  happy to have you in our team.
                 </p>
               </div>
             </CardContent>

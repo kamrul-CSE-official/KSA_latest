@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutList, SearchIcon, Sparkles } from "lucide-react";
+import { FileStack, LayoutDashboard, SearchIcon, Workflow } from "lucide-react";
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -9,23 +9,40 @@ import {
 import Search from "@/app/(private)/dashboard/_components/Search";
 import Link from "next/link";
 import AskAI from "@/app/(private)/dashboard/_components/AskAI";
+import { usePathname } from "next/navigation";
+import { memo } from "react";
 
-export function NavMain() {
-  interface IItem {
-    title: string;
-    url: string;
-    icon: React.ReactElement;
-    isActive?: boolean;
-  }
+interface IItem {
+  title: string;
+  url: string;
+  icon: React.ReactElement;
+  isActive?: boolean;
+}
+
+const NavMain = function () {
+  const pathname = usePathname();
+  const isActive = (url: string) => pathname === url;
 
   const items: IItem[] = [
     { title: "Search", url: "#", icon: <SearchIcon />, isActive: false },
-    { title: "Ask AI", url: "/#", icon: <Sparkles />, isActive: false },
+    {
+      title: "Dashboard",
+      url: "/dashboard/",
+      icon: <LayoutDashboard />,
+      isActive: false,
+    },
+    // { title: "Ask AI", url: "/#", icon: <Sparkles />, isActive: false },
     {
       title: "Workspace",
-      url: "/dashboard",
-      icon: <LayoutList />,
-      isActive: true,
+      url: "/dashboard/workspaces/",
+      icon: <Workflow />,
+      isActive: isActive("/dashboard/workspaces"),
+    },
+    {
+      title: "Issues",
+      url: "/dashboard/issues",
+      icon: <FileStack />,
+      isActive: isActive("/dashboard/issues"),
     },
   ];
 
@@ -33,29 +50,26 @@ export function NavMain() {
     <SidebarMenu>
       {items.map((item) => (
         <SidebarMenuItem key={item.title}>
-          {/* SidebarMenuButton expects a single child */}
           <SidebarMenuButton className="w-full" isActive={item.isActive}>
-            {item?.title === "Search" ? (
+            {item.title === "Search" ? (
               <Search>
-                {/* Wrap content with a single div to avoid multiple children */}
                 <div className="w-full cursor-pointer flex items-start justify-start">
                   <p className="flex items-center gap-2">
                     <span>{item.icon}</span> {item.title}
                   </p>
                 </div>
               </Search>
-            ) : item?.title === "Ask AI" ? (
+            ) : item.title === "Ask AI" ? (
               <AskAI>
-                {/* Wrap content with a single div to avoid multiple children */}
                 <div className="w-full cursor-pointer flex items-start justify-start">
                   <p className="flex items-center gap-2 font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-                    <span className="text-orange-400">{item.icon}</span> {item.title}
+                    <span className="text-orange-400">{item.icon}</span>{" "}
+                    {item.title}
                   </p>
                 </div>
               </AskAI>
             ) : (
               <Link href={item.url} className="w-full">
-                {/* Wrap content with a single div to avoid multiple children */}
                 <div className="w-full cursor-pointer flex items-start justify-start">
                   <p className="flex items-center gap-2">
                     <span>{item.icon}</span> {item.title}
@@ -68,4 +82,6 @@ export function NavMain() {
       ))}
     </SidebarMenu>
   );
-}
+};
+
+export default memo(NavMain);

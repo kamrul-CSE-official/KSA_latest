@@ -75,16 +75,7 @@ export interface User {
   avatar: string
 }
 
-export interface Issue {
-  id: string
-  title: string
-  content: string
-  author: User
-  createdAt: string
-  tags: string[]
-  votes: number
-  solutions: Solution[]
-}
+
 
 export interface IIssue {
   ID: string | number
@@ -93,8 +84,13 @@ export interface IIssue {
   USER_ID: number
   CREATED_AT: string
   TAGS?: string[]
+  TAG_LIST?: string
   VOTES?: number
+  LIKES_COUNT: number
   solutions: Solution[]
+  IMAGE: string
+  FULL_NAME: string
+  VIEWS_COUNT: string
 }
 
 export interface Solution {

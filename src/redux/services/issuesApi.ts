@@ -18,9 +18,38 @@ const issuesApis = rootApi.injectEndpoints({
         body: data,
       }),
     }),
+    // Number of KSA
+    numberOfKsa: builder.mutation({
+      query: (data) => ({
+        url: "/KSA/NumberOfKsa",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    // Issue details
+    issueDetails: builder.mutation({
+      query: (data) => ({
+        url: "/KSA/IssueDetails",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    issuesLikes: builder.mutation({
+      query: (data) => ({
+        url: "/KSA/IssueLikesManage",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useCreateAIssueMutation, useManageIssuesMutation } = issuesApis;
+export const {
+  useCreateAIssueMutation,
+  useManageIssuesMutation,
+  useNumberOfKsaMutation,
+  useIssueDetailsMutation,
+  useIssuesLikesMutation,
+} = issuesApis;
 
 export default issuesApis;

@@ -1,8 +1,9 @@
 "use client"
 
-import type { Issue } from "@/types/globelTypes"
+// import { IIssue } from "@/types/globelTypes"
 
-export const mockIssues: Issue[] = [
+
+export const mockIssues: any[] = [
   {
     id: "1",
     title: "How to implement authentication with Next.js and NextAuth.js?",

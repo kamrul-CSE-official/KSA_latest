@@ -14,7 +14,7 @@ function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body data-new-gr-c-s-check-loaded="14.1209.0" data-gr-ext-installed="">
-        <main>
+        <main className="animate-theme-fade">
           <RootProviders>{children}</RootProviders>
         </main>
       </body>

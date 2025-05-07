@@ -56,9 +56,9 @@ export default function PrivateLayout({ children }: PrivateLayoutProps) {
     fetchAndStoreUserInfo();
   }, [fetchAndStoreUserInfo]);
 
-  if (!isClient) return null; // ✅ Fix hydration issue
+  if (!isClient) return null; // Fix hydration issue
 
   if (loading || isUserLoading) return <Loading />;
 
-  return <div suppressHydrationWarning>{children}</div>; // ✅ Add suppressHydrationWarning
+  return <div suppressHydrationWarning>{children}</div>; 
 }

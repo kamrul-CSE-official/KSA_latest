@@ -201,7 +201,7 @@ function LandingComponent({
               make a meaningful impact on others.
             </p>
           </motion.div>
-          <Link className="group cursor-pointer" href="/dashboard">
+          <Link className="group cursor-pointer" href="/login">
             <Button
               variant="default"
               className="justify-start gap-2 bg-gradient-to-r from-purple-600/50 to-purple-400/50 cursor-pointer"
