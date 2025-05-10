@@ -91,21 +91,24 @@ export interface IIssue {
   IMAGE: string
   FULL_NAME: string
   VIEWS_COUNT: string
+  NUMBER_OF_SULATION: number
+  IsLiked: number | string
 }
 
 export interface Solution {
-  id: string
-  author: User
+  ID?: number
+  FULL_NAME?: string
+  IMAGE?: string
   content: string
-  createdAt: string
-  votes: number
-  reviews: Review[]
-  replies: Reply[]
+  createdAt?: string
+  votes?: number
+  reviews?: Review[]
+  replies?: Reply[]
 }
 
 export interface Review {
-  id: string
-  author: User
+  ID: string
+  IMAGE: string
   rating: number
   comment: string
   createdAt: string

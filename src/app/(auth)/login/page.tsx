@@ -29,6 +29,13 @@ import { AUTH_KEY } from "@/constant/storage.key";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import dynamic from "next/dynamic";
+import loginAnimation from "../../../../public/assets/lottie/login.json";
+
+const Lottie = dynamic(() => import("lottie-react"), {
+  ssr: false,
+  loading: () => <div className="w-full h-64 bg-gray-100 rounded-2xl animate-pulse"></div>,
+});
 
 const formSchema = z.object({
   userName: z.string().min(3, "User name must be at least 3 characters long"),
@@ -167,12 +174,12 @@ export default function LoginPage() {
             >
               <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-500 opacity-20 blur-xl"></div>
               <div className="relative overflow-hidden rounded-2xl">
-                <img
-                  src="/assets/login.png"
-                  alt="login-img"
-                  className="w-full h-auto rounded-2xl shadow-lg transform transition-transform duration-500 hover:scale-105"
-                  loading="lazy"
-                />
+                {loginAnimation && Lottie && (
+                  <Lottie
+                    className="w-full h-auto rounded-2xl shadow-lg transform transition-transform duration-500 hover:scale-105"
+                    animationData={loginAnimation}
+                  />
+                )}
               </div>
             </motion.div>
           </motion.div>

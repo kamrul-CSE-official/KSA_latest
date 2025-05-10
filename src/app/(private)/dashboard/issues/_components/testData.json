@@ -1,0 +1,98 @@
+[
+  {
+    "id": "sol-001",
+    "FULL_NAME": "Alex Johnson",
+    "IMAGE": "/avatars/alex.jpg",
+    "content": "<p>To fix the database connection issue:</p><ol><li>First, verify your .env file has correct credentials</li><li>Run <code>npm install pg</code> to ensure PostgreSQL client is installed</li><li>Restart your server after configuration changes</li></ol><p>Example connection string:</p><pre><code>postgresql://user:password@localhost:5432/dbname</code></pre>",
+    "createdAt": "2023-11-15T08:30:00Z",
+    "votes": 42,
+    "reviews": [
+      {
+        "id": "rev-001-1",
+        "author": {
+          "id": "user-101",
+          "name": "DatabaseGuru",
+          "avatar": "/avatars/db_expert.jpg"
+        },
+        "rating": 5,
+        "comment": "Perfect step-by-step solution. The connection string example was particularly helpful.",
+        "createdAt": "2023-11-16T09:45:00Z"
+      },
+      {
+        "id": "rev-001-2",
+        "author": {
+          "id": "user-102",
+          "name": "JuniorDev",
+          "avatar": "/avatars/junior_dev.jpg"
+        },
+        "rating": 4,
+        "comment": "Worked for me! Would suggest adding a note about SSL requirements for production.",
+        "createdAt": "2023-11-17T14:20:00Z"
+      }
+    ]
+  },
+  {
+    "id": "sol-002",
+    "FULL_NAME": "Maria Chen",
+    "IMAGE": "/avatars/maria.jpg",
+    "content": "<p>To fix the database connection issue:</p><ol><li>First, verify your .env file has correct credentials</li><li>Run <code>npm install pg</code> to ensure PostgreSQL client is installed</li><li>Restart your server after configuration changes</li></ol><p>Example connection string:</p><pre><code>postgresql://user:password@localhost:5432/dbname</code></pre>",
+    "createdAt": "2023-11-18T11:15:00Z",
+    "votes": 37,
+    "reviews": [
+      {
+        "id": "rev-002-1",
+        "author": {
+          "id": "user-103",
+          "name": "ReactExpert",
+          "avatar": "/avatars/react_pro.jpg"
+        },
+        "rating": 5,
+        "comment": "This solved my Next.js hydration issues immediately. The mounted state pattern is gold!",
+        "createdAt": "2023-11-19T10:30:00Z"
+      }
+    ]
+  },
+  {
+    "id": "sol-003",
+    "FULL_NAME": "Sam Wilson",
+    "IMAGE": "/avatars/sam.jpg",
+    "content": "<p>To fix the database connection issue:</p><ol><li>First, verify your .env file has correct credentials</li><li>Run <code>npm install pg</code> to ensure PostgreSQL client is installed</li><li>Restart your server after configuration changes</li></ol><p>Example connection string:</p><pre><code>postgresql://user:password@localhost:5432/dbname</code></pre>",
+    "createdAt": "2023-11-20T16:45:00Z",
+    "votes": 29,
+    "reviews": [
+      {
+        "id": "rev-003-1",
+        "author": {
+          "id": "user-104",
+          "name": "APISpecialist",
+          "avatar": "/avatars/api_guy.jpg"
+        },
+        "rating": 5,
+        "comment": "The exponential backoff implementation saved our production system!",
+        "createdAt": "2023-11-21T08:15:00Z"
+      },
+      {
+        "id": "rev-003-2",
+        "author": {
+          "id": "user-105",
+          "name": "DevOpsEngineer",
+          "avatar": "/avatars/devops.jpg"
+        },
+        "rating": 4,
+        "comment": "Great solution. Suggest adding Redis caching for even better performance.",
+        "createdAt": "2023-11-22T11:40:00Z"
+      },
+      {
+        "id": "rev-003-3",
+        "author": {
+          "id": "user-106",
+          "name": "JuniorDev",
+          "avatar": "/avatars/newbie.jpg"
+        },
+        "rating": 3,
+        "comment": "Worked but took me a while to understand the exponent calculation.",
+        "createdAt": "2023-11-23T09:10:00Z"
+      }
+    ]
+  }
+]

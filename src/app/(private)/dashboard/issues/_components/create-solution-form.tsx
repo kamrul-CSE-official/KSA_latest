@@ -23,17 +23,9 @@ export default function CreateSolutionForm({ onSubmit, onCancel }: CreateSolutio
     }
 
     const newSolution: Solution = {
-      id: Date.now().toString(),
-      author: {
-        id: "current-user",
-        name: "You",
-        avatar: "/placeholder.svg?height=40&width=40",
-      },
       content,
       createdAt: new Date().toISOString(),
       votes: 0,
-      reviews: [],
-      replies: [],
     }
 
     onSubmit(newSolution)

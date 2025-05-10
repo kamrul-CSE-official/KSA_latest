@@ -41,6 +41,13 @@ const issuesApis = rootApi.injectEndpoints({
         body: data,
       }),
     }),
+    issuesSolutions: builder.mutation({
+      query: (data) => ({
+        url: "/KSA/IssueSolution",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -50,6 +57,7 @@ export const {
   useNumberOfKsaMutation,
   useIssueDetailsMutation,
   useIssuesLikesMutation,
+  useIssuesSolutionsMutation
 } = issuesApis;
 
 export default issuesApis;

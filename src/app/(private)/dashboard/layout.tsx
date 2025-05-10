@@ -16,7 +16,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import FullScreenButton from "@/components/shared/FullScreenButton";
-import { ThemeToggle } from "@/components/shared/ThemeToggle";
+import ThemeToggle from "@/components/shared/ThemeToggle";
 
 export default function Page({ children }: { children: ReactNode }) {
   const daysOfWeek: string[] = [

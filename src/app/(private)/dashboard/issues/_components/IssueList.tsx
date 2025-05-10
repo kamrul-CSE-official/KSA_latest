@@ -72,7 +72,7 @@ const IssueList = () => {
         setPageNumber(1);
         setHasMore(true);
         const response = await fetchIssues({
-          TYPE: 2,
+          TYPE: 1,
           PageSize: pageSize,
           PageNumber: 1,
         }).unwrap();
@@ -255,7 +255,7 @@ const IssueList = () => {
                             className="flex items-center gap-1"
                           >
                             <MessageSquare className="h-4 w-4" />
-                            <span>{20}</span>
+                            <span>{issue?.NUMBER_OF_SULATION}</span>
                           </div>
                           <div
                             title="Likes"

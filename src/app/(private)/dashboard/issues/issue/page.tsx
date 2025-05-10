@@ -1,27 +1,42 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { mockIssues } from "@/lib/mock-data";
-import IssueDetail from "../_components/issue-detail";
+import IssueDetail from "./_components/issue-detail";
 import { decrypt } from "@/service/encryption";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { useIssueDetailsMutation } from "@/redux/services/issuesApi";
+import {
+  useIssueDetailsMutation,
+  useIssuesSolutionsMutation,
+} from "@/redux/services/issuesApi";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import IssueSolutions from "./_components/IssueSolutions";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function IssuePage() {
   const searchParams = useSearchParams();
   const issueId = decrypt(searchParams?.get("issueId") || "") || "";
   const [issueDetailsReq, { isLoading: loading, data: issueDetails }] =
     useIssueDetailsMutation();
+  const [issueSolutionsReq, { isLoading, data: solutionData }] =
+    useIssuesSolutionsMutation();
 
+  const { userData } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     const currentIssueId = issueId as string;
     issueDetailsReq({
       ID: currentIssueId,
+      USER_ID: userData?.EmpID,
     });
-  }, [issueId]);
+
+    issueSolutionsReq({
+      Type: 2,
+      ISSUES_ID: currentIssueId,
+    });
+  }, []);
 
   if (loading) {
     return (
@@ -38,7 +53,7 @@ export default function IssuePage() {
       <div className="px-4">
         <Link
           href="/dashboard/issues"
-          className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
+          className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4 sticky top-20 z-50"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to dashboard
@@ -56,7 +71,25 @@ export default function IssuePage() {
 
   return (
     <div className="container mx-auto px-4">
-      <IssueDetail issue={issueDetails} />
+      <IssueDetail numberOfSolutions={solutionData.length || 0} issue={issueDetails} />
+
+      {solutionData ? (
+        <IssueSolutions solutionData={solutionData} />
+      ) : (
+        <Card className="bg-muted/50">
+          <CardContent className="py-8 text-center">
+            <p className="text-muted-foreground">
+              No solutions yet. Be the first to add one!
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+     
+
+      <br />
+      <br />
+      <br />
     </div>
   );
 }
