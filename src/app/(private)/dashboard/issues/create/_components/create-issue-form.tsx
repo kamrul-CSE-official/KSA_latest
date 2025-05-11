@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import TipTapEditor from "@/components/tiptap-editor";
 import TagInput from "@/components/tag-input";
+import TestEditor from "./Editor";
+import { SaveIcon } from "lucide-react";
 
 interface CreateIssueFormProps {
   onSubmit: (formData: any) => void;
@@ -37,8 +38,6 @@ export default function CreateIssueForm({
     });
   };
 
-
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
@@ -54,7 +53,7 @@ export default function CreateIssueForm({
 
       <div className="space-y-2 prose">
         <Label htmlFor="content">Description</Label>
-        <TipTapEditor
+        <TestEditor
           content={content}
           onChange={setContent}
           placeholder="Describe your issue in detail..."
@@ -76,14 +75,18 @@ export default function CreateIssueForm({
 
       <Separator />
 
-      <div className="flex justify-end gap-2">
+      <div className="flex justify-start gap-2">
         <Button
+          className="bg-green-600"
           type="submit"
           disabled={isSubmitting || !title.trim() || !content.trim()}
         >
-          {isSubmitting ? "Creating..." : "Create Issue"}
+          {isSubmitting ? "Creating..." : `Create Issue`}
+          <SaveIcon />
         </Button>
       </div>
+      <br />
+      <br />
     </form>
   );
 }

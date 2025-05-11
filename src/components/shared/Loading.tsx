@@ -14,7 +14,7 @@ const Lottie = dynamic(() => import("lottie-react"), {
   ),
 });
 
-export default function GlobalLoading() {
+export default function Loading() {
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-background/90 backdrop-blur-sm">
       <Lottie animationData={loadingAnimation} loop />

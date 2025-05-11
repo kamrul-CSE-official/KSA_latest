@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { useSuggestedPeopleMutation } from "@/redux/services/issuesApi";
+import Loading from "@/components/shared/Loading";
 
 interface IUser {
   id: number;
@@ -10,9 +11,18 @@ interface IUser {
   avatar: string;
 }
 
-export default function AdvancedEditor() {
+interface TestEditorProps {
+  content: string;
+  onChange: (content: string) => void;
+  placeholder?: string;
+}
+
+export default function TestEditor({
+  content,
+  onChange,
+  placeholder,
+}: TestEditorProps) {
   const editorRef = useRef<any>(null);
-  const [content, setContent] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [showMentionList, setShowMentionList] = useState<boolean>(false);
   const [mentionPosition, setMentionPosition] = useState({ top: 0, left: 0 });
@@ -31,9 +41,9 @@ export default function AdvancedEditor() {
 
   useEffect(() => {
     reqSuggested({
-      SearchKey: "A289",
+      SearchKey: "Rahul",
     });
-  }, []);
+  }, [mentionQuery, reqSuggested]);
 
   const users: IUser[] = suggestedPeople;
 
@@ -48,14 +58,11 @@ export default function AdvancedEditor() {
     );
   }, []);
 
-  // Setup editor event listeners when the editor is initialized
   const handleEditorInit = (evt: any, editor: any) => {
     editorRef.current = editor;
 
-    // Add event listener for keydown to detect @ symbol
     editor.on("keydown", (e: any) => {
       if (e.key === "@") {
-        // Get cursor position
         const selection = editor.selection;
         if (!selection) return;
 
@@ -72,12 +79,14 @@ export default function AdvancedEditor() {
         setMentionQuery("");
       } else if (showMentionList) {
         if (e.key === "Backspace") {
-          setMentionQuery((prev) => prev.slice(0, -1));
-          if (mentionQuery.length <= 1) {
+          const newQuery = mentionQuery.slice(0, -1);
+          setMentionQuery(newQuery);
+          if (newQuery.length <= 0) {
             setShowMentionList(false);
           }
         } else if (e.key.length === 1 && e.key !== " ") {
-          setMentionQuery((prev) => prev + e.key);
+          const newQuery = mentionQuery + e.key;
+          setMentionQuery(newQuery);
         } else if (e.key === "Escape") {
           setShowMentionList(false);
         } else if (e.key === "Enter" && filteredUsers.length > 0) {
@@ -86,27 +95,12 @@ export default function AdvancedEditor() {
         } else if (e.key === " ") {
           setShowMentionList(false);
         } else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-          e.preventDefault(); // Prevent cursor movement when navigating mention list
+          e.preventDefault();
         }
       }
     });
 
-    // Add event listener for keyup to capture typed characters after @
-    editor.on("keyup", (e: any) => {
-      if (
-        showMentionList &&
-        e.key.length === 1 &&
-        e.key !== "@" &&
-        e.key !== " "
-      ) {
-        setMentionQuery((prev) => prev + e.key);
-      }
-    });
-
-    // Setup hover listeners for mentions
     setupMentionHoverListeners();
-
-    // Also setup listeners when content changes
     editor.on("SetContent", setupMentionHoverListeners);
     editor.on("NodeChange", setupMentionHoverListeners);
   };
@@ -123,24 +117,19 @@ export default function AdvancedEditor() {
       </span>&nbsp;`
     );
     setShowMentionList(false);
-
-    // Setup hover listeners after inserting a new mention
     setTimeout(setupMentionHoverListeners, 100);
   };
 
   const setupMentionHoverListeners = () => {
     if (!editorRef.current) return;
 
-    // Use setTimeout to ensure the editor is fully loaded
     setTimeout(() => {
       const editor = editorRef.current;
       const editorBody = editor.getBody();
 
-      // Remove any existing listeners to prevent duplicates
       editor.off("mouseover", handleMentionMouseOver);
       editor.off("mouseout", handleMentionMouseOut);
 
-      // Add new listeners
       editor.on("mouseover", handleMentionMouseOver);
       editor.on("mouseout", handleMentionMouseOut);
     }, 500);
@@ -149,7 +138,6 @@ export default function AdvancedEditor() {
   const handleMentionMouseOver = (e: any) => {
     const target = e.target;
 
-    // Check if we're hovering over a mention element
     if (target.className === "mention") {
       const userId = Number.parseInt(target.getAttribute("data-user-id"), 10);
       const user = users.find((u) => u.id === userId);
@@ -170,7 +158,6 @@ export default function AdvancedEditor() {
   };
 
   const handleMentionMouseOut = (e: any) => {
-    // Check if we're moving to the hover card itself
     if (e.relatedTarget && e.relatedTarget.closest(".user-hover-card")) {
       return;
     }
@@ -178,115 +165,94 @@ export default function AdvancedEditor() {
     setHoverCard((prev) => ({ ...prev, show: false }));
   };
 
-  const handleSave = () => {
-    if (editorRef.current) {
-      console.log(editorRef.current.getContent());
-      alert("Content saved to console!");
-    }
-  };
-
   return (
-    <div className="container mx-auto p-4 max-w-6xl">
-      <h1 className="text-3xl font-bold mb-6">Advanced TinyMCE Editor</h1>
+    <div className="relative">
+      {apiKey && Editor ? (
+        <>
+          <Suspense fallback={<Loading />}>
+            <Editor
+              apiKey={apiKey}
+              onInit={handleEditorInit}
+              value={content}
+              init={{
+                height: 400,
+                menubar: true,
+                plugins: [
+                  "advlist",
+                  "autolink",
+                  "lists",
+                  "link",
+                  "image",
+                  "charmap",
+                  "preview",
+                  "anchor",
+                  "searchreplace",
+                  "visualblocks",
+                  "code",
+                  "fullscreen",
+                  "insertdatetime",
+                  "media",
+                  "table",
+                  "help",
+                  "wordcount",
+                  "emoticons",
+                  "codesample",
+                  "textpattern",
+                  "tablemerge",
+                ],
+                toolbar:
+                  "undo redo | blocks | " +
+                  "bold italic forecolor backcolor | alignleft aligncenter " +
+                  "alignright alignjustify | bullist numlist outdent indent | " +
+                  "link image media table emoticons codesample | " +
+                  "removeformat help code fullscreen preview",
+                content_style:
+                  "body { font-family:Helvetica,Arial,sans-serif; font-size:14px } " +
+                  ".mention { background: #d1e4ff; border-radius: 3px; padding: 0 4px; }",
+                table_toolbar:
+                  "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol | tablesplitcells tablemerge",
+                image_advtab: true,
+                image_title: true,
+                automatic_uploads: true,
+                file_picker_types: "image",
+                media_live_embeds: true,
+                codesample_languages: [
+                  { text: "HTML/XML", value: "markup" },
+                  { text: "JavaScript", value: "javascript" },
+                  { text: "CSS", value: "css" },
+                  { text: "PHP", value: "php" },
+                  { text: "Ruby", value: "ruby" },
+                  { text: "Python", value: "python" },
+                  { text: "Java", value: "java" },
+                  { text: "C", value: "c" },
+                  { text: "C#", value: "csharp" },
+                  { text: "C++", value: "cpp" },
+                ],
+                link_title: false,
+                placeholder: placeholder,
+                //   @ts-ignore
+                file_picker_callback: (cb, value, meta) => {
+                  const input = document.createElement("input");
+                  input.setAttribute("type", "file");
+                  input.setAttribute("accept", "image/*");
 
-      <div className="mb-4">
-        <button
-          onClick={handleSave}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Save Content
-        </button>
-      </div>
+                  input.onchange = () => {
+                    const file = input.files?.[0];
+                    if (!file) return;
 
-      {apiKey ? (
-        <div className="relative">
-          <Editor
-            apiKey={apiKey}
-            onInit={handleEditorInit}
-            initialValue="<p>This is the initial content of the editor. Try typing @ to mention someone.</p>"
-            init={{
-              height: 600,
-              menubar: true,
-              plugins: [
-                "advlist",
-                "autolink",
-                "lists",
-                "link",
-                "image",
-                "charmap",
-                "preview",
-                "anchor",
-                "searchreplace",
-                "visualblocks",
-                "code",
-                "fullscreen",
-                "insertdatetime",
-                "media",
-                "table",
-                "help",
-                "wordcount",
-                "emoticons",
-                "codesample",
-                "textpattern",
-                "tablemerge",
-              ],
-              toolbar:
-                "undo redo | blocks | " +
-                "bold italic forecolor backcolor | alignleft aligncenter " +
-                "alignright alignjustify | bullist numlist outdent indent | " +
-                "link image media table emoticons codesample | " +
-                "removeformat help code fullscreen preview",
-              content_style:
-                "body { font-family:Helvetica,Arial,sans-serif; font-size:14px } " +
-                ".mention { background: #d1e4ff; border-radius: 3px; padding: 0 4px; }",
-              // Table options
-              table_toolbar:
-                "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol | tablesplitcells tablemerge",
-              // Image options
-              image_advtab: true,
-              image_title: true,
-              automatic_uploads: true,
-              file_picker_types: "image",
-              // Media embedding
-              media_live_embeds: true,
-              // Code sample
-              codesample_languages: [
-                { text: "HTML/XML", value: "markup" },
-                { text: "JavaScript", value: "javascript" },
-                { text: "CSS", value: "css" },
-                { text: "PHP", value: "php" },
-                { text: "Ruby", value: "ruby" },
-                { text: "Python", value: "python" },
-                { text: "Java", value: "java" },
-                { text: "C", value: "c" },
-                { text: "C#", value: "csharp" },
-                { text: "C++", value: "cpp" },
-              ],
-              // Link options
-              link_title: false,
-              // Custom file picker for images
-              //   @ts-ignore
-              file_picker_callback: (cb, value, meta) => {
-                const input = document.createElement("input");
-                input.setAttribute("type", "file");
-                input.setAttribute("accept", "image/*");
-
-                input.onchange = () => {
-                  const file = input.files?.[0];
-                  if (!file) return;
-
-                  const reader = new FileReader();
-                  reader.onload = () => {
-                    cb(reader.result as string, { title: file.name });
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                      cb(reader.result as string, { title: file.name });
+                    };
+                    reader.readAsDataURL(file);
                   };
-                  reader.readAsDataURL(file);
-                };
 
-                input.click();
-              },
-            }}
-            onEditorChange={(newContent) => setContent(newContent)}
-          />
+                  input.click();
+                },
+              }}
+              onEditorChange={onChange}
+            />
+          </Suspense>
 
           {showMentionList && (
             <div
@@ -333,7 +299,10 @@ export default function AdvancedEditor() {
             >
               <div className="flex items-center gap-3">
                 <img
-                  src={"data:image/jpeg;base64,"+hoverCard.user.avatar || "/placeholder.svg"}
+                  src={
+                    "data:image/jpeg;base64," + hoverCard.user.avatar ||
+                    "/placeholder.svg"
+                  }
                   alt={hoverCard.user.name}
                   className="w-12 h-12 rounded-full"
                   crossOrigin="anonymous"
@@ -347,7 +316,7 @@ export default function AdvancedEditor() {
               </div>
             </div>
           )}
-        </div>
+        </>
       ) : (
         <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4">
           <p className="text-yellow-700">
@@ -357,8 +326,7 @@ export default function AdvancedEditor() {
           <p className="text-yellow-700 mt-2">
             Get a free API key from{" "}
             <a
-              href="https://www.tiny.cloud/auth/signup/"
-              target="_blank"
+              href="#"
               rel="noopener noreferrer"
               className="underline"
             >
@@ -369,14 +337,6 @@ export default function AdvancedEditor() {
           </p>
         </div>
       )}
-
-      <div className="mt-8 p-4 bg-gray-100 rounded">
-        <h2 className="text-xl font-semibold mb-2">Editor Content Preview:</h2>
-        <div
-          className="prose max-w-none"
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
-      </div>
     </div>
   );
 }

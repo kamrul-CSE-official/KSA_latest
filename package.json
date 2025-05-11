@@ -54,7 +54,7 @@
     "@tiptap/pm": "^2.12.0",
     "@tiptap/react": "^2.12.0",
     "@tiptap/starter-kit": "^2.12.0",
-    "axios": "^1.8.2",
+    "axios": "^1.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cors": "^2.8.5",
@@ -88,8 +88,10 @@
     "sonner": "^2.0.1",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
+    "tinymce-mention": "^4.0.2",
     "typeit-react": "^2.7.8",
     "url": "^0.11.4",
+    "use-debounce": "^10.0.4",
     "zod": "^3.24.2"
   },
   "devDependencies": {

@@ -21,7 +21,7 @@ import {
 } from "@/redux/services/issuesApi";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { ArrowLeft, Calendar, Eye, MessageSquare, Plus, ThumbsUp } from "lucide-react";
+import { ArrowLeft, Calendar, Eye, Menu, MessageSquare, Plus, Share, ThumbsUp } from "lucide-react";
 import ReactionPicker from "../../../../../../components/shared/ReactionPicker";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
@@ -133,15 +133,16 @@ export default function IssueDetail({
               ))}
             </motion.div>
           )}
+          
 
-        <motion.h1
+        <motion.div
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           data-view-transition-name="page-title"
-          className="text-3xl font-bold mb-4 leading-tight"
+          className="text-3xl font-bold mb-4 leading-tight flex items-center justify-between"
         >
-          {currentIssue.TITLE}
-        </motion.h1>
+          {currentIssue.TITLE} <Button size="sm"><Menu /></Button>
+        </motion.div>
 
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground mb-6">
           <div className="flex items-center gap-2">
