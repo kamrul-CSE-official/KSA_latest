@@ -1,5 +1,7 @@
 "use client";
 
+import type React from "react";
+
 import { memo, useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,7 +17,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MessageSquare, Plus, Search, ThumbsUp, View } from "lucide-react";
+import {
+  MessageSquare,
+  Plus,
+  Search,
+  ThumbsUp,
+  View,
+  ChevronDown,
+} from "lucide-react";
 import { encrypt } from "@/service/encryption";
 import { useManageIssuesMutation } from "@/redux/services/issuesApi";
 import type { IIssue } from "@/types/globelTypes";
@@ -25,31 +34,154 @@ import moment from "moment";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useInView } from "react-intersection-observer";
 
+const IssueCard = ({ issue, index }: { issue: IIssue; index: number }) => {
+  return (
+    <motion.div
+      key={issue.ID}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.3, delay: index * 0.05 }}
+      layout
+    >
+      <Link
+        href={`/dashboard/issues/issue?issueId=${encrypt(issue.ID)}`}
+        className="block"
+        passHref
+      >
+        <Card className="group overflow-hidden hover:shadow-md transition-all cursor-pointer hover:border-primary/20">
+          <CardHeader className="pb-2">
+            <CardTitle className="line-clamp-1 text-lg group-hover:text-primary transition-colors">
+              {issue.TITLE}
+            </CardTitle>
+          </CardHeader>
+
+          <CardContent className="relative">
+            <div
+              className="prose max-w-none line-clamp-3 text-muted-foreground"
+              dangerouslySetInnerHTML={{
+                __html: issue.CONTENT,
+              }}
+            />
+            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background to-transparent" />
+
+            <div className="flex flex-wrap gap-2 mt-4">
+              {issue?.TAG_LIST?.split(",")
+                .map((tag) => tag.trim().replace(/^@/, ""))
+                .filter(Boolean)
+                .slice(0, 3)
+                .map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant="outline"
+                    className="hover:bg-secondary/80 transition-colors"
+                  >
+                    {tag}
+                  </Badge>
+                ))}
+              {(issue?.TAG_LIST ?? "").split(",").length > 3 && (
+                <Badge variant="outline" className="bg-secondary/10">
+                  +{(issue?.TAG_LIST ?? "").split(",").length - 3}
+                </Badge>
+              )}
+            </div>
+          </CardContent>
+
+          <CardFooter className="flex flex-col sm:flex-row justify-between text-sm text-muted-foreground gap-2 sm:gap-0 border-t pt-3">
+            <div className="flex items-center gap-2">
+              <Avatar className="size-6 border">
+                <AvatarImage
+                  src={`data:image/jpeg;base64,${issue?.IMAGE}`}
+                  alt={issue?.FULL_NAME || "User"}
+                />
+                <AvatarFallback>{issue?.FULL_NAME?.[0] || "U"}</AvatarFallback>
+              </Avatar>
+              <span className="font-medium">{issue?.FULL_NAME}</span>
+              <span className="text-muted-foreground/60">•</span>
+              <span className="text-muted-foreground/80">
+                {moment(issue.CREATED_AT, "MMM DD YYYY hh:mma").fromNow()}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div title="Views" className="flex items-center gap-1">
+                <View className="size-4 text-muted-foreground/70" />
+                <span>{issue?.VIEWS_COUNT || 0}</span>
+              </div>
+              <div title="Comments" className="flex items-center gap-1">
+                <MessageSquare className="size-4 text-muted-foreground/70" />
+                <span>{issue?.NUMBER_OF_SULATION || 0}</span>
+              </div>
+              <div title="Likes" className="flex items-center gap-1">
+                <ThumbsUp className="size-4 text-muted-foreground/70" />
+                <span>{issue?.LIKES_COUNT || 0}</span>
+              </div>
+            </div>
+          </CardFooter>
+        </Card>
+      </Link>
+    </motion.div>
+  );
+};
+
+const LoadingSkeleton = () => (
+  <div className="space-y-4">
+    {[...Array(3)].map((_, i) => (
+      <Card key={i} className="overflow-hidden">
+        <CardHeader className="pb-2">
+          <Skeleton className="h-6 w-3/4" />
+        </CardHeader>
+        <CardContent className="space-y-2">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-5/6" />
+          <Skeleton className="h-4 w-2/3" />
+          <div className="flex gap-2 pt-2">
+            <Skeleton className="h-6 w-16 rounded-full" />
+            <Skeleton className="h-6 w-16 rounded-full" />
+          </div>
+        </CardContent>
+        <CardFooter className="border-t pt-3">
+          <div className="flex w-full justify-between">
+            <Skeleton className="h-4 w-1/3" />
+            <div className="flex gap-2">
+              <Skeleton className="size-4 rounded-full" />
+              <Skeleton className="size-4 rounded-full" />
+              <Skeleton className="size-4 rounded-full" />
+            </div>
+          </div>
+        </CardFooter>
+      </Card>
+    ))}
+  </div>
+);
+
 const IssueList = () => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageSize] = useState<number>(10);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [activeTab, setActiveTab] = useState<
     "latest" | "popular" | "unanswered"
   >("latest");
   const [issuesList, setIssuesList] = useState<IIssue[]>([]);
   const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const { ref: loadMoreRef, inView } = useInView({
     threshold: 0.1,
     triggerOnce: false,
   });
 
-  const [fetchIssues, { isLoading, isSuccess }] = useManageIssuesMutation();
+  const [fetchIssues, { isLoading }] = useManageIssuesMutation();
 
   const fetchMoreIssues = useCallback(async () => {
-    if (!hasMore || isSuccess) return;
+    if (!hasMore || isLoadingMore) return;
 
     try {
+      setIsLoadingMore(true);
       const newPageNumber = pageNumber + 1;
       const response = await fetchIssues({
-        TYPE: 2,
+        TYPE: activeTab === "latest" ? 2 : activeTab === "popular" ? 3 : 4,
         PageSize: pageSize,
         PageNumber: newPageNumber,
       }).unwrap();
@@ -62,8 +194,10 @@ const IssueList = () => {
       }
     } catch (error) {
       console.error("Failed to fetch more issues:", error);
+    } finally {
+      setIsLoadingMore(false);
     }
-  }, [pageNumber, pageSize, hasMore, isSuccess, fetchIssues]);
+  }, [pageNumber, pageSize, hasMore, isLoadingMore, fetchIssues, activeTab]);
 
   useEffect(() => {
     const getInitialIssues = async () => {
@@ -72,7 +206,7 @@ const IssueList = () => {
         setPageNumber(1);
         setHasMore(true);
         const response = await fetchIssues({
-          TYPE: 1,
+          TYPE: activeTab === "latest" ? 1 : activeTab === "popular" ? 3 : 4,
           PageSize: pageSize,
           PageNumber: 1,
         }).unwrap();
@@ -85,10 +219,10 @@ const IssueList = () => {
   }, [fetchIssues, pageSize, activeTab]);
 
   useEffect(() => {
-    if (inView && hasMore) {
+    if (inView && hasMore && !isLoadingMore) {
       fetchMoreIssues();
     }
-  }, [inView, hasMore, fetchMoreIssues]);
+  }, [inView, hasMore, fetchMoreIssues, isLoadingMore]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value.toLowerCase());
@@ -96,13 +230,6 @@ const IssueList = () => {
 
   const handleNewIssue = () => {
     router.push("/dashboard/issues/create/");
-  };
-
-  const cleanHtml = (htmlTags: string) => {
-    return sanitizeHtml(htmlTags, {
-      allowedTags: ["p", "strong", "em", "ul", "li", "ol", "br"],
-      allowedAttributes: {},
-    });
   };
 
   const filteredIssues = issuesList.filter((issue) =>
@@ -113,7 +240,7 @@ const IssueList = () => {
     <div className="space-y-6 pb-8">
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="relative w-full sm:w-96">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
           <Input
             type="search"
             placeholder="Search issues..."
@@ -122,8 +249,8 @@ const IssueList = () => {
             onChange={handleSearchChange}
           />
         </div>
-        <Button onClick={handleNewIssue} className="shrink-0">
-          <Plus className="mr-2 h-4 w-4" />
+        <Button onClick={handleNewIssue} className="shrink-0 group">
+          <Plus className="mr-2 size-4 group-hover:rotate-90 transition-transform duration-200" />
           New Issue
         </Button>
       </div>
@@ -131,6 +258,7 @@ const IssueList = () => {
       <Tabs
         value={activeTab}
         onValueChange={(value) => setActiveTab(value as any)}
+        className="w-full"
       >
         <TabsList className="mb-4 grid w-full grid-cols-3">
           <TabsTrigger value="latest">Latest</TabsTrigger>
@@ -139,27 +267,7 @@ const IssueList = () => {
         </TabsList>
         <TabsContent value={activeTab} className="space-y-4">
           {isLoading && issuesList.length === 0 ? (
-            <div className="space-y-4">
-              {[...Array(3)].map((_, i) => (
-                <Card key={i}>
-                  <CardHeader>
-                    <Skeleton className="h-6 w-3/4" />
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-5/6" />
-                    <Skeleton className="h-4 w-2/3" />
-                    <div className="flex gap-2 pt-2">
-                      <Skeleton className="h-6 w-16 rounded-full" />
-                      <Skeleton className="h-6 w-16 rounded-full" />
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <Skeleton className="h-4 w-1/3" />
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
+            <LoadingSkeleton />
           ) : filteredIssues.length === 0 ? (
             <motion.div
               initial={{ opacity: 0 }}
@@ -171,132 +279,68 @@ const IssueList = () => {
                 No issues found. Be the first to create one!
               </p>
               <Button
-                variant="ghost"
-                className="mt-4"
+                variant="outline"
+                className="mt-4 group"
                 onClick={handleNewIssue}
               >
+                <Plus className="mr-2 size-4 group-hover:rotate-90 transition-transform duration-200" />
                 Create New Issue
               </Button>
             </motion.div>
           ) : (
             <AnimatePresence>
-              {filteredIssues.map((issue: IIssue, index: number) => (
-                <motion.div
-                  key={issue.ID}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
-                  layout
-                >
-                  <Link
-                    href={`/dashboard/issues/issue?issueId=${encrypt(issue.ID)}`}
-                    className="block"
-                    passHref
-                  >
-                    <Card className="hover:shadow-md transition-shadow cursor-pointer hover:border-primary/20">
-                      <CardHeader className="pb-2">
-                        <CardTitle className="line-clamp-1 text-lg">
-                          {issue.TITLE}
-                        </CardTitle>
-                      </CardHeader>
-
-                      <CardContent>
-                        <div
-                          className="prose max-w-none line-clamp-3 text-muted-foreground"
-                          dangerouslySetInnerHTML={{
-                            __html: cleanHtml(issue.CONTENT),
-                          }}
-                        />
-                        <div className="flex flex-wrap gap-2 mt-4">
-                          {issue?.TAG_LIST?.split(",")
-                            .map((tag) => tag.trim().replace(/^@/, ""))
-                            .map((tag) => (
-                              <Badge
-                                key={tag}
-                                variant="outline"
-                                className="hover:bg-secondary/80 transition-colors"
-                              >
-                                {tag}
-                              </Badge>
-                            ))}
-                        </div>
-                      </CardContent>
-                      <CardFooter className="flex flex-col sm:flex-row justify-between text-sm text-muted-foreground gap-2 sm:gap-0">
-                        <div className="flex items-center gap-2">
-                          <Avatar className="h-6 w-6">
-                            <AvatarImage
-                              src={`data:image/jpeg;base64,${issue?.IMAGE}`}
-                              alt="User avatar"
-                            />
-                            <AvatarFallback>
-                              {issue?.FULL_NAME?.[1]}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span>{issue?.FULL_NAME}</span>
-                          <span>•</span>
-                          <span>
-                            {moment(
-                              issue.CREATED_AT,
-                              "MMM DD YYYY hh:mma"
-                            ).fromNow()}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <div
-                            title="Views"
-                            className="flex items-center gap-1"
-                          >
-                            <View className="h-4 w-4" />
-                            <span>{issue?.VIEWS_COUNT}</span>
-                          </div>
-                          <div
-                            title="Comments"
-                            className="flex items-center gap-1"
-                          >
-                            <MessageSquare className="h-4 w-4" />
-                            <span>{issue?.NUMBER_OF_SULATION}</span>
-                          </div>
-                          <div
-                            title="Likes"
-                            className="flex items-center gap-1"
-                          >
-                            <ThumbsUp className="h-4 w-4" />
-                            <span>{issue?.LIKES_COUNT}</span>
-                          </div>
-                        </div>
-                      </CardFooter>
-                    </Card>
-                  </Link>
-                </motion.div>
-              ))}
+              <div className="grid gap-4">
+                {filteredIssues.map((issue: IIssue, index: number) => (
+                  <IssueCard key={issue.ID} issue={issue} index={index} />
+                ))}
+              </div>
             </AnimatePresence>
           )}
 
           {/* Loading more indicator */}
-          {issuesList.length > 0 && (
-            <div className="flex justify-center pt-4">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <div className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                Loading more issues...
+          {isLoadingMore && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex justify-center pt-4"
+            >
+              <div className="flex items-center gap-2 text-muted-foreground bg-background/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm">
+                <div className="size-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                <span>Loading more issues...</span>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* Load more trigger */}
-          {hasMore && (
-            <div ref={loadMoreRef} className="h-1 w-full" />
-          )}
+          {hasMore && <div ref={loadMoreRef} className="h-1 w-full" />}
 
           {/* No more issues message */}
           {!hasMore && issuesList.length > 0 && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-center py-6 text-muted-foreground"
+              className="text-center py-6"
             >
-              You've reached the end of the list
+              <div className="inline-flex items-center gap-2 text-muted-foreground bg-muted px-4 py-2 rounded-full">
+                <span>You've reached the end of the list</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 gap-1"
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
+                >
+                  Back to top
+                  <ChevronDown className="size-3.5 rotate-180" />
+                </Button>
+              </div>
             </motion.div>
+          )}
+
+          {/* Gradient overlay at the bottom */}
+          {filteredIssues.length > 5 && (
+            <div className="sticky bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent pointer-events-none" />
           )}
         </TabsContent>
       </Tabs>

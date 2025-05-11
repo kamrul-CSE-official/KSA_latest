@@ -5,11 +5,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useDashboardMutation } from "@/redux/services/ideaApi";
 import { RootState } from "@/redux/store";
 import { AlignLeft, LayoutGrid } from "lucide-react";
-import Link from "next/link";
 import React, { memo, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import WorkspaceItemList from "./WorkspaceItemList";
-import CreateWorkspace from "./CreateWorkspace";
 import IdeaItemList from "./IdeaItemList";
 
 function ItemsList() {
@@ -44,15 +41,6 @@ function ItemsList() {
   return (
     <div>
       <div className="flex justify-between">
-        {/* <h2 className="font-bold text-2xl">
-          Hello,{" "}
-          <Link
-            className="text-blue-500 hover:underline"
-            href="/dashboard/profile"
-          >
-            {userData?.FullName}
-          </Link>
-        </h2> */}
       </div>
 
       <div className="flex justify-between">

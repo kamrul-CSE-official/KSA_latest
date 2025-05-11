@@ -37,13 +37,15 @@ export default function CreateIssueForm({
     });
   };
 
+
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
         <Label htmlFor="title">Title</Label>
         <Input
           id="title"
-          placeholder="e.g., How to implement authentication in Next.js?"
+          placeholder="e.g., How to increase production in Naturub BD?"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
@@ -64,7 +66,7 @@ export default function CreateIssueForm({
         <TagInput
           value={tags}
           onChange={setTags}
-          placeholder="Add tags (e.g., next.js, react, typescript)"
+          placeholder="Add tags (e.g., Naturub, Bangladesh, Chattogram, Naturub_it)"
           maxTags={5}
         />
         <p className="text-xs text-muted-foreground">

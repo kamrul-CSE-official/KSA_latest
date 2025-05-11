@@ -71,7 +71,10 @@ export default function IssuePage() {
 
   return (
     <div className="container mx-auto px-4">
-      <IssueDetail numberOfSolutions={solutionData.length || 0} issue={issueDetails} />
+      <IssueDetail
+        numberOfSolutions={solutionData.length || 0}
+        issue={issueDetails}
+      />
 
       {solutionData ? (
         <IssueSolutions solutionData={solutionData} />
@@ -84,8 +87,6 @@ export default function IssuePage() {
           </CardContent>
         </Card>
       )}
-
-     
 
       <br />
       <br />

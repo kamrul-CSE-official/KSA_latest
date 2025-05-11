@@ -96,7 +96,6 @@ function IssueSolutions({
     });
   };
 
-
   const shareViaOutlook = (content: string, title: string) => {
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = content;
@@ -111,8 +110,6 @@ function IssueSolutions({
       )}&body=${encodeURIComponent(body)}`
     );
   };
-
- 
 
   const container = {
     hidden: { opacity: 0 },
@@ -198,7 +195,7 @@ function IssueSolutions({
                 <div
                   className={`prose dark:prose-invert max-w-none ${
                     !expandedSolutions[solution.ID] &&
-                    solution.CONTENT.length > 500
+                    solution.CONTENT.length > 600
                       ? "max-h-[300px] overflow-hidden relative"
                       : ""
                   }`}
@@ -206,29 +203,31 @@ function IssueSolutions({
                   <div dangerouslySetInnerHTML={{ __html: solution.CONTENT }} />
 
                   {!expandedSolutions[solution.ID] &&
-                    solution.CONTENT.length > 500 && (
-                      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background to-transparent"></div>
+                    solution.CONTENT.length > 600 && (
+                      <div className="absolute bottom-0 left-0 right-0 h-44 bg-gradient-to-t from-background to-transparent"></div>
                     )}
                 </div>
 
-                {solution.CONTENT.length > 500 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => toggleExpand(solution.ID)}
-                    className="mt-2 text-muted-foreground hover:text-foreground"
-                  >
-                    {expandedSolutions[solution.ID] ? (
-                      <>
-                        Show less <ChevronUp className="ml-1 h-4 w-4" />
-                      </>
-                    ) : (
-                      <>
-                        Show more <ChevronDown className="ml-1 h-4 w-4" />
-                      </>
-                    )}
-                  </Button>
-                )}
+                <div className="flex items-center justify-center">
+                  {solution.CONTENT.length > 600 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleExpand(solution.ID)}
+                      className="mt-2 text-muted-foreground hover:text-foreground"
+                    >
+                      {expandedSolutions[solution.ID] ? (
+                        <>
+                          Show less <ChevronUp className="ml-1 h-4 w-4" />
+                        </>
+                      ) : (
+                        <>
+                          Show more <ChevronDown className="ml-1 h-4 w-4" />
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
               </CardContent>
 
               <CardFooter className="flex flex-wrap gap-2 border-t p-4 bg-muted/20">
