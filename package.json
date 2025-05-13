@@ -88,6 +88,7 @@
     "sonner": "^2.0.1",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
+    "tinymce": "^7.8.0",
     "tinymce-mention": "^4.0.2",
     "typeit-react": "^2.7.8",
     "url": "^0.11.4",

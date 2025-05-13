@@ -1,9 +1,32 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, use, useCallback, useEffect, useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { useSuggestedPeopleMutation } from "@/redux/services/issuesApi";
 import Loading from "@/components/shared/Loading";
+// import { tinyMceKey } from "@/config/envConfig";
+// Import TinyMCE core and required components
+import "tinymce/tinymce";
+import "tinymce/models/dom"; // DOM model (default)
+import "tinymce/themes/silver";
+import "tinymce/icons/default";
+
+// Plugins
+import "tinymce/plugins/advlist";
+import "tinymce/plugins/link";
+import "tinymce/plugins/image";
+import "tinymce/plugins/lists";
+import "tinymce/plugins/charmap";
+import "tinymce/plugins/table";
+import "tinymce/plugins/code";
+import "tinymce/plugins/fullscreen";
+import "tinymce/plugins/insertdatetime";
+import "tinymce/plugins/media";
+import "tinymce/plugins/preview";
+
+// CSS
+import "tinymce/skins/ui/oxide/skin.min.css";
+import { useWorkspaceShareManageMutation } from "@/redux/services/ideaApi";
 
 interface IUser {
   id: number;
@@ -23,7 +46,6 @@ export default function TestEditor({
   placeholder,
 }: TestEditorProps) {
   const editorRef = useRef<any>(null);
-  const [apiKey, setApiKey] = useState("");
   const [showMentionList, setShowMentionList] = useState<boolean>(false);
   const [mentionPosition, setMentionPosition] = useState({ top: 0, left: 0 });
   const [mentionQuery, setMentionQuery] = useState<string>("");
@@ -38,6 +60,8 @@ export default function TestEditor({
   });
   const [reqSuggested, { isLoading, data: suggestedPeople = [] }] =
     useSuggestedPeopleMutation();
+  const [shareReq, { isLoading: shareLoading, isSuccess: shareSuccess }] =
+    useWorkspaceShareManageMutation();
 
   useEffect(() => {
     reqSuggested({
@@ -51,14 +75,7 @@ export default function TestEditor({
     user.name.toLowerCase().includes(mentionQuery.toLowerCase())
   );
 
-  useEffect(() => {
-    setApiKey(
-      process.env.NEXT_PUBLIC_TINYMCE_API_KEY ||
-        "wd7ukl19edj0tp3ech3492v5k2fkno7nadv9p99njwls04s3"
-    );
-  }, []);
-
-  const handleEditorInit = (evt: any, editor: any) => {
+  const handleEditorInit = useCallback((evt: any, editor: any) => {
     editorRef.current = editor;
 
     editor.on("keydown", (e: any) => {
@@ -103,24 +120,27 @@ export default function TestEditor({
     setupMentionHoverListeners();
     editor.on("SetContent", setupMentionHoverListeners);
     editor.on("NodeChange", setupMentionHoverListeners);
-  };
+  }, []);
 
-  const insertMention = (user: IUser) => {
-    const editor = editorRef.current;
-    if (!editor) return;
+  const insertMention = useCallback(
+    (user: IUser) => {
+      const editor = editorRef.current;
+      if (!editor) return;
 
-    editor.execCommand(
-      "mceInsertContent",
-      false,
-      `<span class="mention" data-user-id="${user.id}" contenteditable="false">
-        ${user.name}
-      </span>&nbsp;`
-    );
-    setShowMentionList(false);
-    setTimeout(setupMentionHoverListeners, 100);
-  };
+      editor.execCommand(
+        "mceInsertContent",
+        false,
+        `<span class="mention" data-user-id="${user.id}" contenteditable="false">
+          ${user.name}
+        </span>&nbsp;`
+      );
+      setShowMentionList(false);
+      setTimeout(setupMentionHoverListeners, 100);
+    },
+    [editorRef]
+  );
 
-  const setupMentionHoverListeners = () => {
+  const setupMentionHoverListeners = useCallback(() => {
     if (!editorRef.current) return;
 
     setTimeout(() => {
@@ -133,7 +153,7 @@ export default function TestEditor({
       editor.on("mouseover", handleMentionMouseOver);
       editor.on("mouseout", handleMentionMouseOut);
     }, 500);
-  };
+  }, [editorRef]);
 
   const handleMentionMouseOver = (e: any) => {
     const target = e.target;
@@ -167,15 +187,19 @@ export default function TestEditor({
 
   return (
     <div className="relative">
-      {apiKey && Editor ? (
+      {Editor ? (
         <>
           <Suspense fallback={<Loading />}>
             <Editor
-              apiKey={apiKey}
+              tinymceScriptSrc="/tinymce/tinymce.min.js"
               onInit={handleEditorInit}
               value={content}
               init={{
-                height: 400,
+                statusbar: false,
+                skin: false,
+                content_css: false,
+                branding: false,
+                height: 700,
                 menubar: true,
                 plugins: [
                   "advlist",
@@ -325,11 +349,7 @@ export default function TestEditor({
           </p>
           <p className="text-yellow-700 mt-2">
             Get a free API key from{" "}
-            <a
-              href="#"
-              rel="noopener noreferrer"
-              className="underline"
-            >
+            <a href="#" rel="noopener noreferrer" className="underline">
               TinyMCE
             </a>{" "}
             and add it to your <code>.env.local</code> file as{" "}

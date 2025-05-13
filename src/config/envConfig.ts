@@ -23,7 +23,9 @@ export const imageBaseUrl = (): string => {
   return process.env.NEXT_PUBLIC_IMAGE_BASE_URL || "https://192.168.1.253:8080";
 };
 
-
+export const tinyMceKey = (): string => {
+  return process.env.NEXT_PUBLIC_TINYMCE_API_KEY || "";
+};
 
 export const secret = (): string => {
   return process.env.NEXT_PUBLIC_SECRET || "MyNameIsMdKamrulHasan";

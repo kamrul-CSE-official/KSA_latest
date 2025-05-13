@@ -45,14 +45,14 @@ export default function Page({ children }: { children: ReactNode }) {
                   <BreadcrumbPage className="line-clamp-1">
                     {new Date().getDate()}/{new Date().getMonth()}/
                     {new Date().getFullYear()},{" "}
-                    {daysOfWeek[new Date().getDay()]} 
+                    {daysOfWeek[new Date().getDay()]}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
           <div className="ml-auto px-3">
-            {/* <NavActions /> */} 
+            {/* <NavActions /> */}
             <ThemeToggle />
             <FullScreenButton />
           </div>
