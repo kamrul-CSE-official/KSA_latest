@@ -48,9 +48,17 @@ const issuesApis = rootApi.injectEndpoints({
         body: data,
       }),
     }),
+
     suggestedPeople: builder.mutation({
       query: (data) => ({
         url: "/KSA/SuggestedPeople",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    issueShare: builder.mutation({
+      query: (data) => ({
+        url: "/KSA/IssueShare",
         method: "POST",
         body: data,
       }),
@@ -65,7 +73,8 @@ export const {
   useIssueDetailsMutation,
   useIssuesLikesMutation,
   useIssuesSolutionsMutation,
-  useSuggestedPeopleMutation
+  useSuggestedPeopleMutation,
+  useIssueShareMutation
 } = issuesApis;
 
 export default issuesApis;

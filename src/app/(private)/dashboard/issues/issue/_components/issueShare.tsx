@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useState, type ReactNode, useCallback } from "react";
+import {
+  useEffect,
+  useState,
+  useCallback,
+  type ReactNode,
+} from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
@@ -8,8 +13,9 @@ import { LayoutDashboard, Search, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import type { RootState } from "@/redux/store";
-import { useWorkspaceShareManageMutation } from "@/redux/services/ideaApi";
+import { useIssueShareMutation } from "@/redux/services/issuesApi";
 import { useGetEmpMutation } from "@/redux/services/userApi";
+import { decrypt } from "@/service/encryption";
 
 import {
   Dialog,
@@ -30,7 +36,6 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { decrypt } from "@/service/encryption";
 
 type ShareType = "public" | "private";
 
@@ -55,42 +60,70 @@ interface IssueShareProps {
   setRefreshTrigger: (val: number) => void;
 }
 
-const IssueShare = ({
-  children,
-  refreshTrigger,
-  setRefreshTrigger,
-}: IssueShareProps) => {
+const IssueShare = ({ children }: IssueShareProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedUsers, setSelectedUsers] = useState<SharedUser[]>([]);
 
   const loggedInUser = useSelector((state: RootState) => state.user.userData);
   const searchParams = useSearchParams();
-  const workspaceId = decrypt(searchParams.get("issueId") || "");
+  const issueId = decrypt(searchParams.get("issueId") || "");
 
-  const [shareWorkspace, { isLoading: isSharing }] =
-    useWorkspaceShareManageMutation();
-  const [
-    getSuggestedUsers,
-    { isLoading: isLoadingSuggestions, data: suggestedUsers },
-  ] = useGetEmpMutation();
+  const [issueShareReq, { isLoading }] = useIssueShareMutation();
+  const [getSuggestedUsers, { isLoading: isLoadingSuggestions, data: suggestedUsers }] =
+    useGetEmpMutation();
+
+  const fetchSharedUsers = useCallback(async () => {
+    try {
+      const res = await issueShareReq({
+        Type: 3,
+        PersonID: loggedInUser?.EmpID,
+        IssueId: issueId,
+        StatusID: 1,
+      });
+
+      if (res.data) {
+        const uniqueUsers = new Set<string>();
+        const users = res.data.reduce((acc: SharedUser[], user: any) => {
+          if (!uniqueUsers.has(user.PersonID)) {
+            uniqueUsers.add(user.PersonID);
+            acc.push({
+              EMP_ID: user.PersonID,
+              PersonName: user.FULL_NAME,
+              ITEM_IMAGE: user.IMAGE,
+            });
+          }
+          return acc;
+        }, []);
+        setSelectedUsers(users);
+      } else {
+        toast.error("Failed to fetch shared users");
+      }
+    } catch (err) {
+      toast.error("Error fetching shared users");
+    }
+  }, [issueShareReq, loggedInUser?.EmpID, issueId]);
 
   const fetchSuggestedUsers = useCallback(() => {
-    if (loggedInUser?.SectionID || loggedInUser?.DepartmentID) {
-      getSuggestedUsers({
-        EmpID: "",
-        Name: "",
-        SectionID: loggedInUser?.SectionID || "",
-        DepartmentID: loggedInUser?.DepartmentID || "",
-        Page: 1,
-        Limit: 6,
-      });
-    }
-  }, [loggedInUser, getSuggestedUsers]);
+    if (!loggedInUser) return;
+
+    const { SectionID = "", DepartmentID = "" } = loggedInUser;
+
+    getSuggestedUsers({
+      EmpID: "",
+      Name: "",
+      SectionID,
+      DepartmentID,
+      Page: 1,
+      Limit: 6,
+    });
+  }, [getSuggestedUsers, loggedInUser]);
 
   useEffect(() => {
+    if (!loggedInUser) return;
     fetchSuggestedUsers();
-  }, [loggedInUser, fetchSuggestedUsers]);
+    fetchSharedUsers();
+  }, [loggedInUser, fetchSuggestedUsers, fetchSharedUsers]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -104,8 +137,16 @@ const IssueShare = ({
     });
   };
 
-  const handleAddUser = (user: User) => {
+  const handleAddUser = async (user: User) => {
     const exists = selectedUsers.some((u) => u.EMP_ID === user.EmpID);
+
+    await issueShareReq({
+      Type: 2,
+      PersonID: user.EmpID,
+      IssueId: issueId,
+      StatusID: 1,
+    });
+
     if (!exists) {
       setSelectedUsers((prev) => [
         ...prev,
@@ -118,8 +159,17 @@ const IssueShare = ({
     }
   };
 
-  const handleRemoveUser = (user: SharedUser) => {
-    setSelectedUsers((prev) => prev.filter((u) => u.EMP_ID !== user.EMP_ID));
+  const handleRemoveUser = async (user: SharedUser) => {
+    await issueShareReq({
+      Type: 1,
+      PersonID: user.EMP_ID,
+      IssueId: issueId,
+      StatusID: 1,
+    });
+
+    setSelectedUsers((prev) =>
+      prev.filter((u) => u.EMP_ID !== user.EMP_ID)
+    );
   };
 
   return (
@@ -131,7 +181,7 @@ const IssueShare = ({
             <div className="flex items-center gap-3">
               <LayoutDashboard className="h-5 w-5 text-primary" />
               <DialogTitle className="text-lg font-semibold">
-                Issue manage
+                Issue Manage
               </DialogTitle>
             </div>
           </div>
@@ -159,28 +209,29 @@ const IssueShare = ({
             </div>
 
             <div className="space-y-6">
+              {/* Suggested Users */}
               <div>
-                <h3 className="font-medium mb-3">Suggested People</h3>
+                <h3 className="font-medium mb-3">
+                  Suggested People {selectedUsers.length}
+                </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {isLoadingSuggestions ? (
-                    Array(4)
-                      .fill(0)
-                      .map((_, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: i * 0.1 }}
-                        >
-                          <div className="flex items-center gap-3 p-3 border rounded-lg">
-                            <Skeleton className="w-10 h-10 rounded-full" />
-                            <div className="flex-1 space-y-2">
-                              <Skeleton className="h-4 w-3/4" />
-                              <Skeleton className="h-3 w-1/2" />
-                            </div>
+                    Array.from({ length: 4 }).map((_, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: i * 0.1 }}
+                      >
+                        <div className="flex items-center gap-3 p-3 border rounded-lg">
+                          <Skeleton className="w-10 h-10 rounded-full" />
+                          <div className="flex-1 space-y-2">
+                            <Skeleton className="h-4 w-3/4" />
+                            <Skeleton className="h-3 w-1/2" />
                           </div>
-                        </motion.div>
-                      ))
+                        </div>
+                      </motion.div>
+                    ))
                   ) : suggestedUsers?.length ? (
                     suggestedUsers.map((user: User, i: number) => (
                       <motion.div
@@ -210,11 +261,7 @@ const IssueShare = ({
                               {user.DesignationName}
                             </p>
                           </div>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="shrink-0"
-                          >
+                          <Button size="sm" variant="outline" className="shrink-0">
                             Add
                           </Button>
                         </div>
@@ -237,6 +284,7 @@ const IssueShare = ({
                 </div>
               </div>
 
+              {/* Shared With Section */}
               {selectedUsers.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -272,19 +320,14 @@ const IssueShare = ({
                                       {user.PersonName.slice(0, 2)}
                                     </AvatarFallback>
                                   </Avatar>
-                                  <span className="text-sm truncate max-w-[80px]">
-                                    {user.PersonName}
-                                  </span>
+                                  <p className="text-sm truncate max-w-[100px]">{user.PersonName}</p>
                                   <Button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleRemoveUser(user);
-                                    }}
-                                    className="h-6 w-6 rounded-full p-0"
-                                    size="sm"
                                     variant="ghost"
+                                    size="icon"
+                                    className="h-6 w-6"
+                                    onClick={() => handleRemoveUser(user)}
                                   >
-                                    <X className="h-3 w-3 text-muted-foreground hover:text-destructive" />
+                                    <X className="h-4 w-4" />
                                   </Button>
                                 </div>
                               </TooltipTrigger>
@@ -302,11 +345,11 @@ const IssueShare = ({
             </div>
           </TabsContent>
 
-          <TabsContent
-            value="visibility"
-            className="flex-1 overflow-auto px-6 py-4"
-          >
-            {/* Visibility Settings content goes here */}
+          <TabsContent value="visibility">
+            {/* Visibility settings section can go here */}
+            <div className="px-6 py-4 text-muted-foreground">
+              Coming soon: Manage issue visibility settings.
+            </div>
           </TabsContent>
         </Tabs>
       </DialogContent>

@@ -63,14 +63,21 @@ import "tinymce/plugins/preview";
 import "tinymce/skins/ui/oxide/skin.min.css";
 import Loading from "@/components/shared/Loading";
 
+type ISharedUser = {
+  PersonID: string;
+  FULL_NAME: string;
+  IMAGE: string;
+};
 interface IssueDetailProps {
   issue: [IIssue];
   numberOfSolutions?: number;
+  sharedUsers?: ISharedUser[];
 }
 
 export default function IssueDetail({
   issue,
   numberOfSolutions,
+  sharedUsers,
 }: IssueDetailProps) {
   const currentIssue = issue[0];
   const [solutions, setSolutions] = useState<Solution[]>(
@@ -142,6 +149,8 @@ export default function IssueDetail({
     );
   }
 
+  console.log("222222222222222::::::::::::::::: ", sharedUsers);
+
   return (
     <div className="space-y-6">
       <div>
@@ -181,11 +190,11 @@ export default function IssueDetail({
           {currentIssue.TITLE}{" "}
           <div className="flex items-center justify-center gap-1">
             <div className="flex -space-x-1 overflow-hidden">
-              {[1, 2, 3, 5]?.map((_, i) => (
+              {sharedUsers?.map((share: ISharedUser, i: number) => (
                 <img
                   key={i}
-                  alt=""
-                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                  alt={share.FULL_NAME}
+                  src={"data:image/jpeg;base64," + share.IMAGE}
                   className="inline-block size-6 rounded-full ring-2 ring-white"
                 />
               ))}

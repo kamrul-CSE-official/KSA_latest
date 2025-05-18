@@ -31,10 +31,15 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
 import loginAnimation from "../../../../public/assets/lottie/login.json";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useEffect } from "react";
 
 const Lottie = dynamic(() => import("lottie-react"), {
   ssr: false,
-  loading: () => <div className="w-full h-64 bg-gray-100 rounded-2xl animate-pulse"></div>,
+  loading: () => (
+    <div className="w-full h-64 bg-gray-100 rounded-2xl animate-pulse"></div>
+  ),
 });
 
 const formSchema = z.object({
@@ -45,6 +50,13 @@ const formSchema = z.object({
 export default function LoginPage() {
   const [loginUsers, { isLoading, isError }] = useLoginMutation();
   const router = useRouter();
+  const { userData } = useSelector((state: RootState) => state.user);
+
+  useEffect(() => {
+    if (userData) {
+      router.replace("/dashboard");
+    }
+  }, [userData, router]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

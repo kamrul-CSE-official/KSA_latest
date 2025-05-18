@@ -5,27 +5,26 @@ const publicRoutes = ["/login", "/"];
 
 export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const isProtectedRoute = pathname.startsWith("/dashboard");
-  const isPublicRoute = publicRoutes.includes(pathname);
 
-  // console.log("user info: ", JSON.parse( req.cookies.get(PERSONAL_INFO) ) );
+  // Normalize trailing slash for consistency
+  const normalizedPath = pathname.endsWith("/") && pathname.length > 1
+    ? pathname.slice(0, -1)
+    : pathname;
 
-  // Retrieve the auth token from cookies
-  const cookie = req.cookies.get(AUTH_KEY)?.value;
-  // const userInfo = JSON.parse(req.cookies.get());
+  const isProtectedRoute = normalizedPath.startsWith("/dashboard");
+  const isPublicRoute = publicRoutes.includes(normalizedPath);
 
-  // Redirect to login if accessing a protected route without authentication
-  if (isProtectedRoute && !cookie) {
-    const loginUrl = new URL("/login", req.nextUrl.origin);
-    return NextResponse.redirect(loginUrl);
+  const token = req.cookies.get(AUTH_KEY)?.value;
+
+  // Not authenticated and trying to access a protected route
+  if (isProtectedRoute && !token) {
+    return NextResponse.redirect(new URL("/login", req.nextUrl.origin));
   }
 
-  // Redirect to dashboard if accessing a public route while authenticated
-  if (isPublicRoute && cookie) {
-    const dashboardUrl = new URL("/dashboard/profile", req.nextUrl.origin);
-    return NextResponse.redirect(dashboardUrl);
+  // Authenticated and trying to access a public route
+  if (isPublicRoute && token) {
+    return NextResponse.redirect(new URL("/dashboard/profile", req.nextUrl.origin));
   }
 
-  // Allow other requests to proceed
   return NextResponse.next();
 }

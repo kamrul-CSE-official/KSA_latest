@@ -8,6 +8,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import {
   useIssueDetailsMutation,
+  useIssueShareMutation,
   useIssuesSolutionsMutation,
 } from "@/redux/services/issuesApi";
 import { useSelector } from "react-redux";
@@ -18,10 +19,13 @@ import { Card, CardContent } from "@/components/ui/card";
 export default function IssuePage() {
   const searchParams = useSearchParams();
   const issueId = decrypt(searchParams?.get("issueId") || "") || "";
+  const loggedInUser = useSelector((state: RootState) => state.user.userData);
+
   const [issueDetailsReq, { isLoading: loading, data: issueDetails }] =
     useIssueDetailsMutation();
   const [issueSolutionsReq, { isLoading, data: solutionData }] =
     useIssuesSolutionsMutation();
+  const [issueShareReq, { data: sharedUsers }] = useIssueShareMutation();
 
   const { userData } = useSelector((state: RootState) => state.user);
 
@@ -30,6 +34,13 @@ export default function IssuePage() {
     issueDetailsReq({
       ID: currentIssueId,
       USER_ID: userData?.EmpID,
+    });
+
+    issueShareReq({
+      Type: 3,
+      PersonID: loggedInUser?.EmpID,
+      IssueId: issueId,
+      StatusID: 1,
     });
 
     issueSolutionsReq({
@@ -72,6 +83,7 @@ export default function IssuePage() {
   return (
     <div className="container mx-auto px-4">
       <IssueDetail
+        sharedUsers={sharedUsers}
         numberOfSolutions={solutionData.length || 0}
         issue={issueDetails}
       />
