@@ -6,16 +6,6 @@ import React from "react";
 import { motion } from "framer-motion";
 import Workspace from "../_components/Workspace";
 
-const floatingBubbleVariants = {
-  animate: {
-    y: [0, -15, 0],
-    transition: {
-      duration: 3,
-      repeat: Number.POSITIVE_INFINITY,
-      repeatType: "reverse" as const,
-    },
-  },
-};
 
 const containerVariants = {
   hidden: { opacity: 0 },

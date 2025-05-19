@@ -12,7 +12,7 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { motion, AnimatePresence } from "framer-motion";
 import { encrypt } from "@/service/encryption";
-import { Calendar, Globe, Lock, Users, User, UserPlus } from "lucide-react";
+import { Calendar, Globe, Lock, Users, User, UserPlus, Plus } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -538,8 +538,8 @@ function WorkspaceItemList({
         </p>
         {type === "my" && (
           <CreateWorkspace>
-            <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-              Create Workspace
+            <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:ring-2 focus:ring-offset-2 gap-2">
+              Create Workspace <Plus />
             </button>
           </CreateWorkspace>
         )}

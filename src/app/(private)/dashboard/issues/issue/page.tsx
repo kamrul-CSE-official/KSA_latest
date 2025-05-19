@@ -84,7 +84,7 @@ export default function IssuePage() {
     <div className="container mx-auto px-4">
       <IssueDetail
         sharedUsers={sharedUsers}
-        numberOfSolutions={solutionData.length || 0}
+        numberOfSolutions={solutionData?.length || 0}
         issue={issueDetails}
       />
 

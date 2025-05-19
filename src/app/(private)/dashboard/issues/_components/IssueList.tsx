@@ -19,6 +19,8 @@ import { Badge } from "@/components/ui/badge"
 import moment from "moment"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useInView } from "react-intersection-observer"
+import { useSelector } from "react-redux"
+import { RootState } from "@/redux/store"
 
 const IssueCard = ({ issue, index }: { issue: IIssue; index: number }) => {
   return (
@@ -169,6 +171,7 @@ const IssueList = () => {
   })
 
   const [fetchIssues, { isLoading }] = useManageIssuesMutation()
+  const USER_ID = useSelector((state: RootState) => state.user.userData?.EmpID)
 
   const fetchMoreIssues = useCallback(async () => {
     if (!hasMore || isLoadingMore) return
@@ -177,9 +180,10 @@ const IssueList = () => {
       setIsLoadingMore(true)
       const newPageNumber = pageNumber + 1
       const response = await fetchIssues({
-        TYPE: activeTab === "latest" ? 2 : activeTab === "popular" ? 3 : 4,
+        Type: 2,
         PageSize: pageSize,
         PageNumber: newPageNumber,
+        USER_ID: USER_ID
       }).unwrap()
 
       if (response && response.length > 0) {
@@ -202,9 +206,10 @@ const IssueList = () => {
         setPageNumber(1)
         setHasMore(true)
         const response = await fetchIssues({
-          TYPE: activeTab === "latest" ? 1 : activeTab === "popular" ? 3 : 4,
+          Type: 2,
           PageSize: pageSize,
           PageNumber: 1,
+          USER_ID: USER_ID
         }).unwrap()
         setIssuesList(response || [])
       } catch (error) {

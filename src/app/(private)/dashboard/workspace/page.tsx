@@ -13,7 +13,7 @@ import {
   useWorkspaceShareManageMutation,
 } from "@/redux/services/ideaApi";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -189,6 +189,30 @@ export default function WorkspacePage() {
     Private: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
     Custom: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
   }[workspace?.ShareTypeName];
+
+
+  if(!workspace){
+    return <motion.div
+            className="flex items-center justify-center min-h-screen bg-background px-4"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card className="w-full max-w-md shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-destructive">No workspace found!</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  An unexpected request occurred. Please go away.
+                </p>
+                <Button variant="destructive">
+                  <Link href="/dashboard">Go to dashboard!</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
+  }
 
   return (
     <motion.div

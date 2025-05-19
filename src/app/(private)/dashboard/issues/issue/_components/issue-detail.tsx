@@ -149,7 +149,6 @@ export default function IssueDetail({
     );
   }
 
-  console.log("222222222222222::::::::::::::::: ", sharedUsers);
 
   return (
     <div className="space-y-6">
@@ -161,8 +160,7 @@ export default function IssueDetail({
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to all issues
         </Link>
-        {currentIssue?.TAG_LIST?.split(",")?.length &&
-          currentIssue?.TAG_LIST?.split(",")?.length > 0 && (
+        {currentIssue?.TAG_LIST?.split(",")?.length && (
             <motion.div
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
