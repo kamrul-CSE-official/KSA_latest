@@ -167,7 +167,11 @@ function IssueSolutions({
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <span>{moment(solution.CREATED_AT).fromNow()}</span>
+                            <span>
+                              {moment(solution.CREATED_AT).format(
+                                "MMM DD, YYYY [at] h:mm A"
+                              )}
+                            </span>
                           </TooltipTrigger>
                           <TooltipContent>
                             {moment(solution.CREATED_AT).format(
@@ -232,10 +236,10 @@ function IssueSolutions({
 
               <CardFooter className="flex flex-wrap gap-2 border-t p-4 bg-muted/20">
                 <div className="flex items-center gap-4 flex-1">
-                  <ReactionPicker
+                  {/* <ReactionPicker
                     isCurrentUserReact={false}
                     totalReactions={0}
-                  />
+                  /> */}
 
                   <Separator orientation="vertical" className="h-6" />
 

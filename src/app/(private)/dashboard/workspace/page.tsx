@@ -47,7 +47,7 @@ import Link from "next/link";
 interface SharedUser {
   PersonName: string;
   ITEM_IMAGE: string;
-  EmpID: string;
+  EMP_ID: string;
   DesignationName?: string;
   Department?: string;
   Section?: string;
@@ -191,28 +191,39 @@ export default function WorkspacePage() {
   }[workspace?.ShareTypeName];
 
 
-  if(!workspace){
-    return <motion.div
-            className="flex items-center justify-center min-h-screen bg-background px-4"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Card className="w-full max-w-md shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-destructive">No workspace found!</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-sm text-muted-foreground">
-                  An unexpected request occurred. Please go away.
-                </p>
-                <Button variant="destructive">
-                  <Link href="/dashboard">Go to dashboard!</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </motion.div>
-  }
+const enteredBy = workspaceData?.[0]?.EnterdBy;
+const isOwner = userData?.EmpID && enteredBy && Number(userData.EmpID) === Number(enteredBy);
+const isSharedUser = sharedUsers.some((user: SharedUser) => Number(user.EMP_ID) == Number(userData?.EmpID));
+
+const auth = isOwner || isSharedUser;
+
+
+if (!auth) {
+  return (
+    <motion.div
+      className="flex items-center justify-center min-h-screen bg-background px-4"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3 }}
+    >
+      <Card className="w-full max-w-md shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-destructive">
+            No workspace found!
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            An unexpected request occurred. Please go away.
+          </p>
+          <Button variant="destructive" asChild>
+            <Link href="/dashboard">Go to dashboard!</Link>
+          </Button>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+}
 
   return (
     <motion.div
@@ -226,7 +237,7 @@ export default function WorkspacePage() {
         className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to workspaces
+        Back to workspaces 
       </Link>
       {/* Workspace Header Card */}
       <Card className="overflow-hidden mb-8 shadow-lg border-muted/40">
@@ -375,7 +386,7 @@ export default function WorkspacePage() {
                             </div>
                           )}
                           <div className="text-xs text-muted-foreground">
-                            ID: {user.EmpID}
+                            ID: {user.EMP_ID}
                           </div>
                         </TooltipContent>
                       </Tooltip>

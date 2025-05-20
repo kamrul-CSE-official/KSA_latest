@@ -3,16 +3,12 @@ import Cookies from "js-cookie";
 import { IUserinfo } from "@/types/globelTypes";
 import { AUTH_KEY } from "@/constant/storage.key";
 
-
-
 export async function getUserInfo(): Promise<IUserinfo | null> {
   const token = Cookies.get(AUTH_KEY);
 
   if (!token) {
     return null;
   }
-
-  
 
   try {
     const decodedData = jwtDecode<IUserinfo>(token);
@@ -38,11 +34,7 @@ export async function getUserInfo(): Promise<IUserinfo | null> {
   return null;
 }
 
-
-
-
-
-
 export function logout() {
   Cookies.remove(AUTH_KEY);
+  window.location.href = "/";
 }

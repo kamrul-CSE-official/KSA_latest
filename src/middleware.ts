@@ -18,7 +18,7 @@ export default async function middleware(req: NextRequest) {
 
   // Not authenticated and trying to access a protected route
   if (isProtectedRoute && !token) {
-    return NextResponse.redirect(new URL("/login", req.nextUrl.origin));
+    return NextResponse.redirect(new URL("/", req.nextUrl.origin));
   }
 
   // Authenticated and trying to access a public route

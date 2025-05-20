@@ -6,13 +6,14 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
 import { LogOut } from "lucide-react";
 import { logout } from "@/service/auth.service";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { setUserData } from "@/redux/features/user/userSlice";
 
 export function ProfileButton() {
   const route = useRouter();
@@ -21,6 +22,8 @@ export function ProfileButton() {
   const handleLogout = () => {
     toast.success(`Good bye, ${userData?.FullName}`);
     logout();
+    const dispatch = useDispatch();
+    dispatch(setUserData(null));
     route.push("/");
   };
 

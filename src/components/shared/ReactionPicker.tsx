@@ -13,7 +13,7 @@ import AppreciateAnimation from "../../../public/assets/lottie/Appreciate.json";
 import UnLikeAnimation from "../../../public/assets/lottie/unlike.json";
 
 type ReactionOption = {
-  id: string;
+  id: number;
   label: string;
   activeColor: string;
   hoverColor: string;
@@ -21,9 +21,9 @@ type ReactionOption = {
   lottieAnimation: unknown;
 };
 
-const REACTION_OPTIONS: ReactionOption[] = [
+export const REACTION_OPTIONS: ReactionOption[] = [
   {
-    id: "like",
+    id: 1,
     label: "Like",
     activeColor:
       "text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30",
@@ -32,7 +32,7 @@ const REACTION_OPTIONS: ReactionOption[] = [
     lottieAnimation: LikeAnimation,
   },
   {
-    id: "Dislike",
+    id: 2,
     label: "Dislike",
     activeColor: "text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30",
     hoverColor: "group-hover:text-red-600 dark:group-hover:text-red-400",
@@ -40,7 +40,7 @@ const REACTION_OPTIONS: ReactionOption[] = [
     lottieAnimation: UnLikeAnimation,
   },
   {
-    id: "celebrate",
+    id: 3,
     label: "Celebrate",
     activeColor:
       "text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30",
@@ -49,7 +49,7 @@ const REACTION_OPTIONS: ReactionOption[] = [
     lottieAnimation: CelebrateAnimation,
   },
   {
-    id: "support",
+    id: 4,
     label: "Support",
     activeColor:
       "text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30",
@@ -58,7 +58,7 @@ const REACTION_OPTIONS: ReactionOption[] = [
     lottieAnimation: SupportAnimation,
   },
   {
-    id: "insightful",
+    id: 5,
     label: "Insightful",
     activeColor:
       "text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30",
@@ -67,7 +67,7 @@ const REACTION_OPTIONS: ReactionOption[] = [
     lottieAnimation: InsightfulAnimation,
   },
   {
-    id: "appreciate",
+    id: 6,
     label: "Appreciate",
     activeColor:
       "text-green-600 dark:text-red-400 bg-green-100 dark:bg-green-900/30",
@@ -109,7 +109,7 @@ export default function ReactionPicker({
   const containerRef = useRef<HTMLDivElement>(null);
 
   const selectedReaction = selected
-    ? REACTION_OPTIONS.find((r) => r.id === selected)
+    ? REACTION_OPTIONS.find((r) => r.label == selected)
     : null;
 
   const handleMouseEnter = () => {
@@ -136,6 +136,7 @@ export default function ReactionPicker({
     setTimeout(() => setPlayingAnimation(null), REACTION_ANIMATION_DURATION);
 
     const newSelected = reactionId === selected ? null : reactionId;
+    console.log("new selected: ",newSelected)
     setSelected(newSelected);
     onReactionSelect?.(newSelected);
     setShowReactionBar(false);
@@ -276,7 +277,7 @@ export default function ReactionPicker({
                   key={reaction.id}
                   className={cn(
                     "group flex flex-col items-center justify-center p-1.5 rounded-full relative",
-                    reaction.id === selected
+                    reaction.label == selected
                       ? reaction.activeColor
                       : "hover:bg-gray-100 dark:hover:bg-gray-700"
                   )}
@@ -291,8 +292,8 @@ export default function ReactionPicker({
                     transition: { type: "spring", stiffness: 400, damping: 10 },
                   }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => handleReactionSelect(reaction.id)}
-                  onMouseEnter={() => setHoveredReaction(reaction.id)}
+                  onClick={() => handleReactionSelect(reaction.label)}
+                  onMouseEnter={() => setHoveredReaction(reaction.label)}
                   onMouseLeave={() => setHoveredReaction(null)}
                 >
                   <div className="w-8 h-8">
@@ -304,7 +305,7 @@ export default function ReactionPicker({
                     />
                   </div>
                   <AnimatePresence>
-                    {hoveredReaction === reaction.id && (
+                    {hoveredReaction == reaction.label && (
                       <motion.span
                         className="absolute bottom-full mb-1 text-xs font-medium bg-gray-800 dark:bg-gray-700 text-white dark:text-gray-200 py-0.5 px-1.5 rounded whitespace-nowrap pointer-events-none"
                         initial={{ opacity: 0, y: 5 }}

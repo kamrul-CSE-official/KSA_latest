@@ -45,6 +45,7 @@ interface IWorkspace {
 interface SharedUser {
   PersonName: string;
   ITEM_IMAGE: string;
+  EMP_ID?: number
 }
 
 function WorkspaceItemList({

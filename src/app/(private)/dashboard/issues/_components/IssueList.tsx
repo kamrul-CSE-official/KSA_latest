@@ -256,26 +256,7 @@ const IssueList = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full">
-        <TabsList className="mb-4 grid w-full grid-cols-3 p-1 bg-muted/50">
-          <TabsTrigger
-            value="latest"
-            className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200"
-          >
-            Latest
-          </TabsTrigger>
-          <TabsTrigger
-            value="popular"
-            className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200"
-          >
-            Popular
-          </TabsTrigger>
-          <TabsTrigger
-            value="unanswered"
-            className="data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200"
-          >
-            Unanswered
-          </TabsTrigger>
-        </TabsList>
+        
         <TabsContent value={activeTab} className="space-y-4 focus-visible:outline-none focus-visible:ring-0">
           {isLoading && issuesList.length === 0 ? (
             <LoadingSkeleton />
