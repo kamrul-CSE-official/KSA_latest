@@ -173,31 +173,31 @@ const IssueList = () => {
   const [fetchIssues, { isLoading }] = useManageIssuesMutation()
   const USER_ID = useSelector((state: RootState) => state.user.userData?.EmpID)
 
-  const fetchMoreIssues = useCallback(async () => {
-    if (!hasMore || isLoadingMore) return
+  // const fetchMoreIssues = useCallback(async () => {
+  //   if (!hasMore || isLoadingMore) return
 
-    try {
-      setIsLoadingMore(true)
-      const newPageNumber = pageNumber + 1
-      const response = await fetchIssues({
-        Type: 2,
-        PageSize: pageSize,
-        PageNumber: newPageNumber,
-        USER_ID: USER_ID
-      }).unwrap()
+  //   try {
+  //     setIsLoadingMore(true)
+  //     const newPageNumber = pageNumber + 1
+  //     const response = await fetchIssues({
+  //       Type: 2,
+  //       PageSize: pageSize,
+  //       PageNumber: newPageNumber,
+  //       USER_ID: USER_ID
+  //     }).unwrap()
 
-      if (response && response.length > 0) {
-        setIssuesList((prev) => [...prev, ...response])
-        setPageNumber(newPageNumber)
-      } else {
-        setHasMore(false)
-      }
-    } catch (error) {
-      console.error("Failed to fetch more issues:", error)
-    } finally {
-      setIsLoadingMore(false)
-    }
-  }, [pageNumber, pageSize, hasMore, isLoadingMore, fetchIssues, activeTab])
+  //     if (response && response.length > 0) {
+  //       setIssuesList((prev) => [...prev, ...response])
+  //       setPageNumber(newPageNumber)
+  //     } else {
+  //       setHasMore(false)
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to fetch more issues:", error)
+  //   } finally {
+  //     setIsLoadingMore(false)
+  //   }
+  // }, [pageNumber, pageSize, hasMore, isLoadingMore, fetchIssues, activeTab])
 
   useEffect(() => {
     const getInitialIssues = async () => {
@@ -219,11 +219,11 @@ const IssueList = () => {
     getInitialIssues()
   }, [fetchIssues, pageSize, activeTab])
 
-  useEffect(() => {
-    if (inView && hasMore && !isLoadingMore) {
-      fetchMoreIssues()
-    }
-  }, [inView, hasMore, fetchMoreIssues, isLoadingMore])
+  // useEffect(() => {
+  //   if (inView && hasMore && !isLoadingMore) {
+  //     fetchMoreIssues()
+  //   }
+  // }, [inView, hasMore, fetchMoreIssues, isLoadingMore])
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value.toLowerCase())

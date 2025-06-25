@@ -1,317 +1,173 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Lottie from "lottie-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import Lottie from "lottie-react";
-import LikeAnimation from "../../../public/assets/lottie/like.json";
-import CelebrateAnimation from "../../../public/assets/lottie/celebrate.json";
-import SupportAnimation from "../../../public/assets/lottie/support.json";
-import InsightfulAnimation from "../../../public/assets/lottie/insightful.json";
-import AppreciateAnimation from "../../../public/assets/lottie/Appreciate.json";
-import UnLikeAnimation from "../../../public/assets/lottie/unlike.json";
 
-type ReactionOption = {
-  id: number;
-  label: string;
-  activeColor: string;
-  hoverColor: string;
-  count: number;
-  lottieAnimation: unknown;
-};
+import Like from "@/../public/assets/lottie/like.json";
+import Dislike from "@/../public/assets/lottie/unlike.json";
+import Celebrate from "@/../public/assets/lottie/celebrate.json";
+import Support from "@/../public/assets/lottie/support.json";
+import Insightful from "@/../public/assets/lottie/insightful.json";
+import Appreciate from "@/../public/assets/lottie/Appreciate.json";
 
-export const REACTION_OPTIONS: ReactionOption[] = [
-  {
-    id: 1,
-    label: "Like",
-    activeColor:
-      "text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30",
-    hoverColor: "group-hover:text-blue-600 dark:group-hover:text-blue-400",
-    count: 24,
-    lottieAnimation: LikeAnimation,
-  },
-  {
-    id: 2,
-    label: "Dislike",
-    activeColor: "text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30",
-    hoverColor: "group-hover:text-red-600 dark:group-hover:text-red-400",
-    count: 24,
-    lottieAnimation: UnLikeAnimation,
-  },
-  {
-    id: 3,
-    label: "Celebrate",
-    activeColor:
-      "text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30",
-    hoverColor: "group-hover:text-amber-600 dark:group-hover:text-amber-400",
-    count: 5,
-    lottieAnimation: CelebrateAnimation,
-  },
-  {
-    id: 4,
-    label: "Support",
-    activeColor:
-      "text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30",
-    hoverColor: "group-hover:text-purple-600 dark:group-hover:text-purple-400",
-    count: 7,
-    lottieAnimation: SupportAnimation,
-  },
-  {
-    id: 5,
-    label: "Insightful",
-    activeColor:
-      "text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30",
-    hoverColor: "group-hover:text-green-600 dark:group-hover:text-green-400",
-    count: 12,
-    lottieAnimation: InsightfulAnimation,
-  },
-  {
-    id: 6,
-    label: "Appreciate",
-    activeColor:
-      "text-green-600 dark:text-red-400 bg-green-100 dark:bg-green-900/30",
-    hoverColor: "group-hover:text-red-600 dark:group-hover:text-red-400",
-    count: 3,
-    lottieAnimation: AppreciateAnimation,
-  },
-];
+const REACTIONS = [
+  { label: "Like", color: "blue", animation: Like },
+  { label: "Dislike", color: "red", animation: Dislike },
+  { label: "Celebrate", color: "amber", animation: Celebrate },
+  { label: "Support", color: "purple", animation: Support },
+  { label: "Insightful", color: "yellow", animation: Insightful },
+  { label: "Appreciate", color: "green", animation: Appreciate },
+] as const;
 
-type ReactionPickerProps = {
-  initialReaction?: string | null;
-  onReactionSelect?: (reactionId: string | null) => void;
-  showCounts?: boolean;
+type ReactionType = typeof REACTIONS[number];
+
+interface Props {
   className?: string;
-  totalReactions: number;
-  isCurrentUserReact: boolean;
-  reactionType?: number;
-  onClick?: () => void;
-};
-
-const REACTION_ANIMATION_DURATION = 1500;
-const HOVER_DELAY = 200;
-const HOVER_LEAVE_DELAY = 100;
+  onChange?: (reaction: string | null) => void;
+  defaultReaction?: string | null;
+  showCounts?: boolean;
+  totalReactions?: number;
+  isCurrentUserReact?: boolean;
+}
 
 export default function ReactionPicker({
-  initialReaction = null,
-  onReactionSelect,
-  showCounts = true,
   className,
+  onChange,
+  defaultReaction = null,
+  showCounts = true,
   totalReactions = 0,
   isCurrentUserReact = false,
-  reactionType = 0,
-}: ReactionPickerProps) {
-  const [selected, setSelected] = useState<string | null>(initialReaction);
-  const [showReactionBar, setShowReactionBar] = useState(false);
-  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
-  const [hoveredReaction, setHoveredReaction] = useState<string | null>(null);
-  const [playingAnimation, setPlayingAnimation] = useState<string | null>(null);
+}: Props) {
+  const [selected, setSelected] = useState<string | null>(defaultReaction);
+  const [showBar, setShowBar] = useState(false);
+  const [playing, setPlaying] = useState<string | null>(null);
+  const [hovered, setHovered] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const selectedReaction = selected
-    ? REACTION_OPTIONS.find((r) => r.label == selected)
-    : null;
+  const selectedReaction = REACTIONS.find(r => r.label === selected);
 
-  const handleMouseEnter = () => {
-    const timeout = setTimeout(() => {
-      setShowReactionBar(true);
-    }, HOVER_DELAY);
-    setHoverTimeout(timeout);
-  };
+  const handleReaction = useCallback((label: string) => {
+    const newSelection = selected === label ? null : label;
+    setSelected(newSelection);
+    onChange?.(newSelection);
+    setPlaying(label);
+    setTimeout(() => setPlaying(null), 1500);
+    setShowBar(false);
+  }, [selected]);
 
-  const handleMouseLeave = () => {
-    if (hoverTimeout) {
-      clearTimeout(hoverTimeout);
-      setHoverTimeout(null);
-    }
-
-    setTimeout(() => {
-      setShowReactionBar(false);
-      setHoveredReaction(null);
-    }, HOVER_LEAVE_DELAY);
-  };
-
-  const handleReactionSelect = (reactionId: string) => {
-    setPlayingAnimation(reactionId);
-    setTimeout(() => setPlayingAnimation(null), REACTION_ANIMATION_DURATION);
-
-    const newSelected = reactionId === selected ? null : reactionId;
-    console.log("new selected: ",newSelected)
-    setSelected(newSelected);
-    onReactionSelect?.(newSelected);
-    setShowReactionBar(false);
-  };
-
-  // Close reaction bar when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setShowReactionBar(false);
+    const clickOutside = (e: MouseEvent) => {
+      if (!containerRef.current?.contains(e.target as Node)) {
+        setShowBar(false);
+        setHovered(null);
       }
     };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", clickOutside);
+    return () => document.removeEventListener("mousedown", clickOutside);
   }, []);
 
   return (
     <div className={cn("relative", className)} ref={containerRef}>
-      {/* Reaction counts display */}
       {showCounts && totalReactions > 0 && (
-        <div className="py-2 flex items-center text-xs text-gray-500 dark:text-gray-400">
+        <div className="flex items-center text-sm text-gray-500 mb-2">
           <div className="flex -space-x-1 mr-2">
-            {REACTION_OPTIONS.slice(0, 3).map((reaction, i) => (
+            {REACTIONS.slice(0, 3).map((r, i) => (
               <div
-                key={reaction.id}
-                className={cn(
-                  "w-4 h-4 rounded-full flex items-center justify-center border border-white dark:border-gray-800",
-                  reaction.activeColor
-                )}
+                key={r.label}
+                className={`w-5 h-5 rounded-full bg-${r.color}-100 border`}
                 style={{ zIndex: 3 - i }}
               >
                 <Lottie
-                  animationData={reaction.lottieAnimation}
-                  loop={true}
+                  animationData={r.animation}
+                  loop
                   autoplay={false}
-                  style={{ width: 16, height: 16 }}
-                  initialSegment={[10, 20]}
+                  style={{ width: 20, height: 20 }}
                 />
               </div>
             ))}
           </div>
-          <span className="cursor-pointer hover:text-gray-700 dark:hover:text-gray-300">
-            {totalReactions == 1 && isCurrentUserReact
+          <span>
+            {totalReactions === 1 && isCurrentUserReact
               ? "Only you"
-              : totalReactions == 0 && !isCurrentUserReact
-              ? "00"
               : `${isCurrentUserReact ? "You and " : ""}${totalReactions}`}
           </span>
         </div>
       )}
 
-      {/* Reaction button */}
       <div
-        className="border-gray-200 dark:border-gray-700 flex w-fit"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        className="inline-flex"
+        onMouseEnter={() => setShowBar(true)}
+        onMouseLeave={() => setShowBar(false)}
       >
         <Button
           variant="ghost"
           size="sm"
           className={cn(
-            selected
-              ? selectedReaction?.activeColor
-              : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+            selectedReaction
+              ? `bg-${selectedReaction.color}-100 text-${selectedReaction.color}-600`
+              : "text-gray-600 dark:text-gray-300 hover:bg-muted"
           )}
-          onClick={() => handleReactionSelect(selected || "like")}
+          onClick={() => handleReaction(selected || "Like")}
         >
-          {playingAnimation && playingAnimation === selected ? (
-            <div className="w-8 h-8">
-              <Lottie
-                animationData={selectedReaction?.lottieAnimation}
-                loop={false}
-                autoplay={true}
-                className="w-full h-full"
-              />
+          {playing && playing === selected ? (
+            <div className="w-6 h-6">
+              <Lottie animationData={selectedReaction?.animation} loop={false} autoplay />
             </div>
           ) : selected ? (
             <>
-              <motion.div
-                initial={{ scale: 0.8 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                className="w-5 h-5"
-              >
-                <Lottie
-                  animationData={selectedReaction?.lottieAnimation}
-                  loop={true}
-                  autoplay={false}
-                  className="w-full h-full"
-                />
-              </motion.div>
-              <span>{selectedReaction?.label}</span>
+              <div className="w-5 h-5 mr-1">
+                <Lottie animationData={selectedReaction?.animation} loop autoplay={false} />
+              </div>
+              <span>{selected}</span>
             </>
           ) : (
             <>
-              <div className="w-5 h-5">
-                <Lottie
-                  animationData={
-                    REACTION_OPTIONS[reactionType | 0].lottieAnimation
-                  }
-                  loop={true}
-                  autoplay={false}
-                  initialSegment={[0, 15]}
-                  className="w-full h-full"
-                />
+              <div className="w-5 h-5 mr-1">
+                <Lottie animationData={Like} loop autoplay={false} />
               </div>
-              <span>Like</span>
+              <span>React</span>
             </>
           )}
         </Button>
 
-        {/* Floating reaction bar */}
         <AnimatePresence>
-          {showReactionBar && (
+          {showBar && (
             <motion.div
-              className="absolute -top-6 left-0 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 flex p-1 z-10"
-              initial={{ opacity: 0, y: 10, scale: 0.9 }}
+              initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{
-                opacity: 0,
-                y: 10,
-                scale: 0.9,
-                transition: { duration: 0.15 },
-              }}
-              transition={{
-                duration: 0.2,
-                type: "spring",
-                stiffness: 400,
-                damping: 25,
-              }}
+              exit={{ opacity: 0, y: 10, scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="absolute -top-10 left-0 bg-white dark:bg-muted border shadow rounded-full px-2 py-1 flex gap-2 z-10"
             >
-              {REACTION_OPTIONS.map((reaction, index) => (
+              {REACTIONS.map((reaction, i) => (
                 <motion.button
-                  key={reaction.id}
+                  key={reaction.label}
                   className={cn(
-                    "group flex flex-col items-center justify-center p-1.5 rounded-full relative",
-                    reaction.label == selected
-                      ? reaction.activeColor
-                      : "hover:bg-gray-100 dark:hover:bg-gray-700"
+                    "group p-1.5 rounded-full",
+                    selected === reaction.label
+                      ? `bg-${reaction.color}-100`
+                      : "hover:bg-gray-200 dark:hover:bg-gray-700"
                   )}
+                  onClick={() => handleReaction(reaction.label)}
+                  onMouseEnter={() => setHovered(reaction.label)}
+                  onMouseLeave={() => setHovered(null)}
                   initial={{ opacity: 0, y: 10 }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                    transition: { delay: index * 0.03 },
-                  }}
-                  whileHover={{
-                    scale: 1.2,
-                    transition: { type: "spring", stiffness: 400, damping: 10 },
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleReactionSelect(reaction.label)}
-                  onMouseEnter={() => setHoveredReaction(reaction.label)}
-                  onMouseLeave={() => setHoveredReaction(null)}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.03 }}
                 >
-                  <div className="w-8 h-8">
-                    <Lottie
-                      animationData={reaction.lottieAnimation}
-                      loop={true}
-                      autoplay={true}
-                      className="w-full h-full"
-                    />
+                  <div className="w-6 h-6">
+                    <Lottie animationData={reaction.animation} loop autoplay />
                   </div>
                   <AnimatePresence>
-                    {hoveredReaction == reaction.label && (
+                    {hovered === reaction.label && (
                       <motion.span
-                        className="absolute bottom-full mb-1 text-xs font-medium bg-gray-800 dark:bg-gray-700 text-white dark:text-gray-200 py-0.5 px-1.5 rounded whitespace-nowrap pointer-events-none"
+                        className="absolute bottom-full mb-1 bg-gray-800 text-white text-xs px-2 py-1 rounded"
                         initial={{ opacity: 0, y: 5 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 5 }}
-                        transition={{ duration: 0.1 }}
                       >
                         {reaction.label}
                       </motion.span>

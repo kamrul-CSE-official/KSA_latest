@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import IssueDetail from "./_components/issue-detail";
 import { decrypt } from "@/service/encryption";
@@ -17,6 +17,7 @@ import IssueSolutions from "./_components/IssueSolutions";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function IssuePage() {
+  const [isUpdate, setIsUpdate] = useState<number>(0);
   const searchParams = useSearchParams();
   const issueId = decrypt(searchParams?.get("issueId") || "") || "";
   const loggedInUser = useSelector((state: RootState) => state.user.userData);
@@ -25,6 +26,8 @@ export default function IssuePage() {
     useIssueDetailsMutation();
   const [issueSolutionsReq, { isLoading, data: solutionData }] =
     useIssuesSolutionsMutation();
+  console.log("Solution data::::: ", solutionData);
+
   const [issueShareReq, { data: sharedUsers }] = useIssueShareMutation();
 
   const { userData } = useSelector((state: RootState) => state.user);
@@ -46,8 +49,9 @@ export default function IssuePage() {
     issueSolutionsReq({
       Type: 2,
       ISSUES_ID: currentIssueId,
+      USER_ID: userData?.EmpID,
     });
-  }, []);
+  }, [isUpdate]);
 
   if (loading) {
     return (
@@ -83,13 +87,19 @@ export default function IssuePage() {
   return (
     <div className="container mx-auto px-4">
       <IssueDetail
+        isUpdate={isUpdate}
+        setIsUpdate={setIsUpdate}
         sharedUsers={sharedUsers}
         numberOfSolutions={solutionData?.length || 0}
         issue={issueDetails}
       />
 
       {solutionData ? (
-        <IssueSolutions solutionData={solutionData} />
+        <IssueSolutions
+          isUpdate={isUpdate}
+          setIsUpdate={setIsUpdate}
+          solutionData={solutionData}
+        />
       ) : (
         <Card className="bg-muted/50">
           <CardContent className="py-8 text-center">
