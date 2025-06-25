@@ -261,6 +261,7 @@ export default function IssueSolutions({
                 <div className="flex items-center gap-4 flex-1">
                   <ReactionPicker
                     key={solution.ID}
+                    solutionId={solution.ID}                    
                     defaultReaction={
                       solution.LIKES_TYPE
                         ? Object.keys(reactionTypeMapper).find(

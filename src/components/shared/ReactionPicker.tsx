@@ -12,6 +12,8 @@ import Celebrate from "@/../public/assets/lottie/celebrate.json";
 import Support from "@/../public/assets/lottie/support.json";
 import Insightful from "@/../public/assets/lottie/insightful.json";
 import Appreciate from "@/../public/assets/lottie/Appreciate.json";
+import WhoReact from "./WhoReact";
+import { useWhoLikedMutation } from "@/redux/services/issuesApi";
 
 const REACTIONS = [
   { label: "Like", color: "blue", animation: Like },
@@ -22,7 +24,7 @@ const REACTIONS = [
   { label: "Appreciate", color: "green", animation: Appreciate },
 ] as const;
 
-type ReactionType = typeof REACTIONS[number];
+type ReactionType = (typeof REACTIONS)[number];
 
 interface Props {
   className?: string;
@@ -31,6 +33,8 @@ interface Props {
   showCounts?: boolean;
   totalReactions?: number;
   isCurrentUserReact?: boolean;
+  solutionId?: number | null;
+  issueId?: number | null;
 }
 
 export default function ReactionPicker({
@@ -40,23 +44,29 @@ export default function ReactionPicker({
   showCounts = true,
   totalReactions = 0,
   isCurrentUserReact = false,
+  solutionId,
+  issueId,
 }: Props) {
   const [selected, setSelected] = useState<string | null>(defaultReaction);
   const [showBar, setShowBar] = useState(false);
   const [playing, setPlaying] = useState<string | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [getWhoLikeReq, { data: whoLikeData }] = useWhoLikedMutation();
 
-  const selectedReaction = REACTIONS.find(r => r.label === selected);
+  const selectedReaction = REACTIONS.find((r) => r.label === selected);
 
-  const handleReaction = useCallback((label: string) => {
-    const newSelection = selected === label ? null : label;
-    setSelected(newSelection);
-    onChange?.(newSelection);
-    setPlaying(label);
-    setTimeout(() => setPlaying(null), 1500);
-    setShowBar(false);
-  }, [selected]);
+  const handleReaction = useCallback(
+    (label: string) => {
+      const newSelection = selected === label ? null : label;
+      setSelected(newSelection);
+      onChange?.(newSelection);
+      setPlaying(label);
+      setTimeout(() => setPlaying(null), 1500);
+      setShowBar(false);
+    },
+    [selected]
+  );
 
   useEffect(() => {
     const clickOutside = (e: MouseEvent) => {
@@ -69,32 +79,47 @@ export default function ReactionPicker({
     return () => document.removeEventListener("mousedown", clickOutside);
   }, []);
 
+  useEffect(() => {
+    getWhoLikeReq({
+      SOLUTION_ID: solutionId || null,
+      ISSUE_ID: issueId || null,
+    });
+  }, [solutionId, issueId, getWhoLikeReq]);
+
+
   return (
     <div className={cn("relative", className)} ref={containerRef}>
       {showCounts && totalReactions > 0 && (
-        <div className="flex items-center text-sm text-gray-500 mb-2">
-          <div className="flex -space-x-1 mr-2">
-            {REACTIONS.slice(0, 3).map((r, i) => (
-              <div
-                key={r.label}
-                className={`w-5 h-5 rounded-full bg-${r.color}-100 border`}
-                style={{ zIndex: 3 - i }}
-              >
-                <Lottie
-                  animationData={r.animation}
-                  loop
-                  autoplay={false}
-                  style={{ width: 20, height: 20 }}
-                />
-              </div>
-            ))}
-          </div>
-          <span>
-            {totalReactions === 1 && isCurrentUserReact
+        <WhoReact
+          title="People who liked this"
+          whoLikeData={whoLikeData}
+        >
+          <div className="flex items-center text-sm text-gray-500 mb-2">
+            <div className="flex -space-x-1 mr-2">
+              {REACTIONS.slice(0, 3).map((r, i) => (
+                <div
+                  key={r.label}
+                  className={`w-5 h-5 rounded-full bg-${r.color}-100 border`}
+                  style={{ zIndex: 3 - i }}
+                >
+                  <Lottie
+                    animationData={r.animation}
+                    loop
+                    autoplay={false}
+                    style={{ width: 20, height: 20 }}
+                  />
+                </div>
+              ))}
+            </div>
+            <span>
+              {/* {totalReactions === 1 && isCurrentUserReact
               ? "Only you"
-              : `${isCurrentUserReact ? "You and " : ""}${totalReactions}`}
-          </span>
-        </div>
+              : `${isCurrentUserReact ? "You and " : ""}${totalReactions}`} */}
+
+              {totalReactions}
+            </span>
+          </div>
+        </WhoReact>
       )}
 
       <div
@@ -114,12 +139,20 @@ export default function ReactionPicker({
         >
           {playing && playing === selected ? (
             <div className="w-6 h-6">
-              <Lottie animationData={selectedReaction?.animation} loop={false} autoplay />
+              <Lottie
+                animationData={selectedReaction?.animation}
+                loop={false}
+                autoplay
+              />
             </div>
           ) : selected ? (
             <>
               <div className="w-5 h-5 mr-1">
-                <Lottie animationData={selectedReaction?.animation} loop autoplay={false} />
+                <Lottie
+                  animationData={selectedReaction?.animation}
+                  loop
+                  autoplay={false}
+                />
               </div>
               <span>{selected}</span>
             </>

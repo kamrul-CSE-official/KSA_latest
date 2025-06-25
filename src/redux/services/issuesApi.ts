@@ -77,6 +77,13 @@ const issuesApis = rootApi.injectEndpoints({
         body: data,
       }),
     }),
+    whoLiked: builder.mutation({
+      query: (data) => ({
+        url: "/KSA/WhoLikde",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -90,7 +97,8 @@ export const {
   useSuggestedPeopleMutation,
   useIssueShareMutation,
   useUpdaeIssueContentMutation,
-  useIssueAndSulationLikeMutation
+  useIssueAndSulationLikeMutation,
+  useWhoLikedMutation,
 } = issuesApis;
 
 export default issuesApis;
