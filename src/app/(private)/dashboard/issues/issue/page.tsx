@@ -16,6 +16,7 @@ import { RootState } from "@/redux/store";
 import IssueSolutions from "./_components/IssueSolutions";
 import { Card, CardContent } from "@/components/ui/card";
 
+
 export default function IssuePage() {
   const [isUpdate, setIsUpdate] = useState<number>(0);
   const searchParams = useSearchParams();
@@ -52,6 +53,8 @@ export default function IssuePage() {
       USER_ID: userData?.EmpID,
     });
   }, [isUpdate]);
+
+ 
 
   if (loading) {
     return (
@@ -93,6 +96,8 @@ export default function IssuePage() {
         numberOfSolutions={solutionData?.length || 0}
         issue={issueDetails}
       />
+      
+
 
       {solutionData ? (
         <IssueSolutions

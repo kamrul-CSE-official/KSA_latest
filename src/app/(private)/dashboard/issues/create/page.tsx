@@ -1,68 +1,62 @@
-"use client";
+"use client"
 
-import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
-import { toast } from "sonner";
-import { ArrowLeft } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import CreateIssueForm from "./_components/create-issue-form";
-import { useCreateAIssueMutation } from "@/redux/services/issuesApi";
-import { RootState } from "@/redux/store";
+import { useState } from "react"
+import { ArrowLeft } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
+import CreateIssueForm from "./_components/create-issue-form"
+import { useRouter } from "next/navigation"
 
 interface IssueFormData {
-  title: string;
-  content: string;
-  tags?: string[];
+  title: string
+  content: string
+  summary: string
+  tags: string[]
 }
 
 export default function CreateIssuePage() {
-  const router = useRouter();
-  const [createIssue, { isLoading }] = useCreateAIssueMutation();
-  const { userData } = useSelector((state: RootState) => state.user);
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const route = useRouter();
 
   const handleSubmit = async (formData: IssueFormData) => {
+    setIsSubmitting(true)
     try {
-      if (!userData) {
-        throw new Error("User data not available");
-      }
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 2000))
 
-      console.log(formData);
+      console.log("Issue data:", formData)
+      toast.success("Successfully created an issue!")
 
-      await createIssue({
-        TITLE: formData.title,
-        CONTENT: formData.content,
-        USER_ID: userData.EmpID,
-        COMPANY_ID: userData.CompanyID,
-        tags: formData.tags,
-      }).unwrap();
-
-      toast.success("Successfully created an issue!");
-      router.push("/dashboard/issues");
+      // In a real app, you would navigate back or to the issues list
+      // router.push("/dashboard/issues")
     } catch (error) {
-      console.error("Failed to create issue:", error);
-      toast.error("Failed to create issue. Please try again.");
+      console.error("Failed to create issue:", error)
+      toast.error("Failed to create issue. Please try again.")
+    } finally {
+      setIsSubmitting(false)
     }
-  };
+  }
+
+  const handleGoBack = () => {
+    route.push("/dashboard/issues/")
+  }
 
   return (
-    <div>
-      <h4
-        className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4 bg-none cursor-pointer"
-        onClick={() => router.back()}
-        aria-label="Go back"
-      >
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Back
-      </h4>
+    <div className="min-h-screen">
+      <div>
+        <Button
+          variant="ghost"
+          onClick={handleGoBack}
+          className="mb-1 text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back
+        </Button>
 
-      <h1
-        data-view-transition-name="page-title"
-        className="text-3xl font-bold mb-4"
-      >
-        Create New Issue
-      </h1>
-      <CreateIssueForm onSubmit={handleSubmit} isSubmitting={isLoading} />
+
+
+        <CreateIssueForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
+      </div>
     </div>
-  );
+  )
 }

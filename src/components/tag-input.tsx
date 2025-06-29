@@ -10,9 +10,10 @@ interface TagInputProps {
   onChange: (tags: string[]) => void
   placeholder?: string
   maxTags?: number
+  onBlur?: void
 }
 
-export default function TagInput({ value, onChange, placeholder, maxTags = 10 }: TagInputProps) {
+export default function TagInput({ value, onChange, placeholder, maxTags = 10, onBlur }: TagInputProps) {
   const [inputValue, setInputValue] = useState("")
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
