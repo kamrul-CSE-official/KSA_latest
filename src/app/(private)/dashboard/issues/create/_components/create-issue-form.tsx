@@ -27,6 +27,8 @@ interface FormData {
   content: string
   tags: string[]
   summary: string
+  files?: string[]
+  fileTypes?: string[]
 }
 
 interface FormErrors {
@@ -48,7 +50,7 @@ export default function CreateIssueForm({ onSubmit, isSubmitting }: CreateIssueF
 
   const MAX_TITLE_LENGTH = 100
   const MIN_CONTENT_LENGTH = 20
-  const MAX_SUMMARY_LENGTH = 500
+  const MAX_SUMMARY_LENGTH = 1000
 
   const validateForm = useCallback((): FormErrors => {
     const newErrors: FormErrors = {}
@@ -86,7 +88,7 @@ export default function CreateIssueForm({ onSubmit, isSubmitting }: CreateIssueF
     setErrors((prev) => ({ ...prev, [field]: newErrors[field] }))
   }
 
-  const handleChange = (field: keyof FormData, value: string) => {
+  const handleChange = (field: keyof FormErrors, value: string) => {
     switch (field) {
       case "title":
         setTitle(value)
@@ -130,6 +132,8 @@ export default function CreateIssueForm({ onSubmit, isSubmitting }: CreateIssueF
         content: content.trim(),
         tags,
         summary: summary.trim(),
+        files: uploadedFiles?.map((pre)=> `https://192.168.1.253:8080/uploads/${pre.url}`) ,
+        fileTypes: uploadedFiles.map(file => file.type)
       })
     }
   }

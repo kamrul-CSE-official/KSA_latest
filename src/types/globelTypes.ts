@@ -94,6 +94,8 @@ export interface IIssue {
   NUMBER_OF_SULATION: number
   IsLiked: number | string
   LIKES_TYPE?: number
+  SUMMARY: string
+  DesgName: string
 }
 
 export interface Solution {

@@ -139,7 +139,7 @@ export default function TestEditor({
             skin: false,
             content_css: false,
             branding: false,
-            height: 900,
+            height: content ? 1600 : 200,
             menubar: false,
             plugins: [
               "advlist",

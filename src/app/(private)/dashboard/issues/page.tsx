@@ -1,7 +1,8 @@
 import React from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Files } from "lucide-react";
 import IssueList from "./_components/IssueList";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 function IssuesPage() {
   return (
@@ -13,11 +14,21 @@ function IssuesPage() {
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to dashboard
       </Link>
-      <h1 data-view-transition-name="page-title" className="text-3xl font-bold mb-2">Explore All Issues</h1>
-      <p className="text-muted-foreground mb-8">
-        Create any issues or query, get answers, and help others solve their
-        problems
-      </p>
+      <Card className="mb-5">
+        <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-white/20 rounded-lg">
+              <Files className="h-6 w-6" />
+            </div>
+            <div>
+              <CardTitle className="text-2xl font-bold">Explore All Issues</CardTitle>
+              <p className="text-blue-100 mt-1">Create any issues or query, get answers, and help others solve their
+                problems</p>
+            </div>
+          </div>
+        </CardHeader>
+      </Card>
+
       <IssueList />
     </div>
   );

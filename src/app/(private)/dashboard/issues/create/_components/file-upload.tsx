@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import axios from "axios"
+import Link from "next/link"
 
 interface UploadedFile {
   id: string
@@ -22,7 +23,7 @@ interface UploadedFile {
 interface FileUploadProps {
   onFilesChange: (files: UploadedFile[]) => void
   maxFiles?: number
-  maxFileSize?: number // in MB
+  maxFileSize?: number
   acceptedTypes?: string[]
   className?: string
 }
@@ -30,7 +31,7 @@ interface FileUploadProps {
 export default function FileUpload({
   onFilesChange,
   maxFiles = 5,
-  maxFileSize = 10, // 10MB default
+  maxFileSize = 5,
   acceptedTypes = ["image/*", "application/pdf"],
   className = "",
 }: FileUploadProps) {
@@ -43,7 +44,7 @@ export default function FileUpload({
     const formData = new FormData()
     formData.append("file", imageData)
 
-    const response = await axios.post("https://192.168.1.253:8080/FileUpload/ImageUpload", formData, {
+    const response = await axios.post("https://192.168.1.253:8080/FileUpload/FileUploads", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -279,15 +280,33 @@ export default function FileUpload({
                   </div>
 
                   {/* Preview for images */}
-                  {file.type.startsWith("image/") && (
+                  {file?.type?.startsWith("image/") ? (
                     <div className="mt-3">
-                      <img
-                        src={"https://192.168.1.253:8080/images/"+file.url || "/placeholder.svg"}
-                        alt={file.name}
-                        className="max-w-full h-20 object-cover rounded border"
-                      />
+                      <Link
+                        href={`https://192.168.1.253:8080/uploads/${file.url}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={`https://192.168.1.253:8080/uploads/${file.url}`}
+                          alt={file.name}
+                          className="max-w-full h-20 object-cover rounded border"
+                        />
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="mt-3">
+                      <Link
+                        href={`https://192.168.1.253:8080/uploads/${file.url}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        📄 {file.name || "Download file"}
+                      </Link>
                     </div>
                   )}
+
                 </CardContent>
               </Card>
             ))}
