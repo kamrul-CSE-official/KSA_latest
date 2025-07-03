@@ -84,6 +84,20 @@ const issuesApis = rootApi.injectEndpoints({
         body: data,
       }),
     }),
+    aboutTemplates: builder.mutation({
+      query: (data) => ({
+        url: "/KSA/CustomTemplatesCreate",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    getAttachFilePath: builder.mutation({
+      query: (data) => ({
+        url: "/KSA/GetFilePath",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -99,6 +113,8 @@ export const {
   useUpdaeIssueContentMutation,
   useIssueAndSulationLikeMutation,
   useWhoLikedMutation,
+  useAboutTemplatesMutation,
+  useGetAttachFilePathMutation,
 } = issuesApis;
 
 export default issuesApis;

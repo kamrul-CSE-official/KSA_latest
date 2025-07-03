@@ -36,6 +36,7 @@ interface FormErrors {
   content?: string
   tags?: string
   summary?: string
+  uploadedFiles?: string[]
 }
 
 export default function CreateIssueForm({ onSubmit, isSubmitting }: CreateIssueFormProps) {
@@ -45,7 +46,7 @@ export default function CreateIssueForm({ onSubmit, isSubmitting }: CreateIssueF
   const [tags, setTags] = useState<string[]>([])
   const [errors, setErrors] = useState<FormErrors>({})
   const [touched, setTouched] = useState<Record<string, boolean>>({})
-    const [uploadedFiles, setUploadedFiles] = useState<any[]>([])
+  const [uploadedFiles, setUploadedFiles] = useState<any[]>([])
 
 
   const MAX_TITLE_LENGTH = 100
@@ -132,7 +133,7 @@ export default function CreateIssueForm({ onSubmit, isSubmitting }: CreateIssueF
         content: content.trim(),
         tags,
         summary: summary.trim(),
-        files: uploadedFiles?.map((pre)=> `https://192.168.1.253:8080/uploads/${pre.url}`) ,
+        files: uploadedFiles?.map((pre) => `https://192.168.1.253:8080/uploads/${pre.url}`),
         fileTypes: uploadedFiles.map(file => file.type)
       })
     }
@@ -246,7 +247,7 @@ export default function CreateIssueForm({ onSubmit, isSubmitting }: CreateIssueF
             {errors.tags && <FieldError message={errors.tags} />}
           </div>
 
-            {/* File Upload Section */}
+          {/* File Upload Section */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <Upload className="h-5 w-5 text-indigo-600" />

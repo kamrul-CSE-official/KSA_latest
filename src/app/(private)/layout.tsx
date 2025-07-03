@@ -46,7 +46,7 @@ export default function PrivateLayout({ children }: PrivateLayoutProps) {
       }
     } catch (error) {
       console.error("Failed to fetch user info:", error);
-      router.replace("/login");
+      router.replace("/");
     } finally {
       setLoading(false);
     }

@@ -9,15 +9,14 @@ import { Button } from "@/components/ui/button"
 import CreateIssueForm from "./_components/create-issue-form"
 import { useCreateAIssueMutation } from "@/redux/services/issuesApi"
 import { RootState } from "@/redux/store"
-import { encrypt } from "@/service/encryption"
 
 interface IssueFormData {
   title: string
   content: string
   tags: string[]
   summary: string
-  Files?: string[]
-  FileTypes?: string[]
+  files?: string[]
+  fileTypes?: string[]
 }
 
 export default function CreateIssuePage() {
@@ -34,16 +33,18 @@ export default function CreateIssuePage() {
 
     setIsSubmitting(true)
 
+
+
     try {
       const response = await createIssue({
-        TITLE: formData.title,
-        SUMMARY: formData.summary,
-        CONTENT: formData.content,
-        USER_ID: userDetails.EmpID,
-        COMPANY_ID: userDetails.CompanyID,
-        TAGS: formData.tags,
-        Files: formData.Files,
-        FileTypes: formData.FileTypes,
+        TITLE: formData?.title,
+        SUMMARY: formData?.summary,
+        CONTENT: formData?.content,
+        USER_ID: userDetails?.EmpID,
+        COMPANY_ID: userDetails?.CompanyID,
+        TAGS: formData?.tags,
+        Files: formData?.files,
+        FileTypes: formData?.fileTypes,
       }).unwrap()
 
       if (response[0].ID) {
@@ -74,9 +75,9 @@ export default function CreateIssuePage() {
         Back to Issues
       </Button>
 
-      <CreateIssueForm 
-        onSubmit={handleSubmit} 
-        isSubmitting={isSubmitting} 
+      <CreateIssueForm
+        onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
       />
     </div>
   )

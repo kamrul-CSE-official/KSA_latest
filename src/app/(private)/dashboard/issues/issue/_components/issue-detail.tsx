@@ -25,7 +25,7 @@ import { AlertTriangle, Trash2 } from "lucide-react";
 import type { IIssue, Solution } from "@/types/globelTypes";
 import CreateSolutionForm from "../../_components/create-solution-form";
 import {
-  useIssuesLikesMutation,
+  useGetAttachFilePathMutation,
   useIssuesSolutionsMutation,
   useUpdaeIssueContentMutation,
 } from "@/redux/services/issuesApi";
@@ -74,6 +74,7 @@ import "tinymce/plugins/preview";
 // CSS
 import "tinymce/skins/ui/oxide/skin.min.css";
 import Loading from "@/components/shared/Loading";
+import AttachmentCard from "./AttachmentCard";
 
 type ISharedUser = {
   PersonID: string;
@@ -97,17 +98,22 @@ export default function IssueDetail({
 }: IssueDetailProps) {
   const router = useRouter();
   const currentIssue = issue[0];
-  const [solutions, setSolutions] = useState<Solution[]>(
-    currentIssue?.solutions || []
-  );
   const [isAddingSolution, setIsAddingSolution] = useState(false);
-  const [hasVoted, setHasVoted] = useState<boolean | null>(null);
   const [refreshTrigger, setRefreshTrigger] = useState<number>(1);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [likeHitReq, { isLoading: likeHitLoading }] = useIssuesLikesMutation();
   const userDataInfo = useSelector((state: RootState) => state.user.userData);
   const [reqForSolution, { isLoading: solutionLoading }] =
     useIssuesSolutionsMutation();
+  const [getAttachFilePathReq, { data }] = useGetAttachFilePathMutation();
+
+  useEffect(() => {
+    getAttachFilePathReq({
+      ParentID: currentIssue.ID,
+    });
+  }, [getAttachFilePathReq, issue]);
+
+
+  console.log("Attach File Path Data: ", data);
 
   const [updateIssueContentReq, { isLoading: updateIssueUpdateLoading }] =
     useUpdaeIssueContentMutation();
@@ -193,8 +199,7 @@ export default function IssueDetail({
   }, []);
 
   const handleAddSolution = async (newSolution: Solution) => {
-    setSolutions((prev) => [...prev, newSolution]);
-    console.log("NEW solution: ", newSolution);
+
     await reqForSolution({
       ISSUES_ID: currentIssue.ID,
       Type: 3,
@@ -207,18 +212,6 @@ export default function IssueDetail({
     setIsAddingSolution(false);
   };
 
-  // const hanldeReaction = (reaction: {
-  //   LIKES_TYPES: number;
-  //   ISSUE_ID: number | string;
-  // }) => {
-  //   likeHitReq({
-  //     ISSUE_ID: reaction.ISSUE_ID,
-  //     Type: 1,
-  //     LIKES_TYPES: reaction.LIKES_TYPES,
-  //     USER_ID: userDataInfo?.EmpID,
-  //   });
-  //   setHasVoted(null);
-  // };
 
   if (!currentIssue) {
     return (
@@ -385,7 +378,7 @@ export default function IssueDetail({
                     statusbar: false,
                     skin: false,
                     content_css: false,
-                    height: 700,
+                    height: 1000,
                     plugins: [
                       "advlist",
                       "autolink",
@@ -448,7 +441,7 @@ export default function IssueDetail({
                     statusbar: false,
                     skin: false,
                     content_css: false,
-                    height: 700,
+                    height: 1000,
 
                     toolbar:
                       "undo redo | blocks | " +
@@ -464,49 +457,17 @@ export default function IssueDetail({
             )}
           </Suspense>
         </CardContent>
-        <CardFooter className="flex justify-between border-t p-4 bg-muted/20">
-          {/* <div className="flex items-center gap-4">
-            {currentIssue && (
-              <ReactionPicker
-                initialReaction={
-                  currentIssue?.LIKES_TYPE == 0
-                    ? null
-                    : currentIssue?.LIKES_TYPE == 1
-                      ? REACTION_OPTIONS[0].label
-                      : currentIssue?.LIKES_TYPE == 2
-                        ? REACTION_OPTIONS[1].label
-                        : currentIssue?.LIKES_TYPE == 3
-                          ? REACTION_OPTIONS[2].label
-                          : currentIssue?.LIKES_TYPE == 4
-                            ? REACTION_OPTIONS[3].label
-                            : currentIssue?.LIKES_TYPE == 5
-                              ? REACTION_OPTIONS[4].label
-                              : currentIssue?.LIKES_TYPE == 6
-                                ? REACTION_OPTIONS[5].label
-                                : null
-                }
-                onReactionSelect={(reaction) =>
-                  hanldeReaction({
-                    LIKES_TYPES: REACTION_OPTIONS.filter((re) => re.label == reaction)[0].id,
-                    ISSUE_ID: currentIssue.ID,
-                  })
-                }
-                reactionType={0}
-                isCurrentUserReact={Number(currentIssue?.IsLiked) > 0}
-                totalReactions={currentIssue.LIKES_COUNT}
-              />
-            )}
-          </div> */}
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <MessageSquare className="h-4 w-4" />
-            <span className="text-sm">
-              {numberOfSolutions} solution{numberOfSolutions !== 1 ? "s" : ""}
-            </span>
+        <CardFooter className="border-t p-4 bg-muted/20 w-full flex flex-wrap items-center justify-center gap-2">
+          <div className="w-full space-y-3">
+            <h3 className="font-semibold text-sm">Attachments</h3>
+            {
+              data?.map((attach: any) => <AttachmentCard attachment={attach} />)
+            }
           </div>
         </CardFooter>
       </Card>
 
-      <div className="space-y-6 mt-8">
+      {/* <div className="space-y-6 mt-8">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold flex items-center gap-2">
             Solutions
@@ -544,7 +505,7 @@ export default function IssueDetail({
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </div> */}
       <br />
     </div>
   );

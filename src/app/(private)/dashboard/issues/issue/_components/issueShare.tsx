@@ -192,7 +192,7 @@ const IssueShare = ({ children }: IssueShareProps) => {
             <TabsTrigger value="share" className="py-4">
               Share with People
             </TabsTrigger>
-            <TabsTrigger value="visibility" className="py-4">
+            <TabsTrigger value="visibility" className="py-4 hidden">
               Visibility Settings
             </TabsTrigger>
           </TabsList>

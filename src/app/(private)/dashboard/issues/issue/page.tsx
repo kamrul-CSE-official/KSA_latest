@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import IssueSolutions from "./_components/IssueSolutions";
 import { Card, CardContent } from "@/components/ui/card";
+import NewIssueSolutions from "./_components/newIssueSolutions";
 
 
 export default function IssuePage() {
@@ -88,7 +89,7 @@ export default function IssuePage() {
   }
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="">
       <IssueDetail
         isUpdate={isUpdate}
         setIsUpdate={setIsUpdate}
@@ -98,8 +99,10 @@ export default function IssuePage() {
       />
       
 
+      <NewIssueSolutions />
 
-      {solutionData ? (
+
+      {/* {solutionData ? (
         <IssueSolutions
           isUpdate={isUpdate}
           setIsUpdate={setIsUpdate}
@@ -113,7 +116,7 @@ export default function IssuePage() {
             </p>
           </CardContent>
         </Card>
-      )}
+      )} */}
 
       <br />
       <br />

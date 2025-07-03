@@ -37,7 +37,7 @@ interface TestEditorProps {
   placeholder?: string;
 }
 
-export default function TestEditor({
+export default function SulationTextEditor({
   content,
   onChange,
   placeholder,
@@ -99,6 +99,7 @@ export default function TestEditor({
   return (
     <div className="relative rounded-lg border bg-background shadow-sm">
       <Suspense fallback={
+        // <Loading className="h-[700px]" />
         <p>Loading...</p>
       }>
         <Editor
@@ -110,7 +111,7 @@ export default function TestEditor({
             skin: false,
             content_css: false,
             branding: false,
-            height: 1000,
+            height: 595,
             menubar: false,
             disabled: false,
             plugins: [

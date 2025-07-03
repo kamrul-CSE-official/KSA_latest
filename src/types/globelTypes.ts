@@ -107,6 +107,11 @@ export interface Solution {
   votes?: number
   reviews?: Review[]
   replies?: Reply[]
+  Summary?: string
+  TITLE?: string
+  STATUS?: number
+  CONTENT?: string
+  DEPTNAME?: string
 }
 
 export interface Review {
