@@ -9,6 +9,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { useIssueShareMutation } from "@/redux/services/issuesApi";
+import { RootState } from "@/redux/store";
+import { decrypt } from "@/service/encryption";
 import {
   Home,
   Layers,
@@ -18,6 +21,9 @@ import {
   Plus,
   LucideIcon,
 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 type MenuItem = {
   icon: LucideIcon;
@@ -55,6 +61,28 @@ const SulationLeftSidebar = ({
     icon: getIconForLabel(label),
   }));
 
+  const [issueShareReq, { isLoading, data }] = useIssueShareMutation();
+  const userDetails = useSelector((state: RootState) => state.user.userData);
+  const searchParams = useSearchParams();
+
+  const issueId = decrypt(searchParams.get("issueId") || "");
+
+
+
+  useEffect(() => {
+    issueShareReq({
+      Type: 3,
+      PersonID: userDetails?.EmpID,
+      IssueId: issueId,
+      StatusID: 1,
+    });
+  }, [issueId, userDetails, issueShareReq]);
+
+
+  const machedUser = data?.find((user: { PersonID: number, CreatorID: number }) => user.PersonID == userDetails?.EmpID || user.CreatorID == userDetails?.EmpID);
+
+
+
   return (
     <div className={cn("flex h-full flex-col", className)}>
       <div className="border-b p-4">
@@ -64,7 +92,8 @@ const SulationLeftSidebar = ({
       <div className="flex-1 space-y-6 px-4 py-2">
         <div className="space-y-2">
           {/* Dropdown Menu */}
-          <DropdownMenu>
+          {isLoading && <p>Loading...</p>}
+          {machedUser && <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="w-full">
                 <Plus className="mr-2 h-4 w-4" /> Add
@@ -81,7 +110,7 @@ const SulationLeftSidebar = ({
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu>}
 
           {/* Sidebar Menu */}
           <nav className="space-y-1">

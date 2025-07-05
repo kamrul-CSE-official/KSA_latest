@@ -34,8 +34,10 @@ const NewIssueSolutions = () => {
   const [topNavState, setTopNavState] = useState<number>(0)
   const [leftNavState, setLeftNavState] = useState<number>(0)
   const [updateSulation, setUpdateSulation] = useState<number>(0)
+  const [dptSearch, setDptSearch] = useState<string>("")
+  const [sulations, setSulations] = useState<Solution[]>([]);
 
-  const [sulationReq, { isLoading, data }] = useIssuesSolutionsMutation()
+  const [sulationReq, { data }] = useIssuesSolutionsMutation()
   const [sulationsReq, { isLoading: sulationsLoading, data: sulationsData }] = useIssuesSolutionsMutation()
 
   // Memoized request functions to prevent unnecessary re-renders
@@ -48,15 +50,30 @@ const NewIssueSolutions = () => {
     }
   }, [sulationReq, issueId])
 
-  const fetchSulations = useCallback(() => {
+  const fetchSulations = useCallback(async () => {
     if (issueId) {
-      sulationsReq({
+      const result = await sulationsReq({
         Type: 6,
         ISSUES_ID: issueId,
         STATUS: leftNavState + 5,
-      })
+      }).unwrap();
+      setSulations(result);
     }
-  }, [sulationsReq, issueId, leftNavState])
+  }, [sulationsReq, issueId, leftNavState]);
+
+
+  const searchDeptmentWise = useCallback(async (dept: string) => {
+    if (issueId) {
+      const result = await sulationsReq({
+        Type: 8,
+        ISSUES_ID: issueId,
+        STATUS: leftNavState + 5,
+        DEPTNAME: dept
+      }).unwrap();
+      setSulations(result);
+    }
+  }, [sulationsReq, issueId, leftNavState]);
+
 
   // Optimized useEffect hooks
   useEffect(() => {
@@ -86,16 +103,16 @@ const NewIssueSolutions = () => {
   }, [data])
 
   const SulationsList = useMemo(() => {
-    if (!sulationsData) return null
+    if (!sulations || sulations.length === 0) return null
 
     return (
       <div className="space-y-4">
-        {sulationsData.map((sulation: Solution) => (
-          <SulationCard key={sulation.ID || Math.random()} solution={sulation} />
+        {sulations.map((sulation: Solution) => (
+          <SulationCard setUpdateSulation={setUpdateSulation} key={sulation.ID || Math.random()} solution={sulation} />
         ))}
       </div>
     )
-  }, [sulationsData])
+  }, [sulations])
 
   const isCreateMode = leftNavState >= 5
 
@@ -121,7 +138,7 @@ const NewIssueSolutions = () => {
           {/* Top Navigation - Sticky on scroll */}
           {!isCreateMode && (
             <header className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-              <SulationTopNav issueId={issueId} topNavState={topNavState} setTopNavState={setTopNavState} />
+              <SulationTopNav searchDeptmentWise={searchDeptmentWise} setDptSearch={setDptSearch} dptSearch={dptSearch} updateSulation={updateSulation} issueId={issueId} topNavState={topNavState} setTopNavState={setTopNavState} />
             </header>
           )}
 
@@ -137,11 +154,7 @@ const NewIssueSolutions = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <h3 className="text-xl font-bold">{NAV_LABELS[leftNavState] || "Unknown"}</h3>
 
-                    {/* Debug info - Remove in production */}
-                    <div className="text-sm text-muted-foreground space-x-4">
-                      <span>Nav: {leftNavState}</span>
-                      <span>Top: {topNavState}</span>
-                    </div>
+
                   </div>
 
                   <Separator />

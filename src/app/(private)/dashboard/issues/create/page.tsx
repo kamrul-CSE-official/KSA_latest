@@ -72,7 +72,7 @@ export default function CreateIssuePage() {
         className="mb-4 text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Issues
+        Back to Incident
       </Button>
 
       <CreateIssueForm

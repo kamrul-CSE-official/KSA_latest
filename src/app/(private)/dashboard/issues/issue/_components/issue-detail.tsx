@@ -113,7 +113,6 @@ export default function IssueDetail({
   }, [getAttachFilePathReq, issue]);
 
 
-  console.log("Attach File Path Data: ", data);
 
   const [updateIssueContentReq, { isLoading: updateIssueUpdateLoading }] =
     useUpdaeIssueContentMutation();
@@ -229,7 +228,7 @@ export default function IssueDetail({
           className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to all issues
+          Back to all Incident
         </Link>
         {currentIssue?.TAG_LIST?.split(",")?.length &&
           currentIssue?.TAG_LIST?.split(",")?.length > 0 && (
@@ -343,9 +342,9 @@ export default function IssueDetail({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span>{currentIssue.CREATED_AT}</span>
+                  <span>{currentIssue.CREATED_AT} 123</span>
                 </TooltipTrigger>
-                <TooltipContent>{currentIssue.CREATED_AT}</TooltipContent>
+                <TooltipContent>{currentIssue.CREATED_AT} 123</TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>

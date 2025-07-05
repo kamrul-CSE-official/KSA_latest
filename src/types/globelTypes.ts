@@ -112,6 +112,8 @@ export interface Solution {
   STATUS?: number
   CONTENT?: string
   DEPTNAME?: string
+  USER_ID: number
+  UPDATED_AT: string
 }
 
 export interface Review {

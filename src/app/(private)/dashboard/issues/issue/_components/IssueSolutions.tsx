@@ -181,8 +181,8 @@ const RightSidebar = ({ className }: { className?: string }) => {
   const recentActivity = [
     { user: "Alice Johnson", action: "added a solution", time: "2 hours ago" },
     { user: "Bob Smith", action: "liked a solution", time: "4 hours ago" },
-    { user: "Carol Davis", action: "commented on issue", time: "6 hours ago" },
-    { user: "David Wilson", action: "created new issue", time: "1 day ago" },
+    { user: "Carol Davis", action: "commented on Incident", time: "6 hours ago" },
+    { user: "David Wilson", action: "created new Incident", time: "1 day ago" },
   ]
 
   return (

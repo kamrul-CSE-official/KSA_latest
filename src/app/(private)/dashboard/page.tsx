@@ -117,7 +117,7 @@ export default function DashboardPage() {
             Welcome to Your Dashboard
           </h1>
           <p className="mt-4 text-slate-600 dark:text-slate-400">
-            Manage your knowledge, issues, and team collaborations
+            Manage your knowledge, incident, and team collaborations
           </p>
         </motion.div>
 
@@ -128,17 +128,17 @@ export default function DashboardPage() {
               <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-500 opacity-20 blur-xl"></div>
               <Card className="relative bg-white/60 backdrop-blur-xl dark:bg-slate-900/60 border-0 shadow-lg group">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-lg font-bold">Issues</CardTitle>
+                  <CardTitle className="text-lg font-bold">Incident</CardTitle>
                   <TrendingUp className="h-6 w-6 text-purple-500" />
                 </CardHeader>
                 <CardContent className="flex items-center justify-between group">
                   <div>
                     <h2 className="text-2xl font-bold flex items-center gap-2">
                       <strong>{numberOfIssues}</strong>
-                      Issues
+                      Incident
                     </h2>
                     <p className="text-xs text-muted-foreground">
-                      Total number of issues
+                      Total number of incident
                     </p>
                   </div>
                   <Link href="/dashboard/issues">
@@ -206,7 +206,7 @@ export default function DashboardPage() {
                       Ideas
                     </h2>
                     <p className="text-xs text-muted-foreground">
-                      Total number of issues ideas
+                      Total number of incident ideas
                     </p>
                   </div>
                   <Link href="/dashboard/ideas">

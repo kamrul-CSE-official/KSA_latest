@@ -224,9 +224,9 @@ const EmptyState = ({ onCreateIssue }: { onCreateIssue: () => void }) => (
         </motion.div>
       </div>
       <div className="space-y-2">
-        <h3 className="text-xl font-semibold text-foreground">No issues found</h3>
+        <h3 className="text-xl font-semibold text-foreground">No incident found</h3>
         <p className="text-muted-foreground leading-relaxed">
-          Be the first to create an issue and start the conversation!
+          Be the first to create an incident and start the conversation!
         </p>
       </div>
       <Button
@@ -320,7 +320,7 @@ const IssueList = () => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-200" />
             <Input
               type="search"
-              placeholder="Search issues and solutions..."
+              placeholder="Search incident and solutions..."
               className="pl-10 h-11 border-border/50 focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/50 transition-all duration-200 bg-background/50 backdrop-blur-sm"
               value={searchQuery}
               onChange={handleSearchChange}
@@ -339,7 +339,7 @@ const IssueList = () => {
               transition={{ duration: 0.5 }}
             />
             <Plus className="mr-2 size-5 group-hover:rotate-90 transition-transform duration-300" />
-            New Issue
+            New Incident
           </Button>
         </div>
       </div>

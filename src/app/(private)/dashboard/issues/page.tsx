@@ -21,8 +21,8 @@ function IssuesPage() {
               <Files className="h-6 w-6" />
             </div>
             <div>
-              <CardTitle className="text-2xl font-bold">Explore All Issues</CardTitle>
-              <p className="text-blue-100 mt-1">Create any issues or query, get answers, and help others solve their
+              <CardTitle className="text-2xl font-bold">Explore All Incident</CardTitle>
+              <p className="text-blue-100 mt-1">Create any incident or query, get answers, and help others solve their
                 problems</p>
             </div>
           </div>

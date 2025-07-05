@@ -13,9 +13,13 @@ interface SulationTopNavProps {
     setTopNavState: (index: number) => void;
     topNavState: number;
     issueId: number | string;
+    updateSulation: number;
+    dptSearch: string;
+    setDptSearch: (index: string) => void
+    searchDeptmentWise: (deptName: string) => void;
 }
 
-const SulationTopNav = ({ setTopNavState, topNavState, issueId }: SulationTopNavProps) => {
+const SulationTopNav = ({ setTopNavState, topNavState, issueId, updateSulation, setDptSearch, dptSearch, searchDeptmentWise }: SulationTopNavProps) => {
 
     const [sulationReq, { isLoading, data }] = useIssuesSolutionsMutation();
 
@@ -25,7 +29,7 @@ const SulationTopNav = ({ setTopNavState, topNavState, issueId }: SulationTopNav
             Type: 5,
             ISSUES_ID: issueId
         });
-    }, [issueId]);
+    }, [issueId, updateSulation]);
 
 
     return (
@@ -37,7 +41,11 @@ const SulationTopNav = ({ setTopNavState, topNavState, issueId }: SulationTopNav
                 {data?.map((department: { DEPTNAME: string }, index: number) => (
                     <MenubarMenu key={index}>
                         <MenubarTrigger
-                            onClick={() => setTopNavState(index)}
+                            onClick={() => {
+                                setTopNavState(index);
+                                setDptSearch(department.DEPTNAME)
+                                searchDeptmentWise(department.DEPTNAME)
+                            }}
                             className={cn(
                                 "cursor-pointer",
                                 topNavState === index && "bg-muted font-semibold"

@@ -108,7 +108,7 @@ const CreateSulation = ({ state, leftNavState, setLeftNavState, updateSulation, 
             {/* Title */}
             <div className="space-y-3">
                 <Label htmlFor="title" className="text-lg font-semibold text-slate-700">
-                    Title * {leftNavState}
+                    Title * 
                 </Label>
                 <Input
                     type="text"

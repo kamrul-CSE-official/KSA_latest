@@ -13,8 +13,6 @@ import {
 } from "@/redux/services/issuesApi";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import IssueSolutions from "./_components/IssueSolutions";
-import { Card, CardContent } from "@/components/ui/card";
 import NewIssueSolutions from "./_components/newIssueSolutions";
 
 

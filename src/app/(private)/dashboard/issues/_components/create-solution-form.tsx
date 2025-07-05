@@ -6,6 +6,8 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import TipTapEditor from "@/components/tiptap-editor"
 import type { Solution } from "@/types/globelTypes"
+import { useSelector } from "react-redux"
+import { RootState } from "@/redux/store"
 
 interface CreateSolutionFormProps {
   onSubmit: (solution: Solution) => void
@@ -13,7 +15,9 @@ interface CreateSolutionFormProps {
 }
 
 export default function CreateSolutionForm({ onSubmit, onCancel }: CreateSolutionFormProps) {
-  const [content, setContent] = useState("")
+  const [content, setContent] = useState("");
+
+  const userDetails = useSelector((state: RootState)=> state.user.userData);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -25,7 +29,8 @@ export default function CreateSolutionForm({ onSubmit, onCancel }: CreateSolutio
     const newSolution: Solution = {
       content,
       createdAt: new Date().toISOString(),
-      votes: 0,
+      UPDATED_AT: new Date().toISOString(),
+      USER_ID: userDetails?.EmpID!
     }
 
     onSubmit(newSolution)

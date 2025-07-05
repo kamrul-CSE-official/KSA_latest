@@ -147,7 +147,7 @@ export default function CreateIssueForm({ onSubmit, isSubmitting }: CreateIssueF
             <FileText className="h-6 w-6" />
           </div>
           <div>
-            <CardTitle className="text-2xl font-bold">Create New Issue</CardTitle>
+            <CardTitle className="text-2xl font-bold">Create New Incident</CardTitle>
             <p className="text-blue-100 mt-1">Share your challenge and get help from the community</p>
           </div>
         </div>
