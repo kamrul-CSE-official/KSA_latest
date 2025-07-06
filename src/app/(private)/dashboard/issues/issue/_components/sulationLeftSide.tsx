@@ -106,7 +106,7 @@ const SulationLeftSidebar = ({
                   onClick={() => setLeftNavState(mainMenuItems.length + index)}
                 >
                   <item.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-                  {item.label}
+                  {item.label} 
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -122,7 +122,7 @@ const SulationLeftSidebar = ({
                 className="w-full justify-start gap-3"
               >
                 <item.icon className="h-4 w-4" />
-                {item.label}
+                {item.label} 
               </Button>
             ))}
           </nav>

@@ -98,6 +98,13 @@ const issuesApis = rootApi.injectEndpoints({
         body: data,
       }),
     }),
+    kasDashboardInfo: builder.mutation({
+      query: (data) => ({
+        url: "/KSA/KsaDashboardInfo",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -115,6 +122,7 @@ export const {
   useWhoLikedMutation,
   useAboutTemplatesMutation,
   useGetAttachFilePathMutation,
+  useKasDashboardInfoMutation
 } = issuesApis;
 
 export default issuesApis;

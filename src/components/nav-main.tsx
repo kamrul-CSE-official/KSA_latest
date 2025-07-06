@@ -39,7 +39,7 @@ const NavMain = function () {
       isActive: isActive("/dashboard/workspaces"),
     },
     {
-      title: "Issues",
+      title: "Incident",
       url: "/dashboard/issues",
       icon: <FileStack />,
       isActive: isActive("/dashboard/issues"),

@@ -2,21 +2,21 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react"
 import { useSearchParams } from "next/navigation"
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
+import { useSelector } from "react-redux"
 import { Separator } from "@/components/ui/separator"
-import { useIssuesSolutionsMutation } from "@/redux/services/issuesApi"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
+import { Plus, Loader2 } from "lucide-react"
+import { useIssueShareMutation, useIssuesSolutionsMutation } from "@/redux/services/issuesApi"
 import { decrypt } from "@/service/encryption"
 import type { Solution } from "@/types/globelTypes"
-import SulationLeftSidebar from "./sulationLeftSide"
+import type { RootState } from "@/redux/store"
+import HorizontalNavigation from "./horizontal-navigation"
 import SulationTopNav from "./sulationTopNav"
 import CreateSulation from "./createSulation"
 import SulationCard from "./sulationCard"
 
-interface StatCardData {
-  NUMBER_OF_SULATION: number
-  STATUS: number
-}
-
+// Constants
 const STATUS_LABELS = {
   5: "Root Cause",
   6: "Assumption",
@@ -26,173 +26,283 @@ const STATUS_LABELS = {
 } as const
 
 const NAV_LABELS = ["Root Causes", "Assumptions", "Claims", "Opinions", "Conclusions"] as const
+const SOLUTION_LABELS = ["Root Cause", "Assumption", "Claim", "Opinion", "Conclusion"] as const
+
+// Types
+interface StatCardData {
+  NUMBER_OF_SULATION: number
+  STATUS: number
+}
+
+interface ComponentState {
+  topNavState: number
+  leftNavState: number
+  updateSulation: number
+  dptSearch: string
+  sulations: Solution[]
+}
 
 const NewIssueSolutions = () => {
   const searchParams = useSearchParams()
-  const issueId = useMemo(() => decrypt(searchParams?.get("issueId") || "") || "", [searchParams])
+  const userDetails = useSelector((state: RootState) => state.user.userData)
 
-  const [topNavState, setTopNavState] = useState<number>(0)
-  const [leftNavState, setLeftNavState] = useState<number>(0)
-  const [updateSulation, setUpdateSulation] = useState<number>(0)
-  const [dptSearch, setDptSearch] = useState<string>("")
-  const [sulations, setSulations] = useState<Solution[]>([]);
+  // Memoized values
+  const issueId = useMemo(() => {
+    const encryptedId = searchParams?.get("issueId")
+    return encryptedId ? decrypt(encryptedId) : ""
+  }, [searchParams])
 
-  const [sulationReq, { data }] = useIssuesSolutionsMutation()
-  const [sulationsReq, { isLoading: sulationsLoading, data: sulationsData }] = useIssuesSolutionsMutation()
+  // Consolidated state
+  const [state, setState] = useState<ComponentState>({
+    topNavState: 0,
+    leftNavState: 0,
+    updateSulation: 0,
+    dptSearch: "",
+    sulations: [],
+  })
 
-  // Memoized request functions to prevent unnecessary re-renders
-  const fetchSulationStats = useCallback(() => {
-    if (issueId) {
-      sulationReq({
+  // API hooks
+  const [sulationReq, { data: statsData, isLoading: statsLoading, error: statsError }] = useIssuesSolutionsMutation()
+  const [sulationsReq, { isLoading: sulationsLoading, error: sulationsError }] = useIssuesSolutionsMutation()
+  const [issueShareReq, { data: mentionData, isLoading: shareLoading }] = useIssueShareMutation()
+
+
+
+  useEffect(() => {
+    sulationReq({
+      Type: 4,
+      ISSUES_ID: issueId,
+    })
+  }, [sulationReq, issueId]);
+  
+
+  // Update state helper
+  const updateState = useCallback((updates: Partial<ComponentState>) => {
+    setState((prev) => ({ ...prev, ...updates }))
+  }, [])
+
+  // API call functions
+  const fetchSulationStats = useCallback(async () => {
+    if (!issueId) return
+
+    try {
+      await sulationReq({
         Type: 4,
         ISSUES_ID: issueId,
       })
+    } catch (error) {
+      console.error("Failed to fetch solution stats:", error)
     }
   }, [sulationReq, issueId])
 
   const fetchSulations = useCallback(async () => {
-    if (issueId) {
+    if (!issueId) return
+
+    try {
       const result = await sulationsReq({
         Type: 6,
         ISSUES_ID: issueId,
-        STATUS: leftNavState + 5,
-      }).unwrap();
-      setSulations(result);
+        STATUS: state.leftNavState + 5,
+      }).unwrap()
+
+      updateState({ sulations: result || [] })
+    } catch (error) {
+      console.error("Failed to fetch solutions:", error)
+      updateState({ sulations: [] })
     }
-  }, [sulationsReq, issueId, leftNavState]);
+  }, [sulationsReq, issueId, state.leftNavState, updateState])
 
+  const searchDepartmentWise = useCallback(
+    async (dept: string) => {
+      if (!issueId) return
 
-  const searchDeptmentWise = useCallback(async (dept: string) => {
-    if (issueId) {
-      const result = await sulationsReq({
-        Type: 8,
-        ISSUES_ID: issueId,
-        STATUS: leftNavState + 5,
-        DEPTNAME: dept
-      }).unwrap();
-      setSulations(result);
+      try {
+        const result = await sulationsReq({
+          Type: 8,
+          ISSUES_ID: issueId,
+          STATUS: state.leftNavState + 5,
+          DEPTNAME: dept,
+        }).unwrap()
+
+        updateState({ sulations: result || [] })
+      } catch (error) {
+        console.error("Failed to search by department:", error)
+        updateState({ sulations: [] })
+      }
+    },
+    [sulationsReq, issueId, state.leftNavState, updateState],
+  )
+
+  const fetchIssueShare = useCallback(async () => {
+    if (!issueId || !userDetails?.EmpID) return
+
+    try {
+      await issueShareReq({
+        Type: 3,
+        PersonID: userDetails.EmpID,
+        IssueId: issueId,
+        StatusID: 1,
+      })
+    } catch (error) {
+      console.error("Failed to fetch issue share:", error)
     }
-  }, [sulationsReq, issueId, leftNavState]);
+  }, [issueShareReq, issueId, userDetails?.EmpID])
 
-
-  // Optimized useEffect hooks
+  // Effects
   useEffect(() => {
     fetchSulationStats()
-  }, [fetchSulationStats, updateSulation])
+  }, [fetchSulationStats, state.updateSulation])
 
   useEffect(() => {
     fetchSulations()
-  }, [fetchSulations, updateSulation])
+  }, [fetchSulations, state.updateSulation])
 
-  // Memoized components to prevent unnecessary re-renders
-  const StatCards = useMemo(() => {
-    if (!data) return null
+  useEffect(() => {
+    fetchIssueShare()
+  }, [fetchIssueShare])
 
-    return (
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-        {data.map((type: StatCardData, i: number) => (
-          <div key={`${type.STATUS}-${i}`} className="rounded-lg border bg-card p-4 transition-all hover:shadow-md">
-            <div className="text-2xl font-bold">{type.NUMBER_OF_SULATION}</div>
-            <p className="text-sm text-muted-foreground">
-              {STATUS_LABELS[type.STATUS as keyof typeof STATUS_LABELS] || "Unknown"}
-            </p>
-          </div>
-        ))}
-      </div>
+  // Computed values
+  const matchedUser = useMemo(() => {
+    if (!mentionData || !userDetails?.EmpID) return null
+
+    return mentionData.find(
+      (user: { PersonID: number; CreatorID: number }) =>
+        user.PersonID === userDetails.EmpID || user.CreatorID === userDetails.EmpID,
     )
-  }, [data])
+  }, [mentionData, userDetails?.EmpID])
 
-  const SulationsList = useMemo(() => {
-    if (!sulations || sulations.length === 0) return null
+  const isCreateMode = state.leftNavState >= 5
+
+  // Event handlers
+  const handleLeftNavChange = useCallback(
+    (newState: number) => {
+      updateState({ leftNavState: newState })
+    },
+    [updateState],
+  )
+
+  const handleTopNavChange = useCallback(
+    (newState: number) => {
+      updateState({ topNavState: newState })
+    },
+    [updateState],
+  )
+
+  const handleUpdateSulation = useCallback(
+    (increment: number) => {
+      updateState({ updateSulation: state.updateSulation + increment })
+    },
+    [updateState, state.updateSulation],
+  )
+
+  const handleDeptSearchChange = useCallback(
+    (search: string) => {
+      updateState({ dptSearch: search })
+    },
+    [updateState],
+  )
+
+  const handleAddSolution = useCallback(
+    (index: number) => {
+      handleLeftNavChange(SOLUTION_LABELS.length + index)
+    },
+    [handleLeftNavChange],
+  )
+
+
+
+  const SolutionsList = useMemo(() => {
+    if (sulationsLoading) {
+      return (
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="h-6 w-6 animate-spin" />
+          <span className="ml-2 text-muted-foreground">Loading solutions...</span>
+        </div>
+      )
+    }
+
+    if (sulationsError) {
+      return <div className="text-center py-8 text-red-500">Failed to load solutions</div>
+    }
+
+    if (!state.sulations || state.sulations.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">No solutions found</p>
+        </div>
+      )
+    }
 
     return (
       <div className="space-y-4">
-        {sulations.map((sulation: Solution) => (
-          <SulationCard setUpdateSulation={setUpdateSulation} key={sulation.ID || Math.random()} solution={sulation} />
+        {state.sulations.map((solution: Solution) => (
+          <SulationCard
+            key={solution.ID || `solution-${Math.random()}`}
+            solution={solution}
+            setUpdateSulation={handleUpdateSulation}
+          />
         ))}
       </div>
     )
-  }, [sulations])
+  }, [state.sulations, sulationsLoading, sulationsError, handleUpdateSulation])
 
-  const isCreateMode = leftNavState >= 5
+  if (!issueId) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-muted-foreground">Invalid issue ID</p>
+      </div>
+    )
+  }
 
   return (
-    <SidebarProvider defaultOpen={true}>
-      <div className="flex min-h-screen w-full bg-background">
-        {/* Sticky Sidebar - Hidden on mobile, shown on desktop */}
-        <aside className="hidden lg:block sticky top-0 h-screen w-64 border-r bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50">
-          <div className="p-4 h-full overflow-y-auto">
-            <SulationLeftSidebar leftNavState={leftNavState} setLeftNavState={setLeftNavState} />
+    <div className="min-h-screen w-full bg-background">
+      {/* Horizontal Navigation */}
+      <HorizontalNavigation numberOfSulation={statsData} leftNavState={state.leftNavState} setLeftNavState={handleLeftNavChange} sulations={state.sulations} />
+
+      {/* Top Navigation */}
+      {!isCreateMode && (
+        <header className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+          <SulationTopNav
+            searchDeptmentWise={searchDepartmentWise}
+            setDptSearch={handleDeptSearchChange}
+            dptSearch={state.dptSearch}
+            updateSulation={state.updateSulation}
+            issueId={issueId}
+            topNavState={state.topNavState}
+            setTopNavState={handleTopNavChange}
+          />
+        </header>
+      )}
+
+      {/* Page Content */}
+      <main className="flex-1">
+        {!isCreateMode ? (
+          <div className="space-y-6 max-w-7xl mx-auto">
+            {/* Content Section */}
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <h3 className="text-xl font-bold">{NAV_LABELS[state.leftNavState] || "Solutions"}</h3>
+              </div>
+              <Separator />
+
+              {/* Solutions List */}
+              {SolutionsList}
+            </div>
           </div>
-        </aside>
+        ) : (
+          <div>
+            <CreateSulation
+              setUpdateSulation={handleUpdateSulation}
+              updateSulation={state.updateSulation}
+              leftNavState={state.leftNavState}
+              setLeftNavState={handleLeftNavChange}
+              state={state.leftNavState}
+            />
+          </div>
+        )}
+      </main>
 
-        {/* Mobile Sidebar - Overlay */}
-        <div className="lg:hidden">
-          <SidebarProvider>
-            <SulationLeftSidebar leftNavState={leftNavState} setLeftNavState={setLeftNavState} />
-          </SidebarProvider>
-        </div>
-
-        {/* Main Content */}
-        <SidebarInset className="flex flex-1 flex-col min-w-0">
-          {/* Top Navigation - Sticky on scroll */}
-          {!isCreateMode && (
-            <header className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-              <SulationTopNav searchDeptmentWise={searchDeptmentWise} setDptSearch={setDptSearch} dptSearch={dptSearch} updateSulation={updateSulation} issueId={issueId} topNavState={topNavState} setTopNavState={setTopNavState} />
-            </header>
-          )}
-
-          {/* Page Content */}
-          <main className="flex-1 p-4 md:p-6 lg:p-8">
-            {!isCreateMode ? (
-              <div className="space-y-6 max-w-7xl mx-auto">
-                {/* Stats Cards */}
-                {StatCards}
-
-                {/* Content Section */}
-                <div className="space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <h3 className="text-xl font-bold">{NAV_LABELS[leftNavState] || "Unknown"}</h3>
-
-
-                  </div>
-
-                  <Separator />
-
-                  {/* Loading State */}
-                  {sulationsLoading && (
-                    <div className="flex items-center justify-center py-8">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                      <span className="ml-2 text-muted-foreground">Loading...</span>
-                    </div>
-                  )}
-
-                  {/* Solutions List */}
-                  {SulationsList}
-
-                  {/* Empty State */}
-                  {!sulationsLoading && (!sulationsData || sulationsData.length === 0) && (
-                    <div className="text-center py-12">
-                      <p className="text-muted-foreground">No solutions found</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="max-w-4xl mx-auto">
-                <CreateSulation
-                  setUpdateSulation={setUpdateSulation}
-                  updateSulation={updateSulation}
-                  leftNavState={leftNavState}
-                  setLeftNavState={setLeftNavState}
-                  state={leftNavState}
-                />
-              </div>
-            )}
-          </main>
-        </SidebarInset>
-      </div>
-    </SidebarProvider>
+    </div>
   )
 }
 

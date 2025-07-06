@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog"
 
 function UpdateSulation({ children, sulationId }: { children: ReactNode, sulationId: number }) {
+    
     return (
         <div>
             <Dialog>

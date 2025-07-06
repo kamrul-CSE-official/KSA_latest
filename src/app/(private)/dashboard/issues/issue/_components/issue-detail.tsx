@@ -342,9 +342,9 @@ export default function IssueDetail({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span>{currentIssue.CREATED_AT} 123</span>
+                  <span>{currentIssue.CREATED_AT}</span>
                 </TooltipTrigger>
-                <TooltipContent>{currentIssue.CREATED_AT} 123</TooltipContent>
+                <TooltipContent>{currentIssue.CREATED_AT}</TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>

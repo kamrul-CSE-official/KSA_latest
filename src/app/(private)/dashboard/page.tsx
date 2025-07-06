@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import AnimatedNumbers from "react-animated-numbers";
-import { useNumberOfKsaMutation } from "@/redux/services/issuesApi";
+import { useKasDashboardInfoMutation, useNumberOfKsaMutation } from "@/redux/services/issuesApi";
 import { useEffect, useState } from "react";
 
 const containerVariants = {
@@ -49,6 +49,16 @@ export default function DashboardPage() {
   const [numberOfEmploys, setNumberOfEmploys] = useState<number>(0);
   const { userData } = useSelector((state: RootState) => state.user);
   const [reqForNumber, { isLoading, data }] = useNumberOfKsaMutation();
+
+  const [ksaDashboardReq, { data: dashboard }] = useKasDashboardInfoMutation();
+
+  useEffect(() => {
+    ksaDashboardReq({
+      EmpID: userData?.EmpID
+    })
+  }, [ksaDashboardReq, userData]);
+
+  console.log("Daaaaaaaaaaaaaaaaaaa: ", dashboard);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -134,7 +144,7 @@ export default function DashboardPage() {
                 <CardContent className="flex items-center justify-between group">
                   <div>
                     <h2 className="text-2xl font-bold flex items-center gap-2">
-                      <strong>{numberOfIssues}</strong>
+                      <strong>{dashboard && dashboard[0].NumberOfIssues}</strong>
                       Incident
                     </h2>
                     <p className="text-xs text-muted-foreground">
@@ -169,7 +179,7 @@ export default function DashboardPage() {
                 <CardContent className="flex items-center justify-between group">
                   <div>
                     <h2 className="text-2xl font-bold flex items-center gap-2">
-                      <strong>{numberOfWorkspace}</strong>
+                      <strong>{dashboard && dashboard[0].NumberOfWorkspace}</strong>
                       Workspaces
                     </h2>
                     <p className="text-xs text-muted-foreground">
@@ -202,7 +212,7 @@ export default function DashboardPage() {
                 <CardContent className="flex items-center justify-between group">
                   <div>
                     <h2 className="text-2xl font-bold flex items-center gap-2">
-                      <strong>{numberOfIdea}</strong>
+                      <strong>{dashboard && dashboard[0].NumberOfIdea}</strong>
                       Ideas
                     </h2>
                     <p className="text-xs text-muted-foreground">
