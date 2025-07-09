@@ -44,7 +44,7 @@ const Lottie = dynamic(() => import("lottie-react"), {
 
 const formSchema = z.object({
   userName: z.string().min(3, "User name must be at least 3 characters long"),
-  password: z.string().min(3, "Password must be at least 3 characters long"),
+  password: z.string().min(1, "Password must be at least 1 characters long"),
 });
 
 export default function LoginPage() {

@@ -26,7 +26,6 @@ export default function IssuePage() {
     useIssueDetailsMutation();
   const [issueSolutionsReq, { isLoading, data: solutionData }] =
     useIssuesSolutionsMutation();
-  console.log("Solution data::::: ", solutionData);
 
   const [issueShareReq, { data: sharedUsers }] = useIssueShareMutation();
 
@@ -53,7 +52,7 @@ export default function IssuePage() {
     });
   }, [isUpdate]);
 
- 
+
 
   if (loading) {
     return (
@@ -95,9 +94,10 @@ export default function IssuePage() {
         numberOfSolutions={solutionData?.length || 0}
         issue={issueDetails}
       />
-      
 
-      <NewIssueSolutions />
+
+      <NewIssueSolutions isUpdate={isUpdate}
+        setIsUpdate={setIsUpdate} issue={issueDetails} />
 
 
       {/* {solutionData ? (

@@ -27,8 +27,9 @@ import { useSelector } from "react-redux"
 import { RootState } from "@/redux/store"
 
 const SolutionCard = ({ solution, setUpdateSulation }: { solution: Solution, setUpdateSulation: any }) => {
- 
+
     const [isExpanded, setIsExpanded] = useState(false)
+
     const userDetails = useSelector((state: RootState) => state.user.userData);
 
     const maxLength = 300 // Increased for HTML content
@@ -84,12 +85,12 @@ const SolutionCard = ({ solution, setUpdateSulation }: { solution: Solution, set
                         <p className="text-sm text-muted-foreground leading-relaxed">{solution.Summary}</p>
                     </div>
                     {solution.USER_ID == userDetails?.EmpID && <div className="flex gap-2 ml-4">
-                        {/* <UpdateSulation sulationId={solution.ID!}>
+                        <UpdateSulation setIsUpdateSulation={setUpdateSulation} sulationId={solution.ID!}>
                             <Button size="sm" variant="outline" className="h-8 px-3 bg-transparent">
                                 <Edit className="h-3 w-3 mr-1" />
                                 Edit
                             </Button>
-                        </UpdateSulation> */}
+                        </UpdateSulation>
                         <AlertDialog>
                             <AlertDialogTrigger><Button
                                 size="sm"
@@ -190,7 +191,7 @@ const SolutionCard = ({ solution, setUpdateSulation }: { solution: Solution, set
 
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
                         <Clock className="h-3 w-3" />
-                        <span>{moment(solution.UPDATED_AT).fromNow()}</span>
+                        <span>{moment(solution.UPDATED_AT).format("DD MMM YYYY")}</span>
                     </div>
                 </div>
             </CardFooter>

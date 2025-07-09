@@ -4,35 +4,20 @@ import { useEffect, useState, useCallback, useMemo } from "react"
 import { useSearchParams } from "next/navigation"
 import { useSelector } from "react-redux"
 import { Separator } from "@/components/ui/separator"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { Plus, Loader2 } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import { useIssueShareMutation, useIssuesSolutionsMutation } from "@/redux/services/issuesApi"
 import { decrypt } from "@/service/encryption"
-import type { Solution } from "@/types/globelTypes"
+import type { IIssue, Solution } from "@/types/globelTypes"
 import type { RootState } from "@/redux/store"
 import HorizontalNavigation from "./horizontal-navigation"
 import SulationTopNav from "./sulationTopNav"
 import CreateSulation from "./createSulation"
 import SulationCard from "./sulationCard"
 
-// Constants
-const STATUS_LABELS = {
-  5: "Root Cause",
-  6: "Assumption",
-  7: "Claim",
-  8: "Opinion",
-  9: "Conclusion",
-} as const
+
 
 const NAV_LABELS = ["Root Causes", "Assumptions", "Claims", "Opinions", "Conclusions"] as const
-const SOLUTION_LABELS = ["Root Cause", "Assumption", "Claim", "Opinion", "Conclusion"] as const
 
-// Types
-interface StatCardData {
-  NUMBER_OF_SULATION: number
-  STATUS: number
-}
 
 interface ComponentState {
   topNavState: number
@@ -42,7 +27,7 @@ interface ComponentState {
   sulations: Solution[]
 }
 
-const NewIssueSolutions = () => {
+const NewIssueSolutions = ({ issue, isUpdate, setIsUpdate }: { issue: IIssue, isUpdate: number, setIsUpdate: any }) => {
   const searchParams = useSearchParams()
   const userDetails = useSelector((state: RootState) => state.user.userData)
 
@@ -64,7 +49,7 @@ const NewIssueSolutions = () => {
   // API hooks
   const [sulationReq, { data: statsData, isLoading: statsLoading, error: statsError }] = useIssuesSolutionsMutation()
   const [sulationsReq, { isLoading: sulationsLoading, error: sulationsError }] = useIssuesSolutionsMutation()
-  const [issueShareReq, { data: mentionData, isLoading: shareLoading }] = useIssueShareMutation()
+  const [issueShareReq] = useIssueShareMutation()
 
 
 
@@ -74,7 +59,7 @@ const NewIssueSolutions = () => {
       ISSUES_ID: issueId,
     })
   }, [sulationReq, issueId]);
-  
+
 
   // Update state helper
   const updateState = useCallback((updates: Partial<ComponentState>) => {
@@ -161,15 +146,6 @@ const NewIssueSolutions = () => {
     fetchIssueShare()
   }, [fetchIssueShare])
 
-  // Computed values
-  const matchedUser = useMemo(() => {
-    if (!mentionData || !userDetails?.EmpID) return null
-
-    return mentionData.find(
-      (user: { PersonID: number; CreatorID: number }) =>
-        user.PersonID === userDetails.EmpID || user.CreatorID === userDetails.EmpID,
-    )
-  }, [mentionData, userDetails?.EmpID])
 
   const isCreateMode = state.leftNavState >= 5
 
@@ -202,12 +178,7 @@ const NewIssueSolutions = () => {
     [updateState],
   )
 
-  const handleAddSolution = useCallback(
-    (index: number) => {
-      handleLeftNavChange(SOLUTION_LABELS.length + index)
-    },
-    [handleLeftNavChange],
-  )
+
 
 
 
@@ -257,7 +228,7 @@ const NewIssueSolutions = () => {
   return (
     <div className="min-h-screen w-full bg-background">
       {/* Horizontal Navigation */}
-      <HorizontalNavigation numberOfSulation={statsData} leftNavState={state.leftNavState} setLeftNavState={handleLeftNavChange} sulations={state.sulations} />
+      <HorizontalNavigation isUpdate={isUpdate} setIsUpdate={setIsUpdate} numberOfSulation={statsData} leftNavState={state.leftNavState} setLeftNavState={handleLeftNavChange} sulations={state.sulations} issue={issue} />
 
       {/* Top Navigation */}
       {!isCreateMode && (

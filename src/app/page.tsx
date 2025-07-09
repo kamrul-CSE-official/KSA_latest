@@ -2,21 +2,18 @@
 
 import React, { useEffect } from "react";
 import LandingSection from "./_components/LandingSection";
-import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 
 function HomePage() {
-  // const router = useRouter();
-  // const { userData } = useSelector((state: RootState) => state.user);
+  useEffect(() => {
+    const hasReloaded = sessionStorage.getItem("hasReloaded");
 
-
-  // useEffect(() => {
-  //   window.location.reload();
-  //   if (userData) {
-  //     router.replace("/dashboard");
-  //   }
-  // }, [userData, router]);
+    if (!hasReloaded) {
+      sessionStorage.setItem("hasReloaded", "true");
+      window.location.reload();
+    } else {
+      sessionStorage.removeItem("hasReloaded");
+    }
+  }, []);
 
   return (
     <div>

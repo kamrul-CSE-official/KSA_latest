@@ -4,10 +4,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
-import { useIssueShareMutation } from "@/redux/services/issuesApi"
+import { useIssueShareMutation, useIssuesSolutionsMutation } from "@/redux/services/issuesApi"
 import type { RootState } from "@/redux/store"
 import { decrypt } from "@/service/encryption"
-import { Solution } from "@/types/globelTypes"
+import { IIssue, Solution } from "@/types/globelTypes"
 import { Home, Layers, FileText, Folder, GitBranch, Plus, type LucideIcon } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import { useEffect } from "react"
@@ -28,6 +28,9 @@ interface HorizontalNavigationProps {
     NUMBER_OF_SULATION: number
     STATUS: number
   }[]
+  issue: IIssue
+  isUpdate: number
+  setIsUpdate: any
 }
 
 const getIconForLabel = (label: string): LucideIcon => {
@@ -43,7 +46,7 @@ const getIconForLabel = (label: string): LucideIcon => {
 
 const labels = ["Root Cause", "Assumption", "Claim", "Opinion", "Conclusion"]
 
-const HorizontalNavigation = ({ className, setLeftNavState, leftNavState, sulations, numberOfSulation }: HorizontalNavigationProps) => {
+const HorizontalNavigation = ({ className, setLeftNavState, leftNavState, sulations, numberOfSulation, issue, setIsUpdate, isUpdate }: HorizontalNavigationProps) => {
   const mainMenuItems: MenuItem[] = labels.map((label) => ({
     label,
     href: "#",
@@ -51,6 +54,8 @@ const HorizontalNavigation = ({ className, setLeftNavState, leftNavState, sulati
   }))
 
   const [issueShareReq, { isLoading, data }] = useIssueShareMutation()
+  const [reqForSolution, { data: sulationsData }] = useIssuesSolutionsMutation();
+
   const userDetails = useSelector((state: RootState) => state.user.userData)
   const searchParams = useSearchParams()
   const issueId = decrypt(searchParams?.get("issueId") || "")
@@ -62,14 +67,38 @@ const HorizontalNavigation = ({ className, setLeftNavState, leftNavState, sulati
         PersonID: userDetails.EmpID,
         IssueId: issueId,
         StatusID: 1,
-      })
+      });
+
+      reqForSolution({
+        Type: 12,
+        ISSUES_ID: issueId,
+        USER_ID: userDetails.EmpID,
+      });
+
+      // setIsUpdate(isUpdate + 1);
     }
-  }, [issueId, userDetails, issueShareReq])
+  }, [issueId, userDetails, issueShareReq, reqForSolution])
 
   const matchedUser = data?.find(
     (user: { PersonID: number; CreatorID: number }) =>
       user.PersonID === userDetails?.EmpID || user.CreatorID === userDetails?.EmpID,
   )
+
+  const filterRoot = sulationsData?.filter((sulation: { STATUS: number }) => sulation?.STATUS === 5)[0]?.Type || 0;
+  const filterAssum = sulationsData?.filter((sulation: { STATUS: number }) => sulation?.STATUS === 6)[0]?.Type || 0;
+  const filterClaim = sulationsData?.filter((sulation: { STATUS: number }) => sulation?.STATUS === 7)[0]?.Type || 0;
+  const filterOpin = sulationsData?.filter((sulation: { STATUS: number }) => sulation?.STATUS === 8)[0]?.Type || 0;
+  const filterConc = sulationsData?.filter((sulation: { STATUS: number }) => sulation?.STATUS === 9)[0]?.Type || 0;
+
+
+
+  const statusCounts = {
+    [labels[0]]: filterRoot,
+    [labels[1]]: filterAssum,
+    [labels[2]]: filterClaim,
+    [labels[3]]: filterOpin,
+    [labels[4]]: filterConc,
+  };
 
   return (
     <div className={cn("w-full border-b bg-background/95 backdrop-blur", className)}>
@@ -86,13 +115,9 @@ const HorizontalNavigation = ({ className, setLeftNavState, leftNavState, sulati
             >
               <item.icon className="h-4 w-4" />
               <span className="hidden sm:inline">{item.label}</span>
-              {/* <Badge>
-                {
-                  numberOfSulation && numberOfSulation.find((nos) => nos.STATUS === index - 5)
-                    ? numberOfSulation.find((nos) => nos.STATUS === index)?.NUMBER_OF_SULATION
-                    : 0
-                }
-              </Badge> */}
+              <Badge>
+                {statusCounts[item.label] || 0}
+              </Badge>
             </Button>
           ))}
         </nav>

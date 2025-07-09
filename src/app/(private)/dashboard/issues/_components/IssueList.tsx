@@ -65,7 +65,8 @@ const IssueCard = ({ issue, index }: { issue: IIssue; index: number }) => {
                 </CardTitle>
                 <div className="flex items-center gap-1 text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded-full shrink-0">
                   <Clock className="size-3" />
-                  {moment(issue.CREATED_AT, "MMM DD YYYY hh:mma").fromNow()}
+                 {moment(issue.CREATED_AT, "M/D/YYYY h:mm:ss A Z").format("DD MMM YYYY")}
+
                 </div>
               </div>
             </CardHeader>
@@ -303,12 +304,12 @@ const IssueList = () => {
     router.push("/dashboard/issues/create/")
   }
 
-  const filteredIssues = issuesList.filter(
+  const filteredIssues = issuesList?.filter(
     (issue) => issue.TITLE.toLowerCase().includes(searchQuery) || issue.SUMMARY.toLowerCase().includes(searchQuery),
   )
 
 
-  const myCreation = issuesList.filter((issue) => issue.USER_ID == userDetails?.EmpID);
+  const myCreation = issuesList?.filter((issue) => issue.USER_ID == userDetails?.EmpID);
 
   return (
     <div className="space-y-8 pb-8">
@@ -316,7 +317,7 @@ const IssueList = () => {
       <div className="space-y-6">
 
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-          <div className="relative w-full lg:w-96 group">
+          {/* <div className="relative w-full lg:w-96 group">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-200" />
             <Input
               type="search"
@@ -325,7 +326,7 @@ const IssueList = () => {
               value={searchQuery}
               onChange={handleSearchChange}
             />
-          </div>
+          </div> */}
 
           <Button
             onClick={handleNewIssue}
@@ -346,7 +347,7 @@ const IssueList = () => {
 
       {/* Tabs Section */}
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-3 bg-muted/50 backdrop-blur-sm border border-border/50">
+        {/* <TabsList className="grid w-full max-w-md grid-cols-3 bg-muted/50 backdrop-blur-sm border border-border/50">
           <TabsTrigger
             value="latest"
             className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
@@ -368,10 +369,10 @@ const IssueList = () => {
             <HelpCircle className="size-4" />
             Unanswered
           </TabsTrigger>
-        </TabsList>
+        </TabsList> */}
 
         <TabsContent value={activeTab} className="space-y-6 focus-visible:outline-none focus-visible:ring-0 mt-8">
-          {isLoading && issuesList.length === 0 ? (
+          {isLoading && issuesList?.length === 0 ? (
             <LoadingSkeleton />
           ) : filteredIssues.length === 0 ? (
             <EmptyState onCreateIssue={handleNewIssue} />
@@ -407,7 +408,7 @@ const IssueList = () => {
 
           {hasMore && <div ref={loadMoreRef} className="h-1 w-full" />}
 
-          {!hasMore && issuesList.length > 0 && (
+          {!hasMore && issuesList?.length > 0 && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-8">
               <div className="inline-flex items-center gap-3 text-muted-foreground bg-muted/50 px-6 py-3 rounded-full border border-border/30 shadow-sm backdrop-blur-sm">
                 <span className="font-medium">You've reached the end</span>
