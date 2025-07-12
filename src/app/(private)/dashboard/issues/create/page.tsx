@@ -54,7 +54,7 @@ export default function CreateIssuePage() {
       }
     } catch (error) {
       console.error("Issue creation failed:", error)
-      toast.error("Failed to create issue. Please try again.")
+      toast.error("Failed to create incidents. Please try again.")
     } finally {
       setIsSubmitting(false)
     }

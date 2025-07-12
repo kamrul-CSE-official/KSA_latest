@@ -54,7 +54,7 @@ const EmojiPickerComponent = memo(({
             skinTonesDisabled
             previewConfig={{
               showPreview: true,
-              defaultCaption: "Pick an emoji for your workspace",
+              defaultCaption: "Pick an emoji for your KAIZEN",
             }}
           />
         </motion.div>

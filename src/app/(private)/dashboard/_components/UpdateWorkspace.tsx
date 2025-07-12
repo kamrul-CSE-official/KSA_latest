@@ -70,7 +70,7 @@ function UpdateWorkspace({
 
   const handleUpdateWorkspace = async () => {
     if (!workspaceName.trim()) {
-      toast.error("Workspace name is required.");
+      toast.error("KAIZEN name is required.");
       return;
     }
 
@@ -94,13 +94,13 @@ function UpdateWorkspace({
       setRefreshTrigger(refreshTrigger + 1);
       router.push(`/dashboard/workspace/?workspaceId=${encrypt(workspaceId)}`);
     } else {
-      toast.error("Failed to update workspace. Please try again.");
+      toast.error("Failed to update KAIZEN. Please try again.");
     }
   };
 
   const handleDeleteWorkspace = async () => {
     if (!workspaceId) {
-      toast.error("Workspace ID is missing.");
+      toast.error("KAIZEN ID is missing.");
       return;
     }
 
@@ -110,7 +110,7 @@ function UpdateWorkspace({
     }).unwrap();
 
     if (res) {
-      toast.success("Workspace deleted successfully!");
+      toast.success("KAIZEN deleted successfully!");
       setRefreshTrigger(refreshTrigger + 1);
       setDeleteConfirmOpen(false);
       setOpen(false);
@@ -189,7 +189,7 @@ function UpdateWorkspace({
                     </EmojiPickerComponent>
 
                     <Input
-                      placeholder="Workspace Name"
+                      placeholder="KAIZEN Name"
                       value={workspaceName}
                       onChange={(e) => setWorkspaceName(e.target.value)}
                       className="h-10 text-base"
@@ -262,7 +262,7 @@ function UpdateWorkspace({
               onClick={handleDeleteWorkspace}
               className="bg-destructive hover:bg-destructive/90 text-white"
             >
-              Delete Workspace
+              Delete KAIZEN
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

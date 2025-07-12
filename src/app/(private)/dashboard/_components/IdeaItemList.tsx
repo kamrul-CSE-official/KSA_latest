@@ -37,7 +37,6 @@ function IdeaItemList({
 }) {
   const router = useRouter();
 
-  console.log("LLLLLL  : ", ItemsList);
 
   const OnClickWorkspaceItem = (workspaceId: number, IdeaID: number) => {
     router.push(

@@ -33,7 +33,7 @@ function CreateWorkspace({ children }: { children: ReactNode }) {
 
   const handleCreateWorkspace = async () => {
     if (!workspaceName.trim()) {
-      toast.error("Workspace name is required.");
+      toast.error("kaizen name is required.");
       return;
     }
 
@@ -56,17 +56,17 @@ function CreateWorkspace({ children }: { children: ReactNode }) {
 
       // console.log("Res: ",response?.[0]?.WorkSpaceID);
       if (response?.[0]?.WorkSpaceID) {
-        toast.success("Workspace created successfully!");
+        toast.success("kaizen created successfully!");
         router.push(
           `/dashboard/workspace?workspaceId=${encrypt(response?.[0]?.WorkSpaceID)}`
         );
         setOpen(false);
       } else {
-        throw new Error("Failed to create workspace");
+        throw new Error("Failed to create kaizen");
       }
     } catch (error) {
       console.log("Error: ", error);
-      toast.error("Failed to create workspace. Please try again.");
+      toast.error("Failed to create kaizen. Please try again.");
     }
   };
 
@@ -95,7 +95,7 @@ function CreateWorkspace({ children }: { children: ReactNode }) {
                   </motion.div>
                   <motion.img
                     src={coverImage}
-                    alt="Workspace Cover"
+                    alt="kaizen Cover"
                     className="w-full h-[180px] object-cover rounded-t-xl transition-all duration-200"
                     layoutId="coverImage"
                   />
@@ -109,7 +109,7 @@ function CreateWorkspace({ children }: { children: ReactNode }) {
                   transition={{ delay: 0.1, duration: 0.3 }}
                 >
                   <h2 className="font-semibold text-xl">
-                    Create a new workspace
+                    Create a new kaizen
                   </h2>
                   <p className="text-sm mt-2 text-muted-foreground">
                     This is a shared space where you can collaborate with your
@@ -141,7 +141,7 @@ function CreateWorkspace({ children }: { children: ReactNode }) {
                   </EmojiPickerComponent>
 
                   <Input
-                    placeholder="Workspace Name"
+                    placeholder="Kaizen Name"
                     value={workspaceName}
                     onChange={(e) => setWorkspaceName(e.target.value)}
                     className="h-10 text-base"

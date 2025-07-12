@@ -80,7 +80,7 @@ interface HomePageProps {
 }
 
 function LandingComponent({
-  badge = "Naturub Accessoice Bangladesh",
+  badge = "Naturub Accessories Bangladesh",
   title1 = "Elevate Your",
   title2 = "Awesome idea",
 }: HomePageProps) {

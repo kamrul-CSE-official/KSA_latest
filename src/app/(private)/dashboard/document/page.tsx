@@ -496,11 +496,11 @@ function DocumentEditor() {
   return (
     <div className="container mx-auto px-4">
       {/* Shared users section */}
-      <SharedUsers
+      {/* <SharedUsers
         sharedPeople={sharedPeople}
         currentUser={userDetails}
         onAddUser={canShareDocument}
-      />
+      /> */}
 
       {/* Document info card */}
       <Card className="mb-4 shadow-md">

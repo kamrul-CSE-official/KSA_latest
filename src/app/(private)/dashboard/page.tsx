@@ -124,14 +124,14 @@ export default function DashboardPage() {
             data-view-transition-name="page-title"
             className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-teal-500 bg-clip-text text-transparent"
           >
-            Welcome to Your Dashboard
+            Welcome to Your Workspace
           </h1>
           <p className="mt-4 text-slate-600 dark:text-slate-400">
             Manage your knowledge, incident, and team collaborations
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 w-full max-w-6xl">
           {/* Card 1 */}
           <motion.div variants={itemVariants}>
             <div className="relative">
@@ -172,7 +172,7 @@ export default function DashboardPage() {
               <Card className="relative bg-white/60 backdrop-blur-xl dark:bg-slate-900/60 border-0 shadow-lg">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-lg font-bold">
-                    Workspaces
+                    KAIZEN
                   </CardTitle>
                   <Users className="h-6 w-6 text-teal-500" />
                 </CardHeader>
@@ -180,10 +180,10 @@ export default function DashboardPage() {
                   <div>
                     <h2 className="text-2xl font-bold flex items-center gap-2">
                       <strong>{dashboard && dashboard[0].NumberOfWorkspace}</strong>
-                      Workspaces
+                      KAIZEN
                     </h2>
                     <p className="text-xs text-muted-foreground">
-                      Total number of workspaces
+                      Total number of kaizen
                     </p>
                   </div>
                   <Link href="/dashboard/workspaces">
@@ -200,38 +200,7 @@ export default function DashboardPage() {
             </div>
           </motion.div>
 
-          {/* Card 3 */}
-          <motion.div variants={itemVariants}>
-            <div className="relative">
-              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-pink-400 to-indigo-400 opacity-20 blur-xl"></div>
-              <Card className="relative bg-white/60 backdrop-blur-xl dark:bg-slate-900/60 border-0 shadow-lg">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-lg font-bold">Ideas</CardTitle>
-                  <Rocket className="h-6 w-6 text-pink-500" />
-                </CardHeader>
-                <CardContent className="flex items-center justify-between group">
-                  <div>
-                    <h2 className="text-2xl font-bold flex items-center gap-2">
-                      <strong>{dashboard && dashboard[0].NumberOfIdea}</strong>
-                      Ideas
-                    </h2>
-                    <p className="text-xs text-muted-foreground">
-                      Total number of incident ideas
-                    </p>
-                  </div>
-                  <Link href="/dashboard/ideas">
-                    <Button
-                      variant="ghost"
-                      className="border border-pink-400 transition-all duration-300 ease-in-out group-hover:border-pink-600 group-hover:text-pink-600"
-                    >
-                      Explore
-                      <MoveRight className="ml-2 transition-all duration-300 ease-in-out group-hover:translate-x-1 group-hover:text-pink-600" />
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            </div>
-          </motion.div>
+          
         </div>
 
         {/* Tip Card */}

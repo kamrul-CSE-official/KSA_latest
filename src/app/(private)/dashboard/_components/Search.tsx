@@ -57,7 +57,7 @@ function Search({ children }: { children: React.ReactNode }) {
           setData(response.data);
         }
       } catch (err) {
-        setError("Failed to fetch suggested workspaces.");
+        setError("Failed to fetch suggested KAIZEN.");
       } finally {
         setIsLoading(false);
       }
@@ -128,7 +128,7 @@ function Search({ children }: { children: React.ReactNode }) {
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           autoFocus
-          aria-label="Search workspaces"
+          aria-label="Search KAIZEN"
         />
         <ScrollArea className="max-h-60 mt-2">
           {isLoading && <Loading />}

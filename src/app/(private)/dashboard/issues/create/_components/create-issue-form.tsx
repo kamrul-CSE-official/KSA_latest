@@ -293,12 +293,12 @@ export default function CreateIssueForm({ onSubmit, isSubmitting }: CreateIssueF
               {isSubmitting ? (
                 <>
                   <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                  Creating Issue...
+                  Creating Incident...
                 </>
               ) : (
                 <>
                   <Save className="h-5 w-5 mr-2" />
-                  Create Issue
+                  Create Incident
                 </>
               )}
             </Button>

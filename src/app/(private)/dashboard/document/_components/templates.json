@@ -468,7 +468,7 @@
                   "Cross-train team members; document processes; identify backup resources"
                 ],
                 [
-                  "Integration issues with existing systems",
+                  "Integration incidents with existing systems",
                   "H",
                   "M",
                   "Early integration testing; establish clear APIs; involve system owners early"
@@ -1275,10 +1275,10 @@
                 ],
                 [
                   "Test Reports",
-                  "Documentation of test results, including resolved issues",
+                  "Documentation of test results, including resolved incidents",
                   "MM/DD/YYYY",
                   "QA Team",
-                  "All critical and high-priority issues resolved"
+                  "All critical and high-priority incidents resolved"
                 ],
                 [
                   "User Documentation",
@@ -1482,7 +1482,7 @@
                 "Deploy to production",
                 "Post-deployment verification",
                 "Monitor system performance",
-                "Address any immediate issues"
+                "Address any immediate incidents"
               ]
             }
           },
@@ -1779,7 +1779,7 @@
                   "Project Manager"
                 ],
                 [
-                  "Integration issues with existing systems",
+                  "Integration incidents with existing systems",
                   "H",
                   "M",
                   "High",
@@ -1787,7 +1787,7 @@
                   "Technical Lead"
                 ],
                 [
-                  "Performance issues under load",
+                  "Performance incidents under load",
                   "H",
                   "L",
                   "Medium",
@@ -1845,7 +1845,7 @@
                   "Weekly",
                   "Email, Dashboard",
                   "Project Manager",
-                  "Provide regular updates on progress, issues, and upcoming activities"
+                  "Provide regular updates on progress, incidents, and upcoming activities"
                 ],
                 [
                   "Team Meetings",
@@ -1869,7 +1869,7 @@
                   "As needed",
                   "In-person/Virtual",
                   "Technical Lead",
-                  "Resolve technical issues, make architecture decisions"
+                  "Resolve technical incidents, make architecture decisions"
                 ],
                 [
                   "Executive Updates",
@@ -1877,7 +1877,7 @@
                   "Monthly",
                   "Presentation, Report",
                   "Project Manager",
-                  "Provide high-level status, discuss strategic issues, secure continued support"
+                  "Provide high-level status, discuss strategic incidents, secure continued support"
                 ],
                 [
                   "Change Notifications",
@@ -2116,7 +2116,7 @@
               "style": "unordered",
               "items": [
                 "Review progress on [specific project or initiative]",
-                "Make decision on [specific issue or question]",
+                "Make decision on [specific incidents or question]",
                 "Align on [specific strategy or approach]",
                 "Share information about [specific topic]",
                 "Gather feedback on [specific item]"
@@ -2199,7 +2199,7 @@
                   "David",
                   "MM/DD/YYYY",
                   "Delayed",
-                  "IT team availability issues, rescheduled for next week"
+                  "IT team availability incidents, rescheduled for next week"
                 ],
                 [
                   "Distribute updated project timeline",
@@ -2231,7 +2231,7 @@
               "items": [
                 "<b>Timeline:</b> Project is currently [on track/ahead of schedule/behind schedule] with [X] days remaining until the next milestone.",
                 "<b>Budget:</b> Currently [within budget/over budget by X%/under budget by X%]. [Additional context if needed]",
-                "<b>Resources:</b> [Adequate/Stretched/Insufficient] with [specific details about resource allocation or issues]",
+                "<b>Resources:</b> [Adequate/Stretched/Insufficient] with [specific details about resource allocation or incidents]",
                 "<b>Risks:</b> [New risks identified/Changes to existing risks/Mitigations implemented]",
                 "<b>Achievements:</b> [Key accomplishments since the last meeting]"
               ]

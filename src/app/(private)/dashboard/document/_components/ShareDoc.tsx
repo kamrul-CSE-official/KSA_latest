@@ -120,7 +120,7 @@ const ShareDoc = ({ children }: { children: ReactNode }) => {
   // Handle sharing type changes (public/private)
   const handleShareTypeChange = async (type: ShareType) => {
     if (!workspaceId) {
-      toast.error("Workspace ID is missing!");
+      toast.error("KAIZEN ID is missing!");
       return;
     }
 
@@ -188,7 +188,7 @@ const ShareDoc = ({ children }: { children: ReactNode }) => {
       <DialogContent className="w-full max-w-3xl max-h-[90vh] flex flex-col p-4 md:p-6">
         <DialogHeader>
           <DialogTitle className="text-lg md:text-xl mb-4 flex items-center gap-2">
-            <UserPlus className="h-5 w-5" /> Share Workspace
+            <UserPlus className="h-5 w-5" /> Share KAIZEN
           </DialogTitle>
         </DialogHeader>
 
@@ -328,7 +328,7 @@ const ShareDoc = ({ children }: { children: ReactNode }) => {
                   <h3 className="font-semibold">Public</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Anyone in your organization can view this workspace
+                  Anyone in your organization can view this KAIZEN
                 </p>
               </div>
 
@@ -347,7 +347,7 @@ const ShareDoc = ({ children }: { children: ReactNode }) => {
                   <h3 className="font-semibold">Private</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Only people you share with can access this workspace
+                  Only people you share with can access this KAIZEN
                 </p>
               </div>
             </div>
