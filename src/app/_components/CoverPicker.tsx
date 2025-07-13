@@ -59,7 +59,7 @@ function CoverPicker({
             Choose a Cover
           </DialogTitle>
           <DialogDescription className="text-muted-foreground pt-2">
-            Select or upload a cover image for your workspace.
+            Select or upload a cover image for the kaizen idea.
           </DialogDescription>
         </DialogHeader>
 

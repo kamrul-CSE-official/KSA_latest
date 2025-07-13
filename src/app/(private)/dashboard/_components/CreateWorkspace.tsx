@@ -109,7 +109,7 @@ function CreateWorkspace({ children }: { children: ReactNode }) {
                   transition={{ delay: 0.1, duration: 0.3 }}
                 >
                   <h2 className="font-semibold text-xl">
-                    Create a new kaizen
+                    Create a New Kaizen Idea
                   </h2>
                   <p className="text-sm mt-2 text-muted-foreground">
                     This is a shared space where you can collaborate with your

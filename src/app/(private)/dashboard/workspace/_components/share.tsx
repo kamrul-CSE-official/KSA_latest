@@ -205,7 +205,7 @@ const Share = ({
             <div className="flex items-center gap-3">
               <UserPlus className="h-5 w-5 text-primary" />
               <DialogTitle className="text-lg font-semibold">
-                Share Workspace
+                Share Kaizen Idea
               </DialogTitle>
             </div>
             {/* <Button
@@ -389,9 +389,9 @@ const Share = ({
             className="flex-1 overflow-auto px-6 py-4"
           >
             <div className="space-y-4">
-              <h3 className="font-medium">Workspace Visibility</h3>
+              <h3 className="font-medium">Visibility</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                Control who can view this workspace
+                Control who can view this kaizen idea.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -414,7 +414,7 @@ const Share = ({
                       <div>
                         <h3 className="font-semibold mb-1">Public</h3>
                         <p className="text-sm text-muted-foreground">
-                          Anyone in your organization can view this workspace
+                          Anyone in your organization can view this kaizen idea.
                         </p>
                       </div>
                     </div>
@@ -440,7 +440,7 @@ const Share = ({
                       <div>
                         <h3 className="font-semibold mb-1">Private</h3>
                         <p className="text-sm text-muted-foreground">
-                          Only people you share with can access this workspace
+                          Only people you share with can access this kaizen idea.
                         </p>
                       </div>
                     </div>

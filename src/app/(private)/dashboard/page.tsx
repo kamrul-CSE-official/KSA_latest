@@ -145,10 +145,10 @@ export default function DashboardPage() {
                   <div>
                     <h2 className="text-2xl font-bold flex items-center gap-2">
                       <strong>{dashboard && dashboard[0].NumberOfIssues}</strong>
-                      Incident
+                      Incidents
                     </h2>
                     <p className="text-xs text-muted-foreground">
-                      Total number of incident
+                      Total number of incidents
                     </p>
                   </div>
                   <Link href="/dashboard/issues">
@@ -172,7 +172,7 @@ export default function DashboardPage() {
               <Card className="relative bg-white/60 backdrop-blur-xl dark:bg-slate-900/60 border-0 shadow-lg">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-lg font-bold">
-                    KAIZEN
+                    Kaizen
                   </CardTitle>
                   <Users className="h-6 w-6 text-teal-500" />
                 </CardHeader>
@@ -180,10 +180,10 @@ export default function DashboardPage() {
                   <div>
                     <h2 className="text-2xl font-bold flex items-center gap-2">
                       <strong>{dashboard && dashboard[0].NumberOfWorkspace}</strong>
-                      KAIZEN
+                      Kaizens
                     </h2>
                     <p className="text-xs text-muted-foreground">
-                      Total number of kaizen
+                      Total number of kaizens
                     </p>
                   </div>
                   <Link href="/dashboard/workspaces">

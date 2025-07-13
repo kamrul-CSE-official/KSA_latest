@@ -237,7 +237,7 @@ if (!auth) {
         className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to workspaces 
+        Back
       </Link>
       {/* Workspace Header Card */}
       <Card className="overflow-hidden mb-8 shadow-lg border-muted/40">

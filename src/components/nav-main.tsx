@@ -1,6 +1,6 @@
 "use client";
 
-import { FileStack, LayoutDashboard, SearchIcon, Workflow } from "lucide-react";
+import { FileStack, Home, SearchIcon, Workflow } from "lucide-react";
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -26,23 +26,23 @@ const NavMain = function () {
   const items: IItem[] = [
     { title: "Search", url: "#", icon: <SearchIcon />, isActive: false },
     {
-      title: "Dashboard",
+      title: "Home",
       url: "/dashboard/",
-      icon: <LayoutDashboard />,
+      icon: <Home />,
       isActive: false,
     },
     // { title: "Ask AI", url: "/#", icon: <Sparkles />, isActive: false },
-    {
-      title: "Workspace",
-      url: "/dashboard/workspaces/",
-      icon: <Workflow />,
-      isActive: isActive("/dashboard/workspaces"),
-    },
     {
       title: "Incident",
       url: "/dashboard/issues",
       icon: <FileStack />,
       isActive: isActive("/dashboard/issues"),
+    },
+    {
+      title: "Kaizen Idea",
+      url: "/dashboard/workspaces/",
+      icon: <Workflow />,
+      isActive: isActive("/dashboard/workspaces"),
     },
   ];
 

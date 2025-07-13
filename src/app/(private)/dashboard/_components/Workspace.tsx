@@ -45,7 +45,7 @@ function WorkspaceList() {
           (workspace: any) => workspace.EnterdBy == userData?.EmpID
         ).length > 0 ? (
           <CreateWorkspace>
-            <Button className="mb-4">+ New Kaizen</Button>
+            <Button className="mb-4">+ New Kaizen Idea</Button>
           </CreateWorkspace>
         ) : (
           <h2 className="font-medium text-primary">KAIZEN</h2>
@@ -94,7 +94,7 @@ function WorkspaceList() {
           />
           <h2>Create a new KAIZEN</h2>
           <CreateWorkspace>
-            <Button className="my-3">+ New KAIZEN</Button>
+            <Button className="my-3">+ New Kaizen Idea</Button>
           </CreateWorkspace>
         </div>
       ) : (

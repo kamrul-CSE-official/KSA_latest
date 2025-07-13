@@ -160,7 +160,7 @@ export default function CreateIssueForm({ onSubmit, isSubmitting }: CreateIssueF
             <div className="flex justify-between items-center">
               <Label htmlFor="title" className="text-lg font-semibold text-slate-700 flex items-center gap-2">
                 <Lightbulb className="h-5 w-5" />
-                Issue Title *
+                Title *
               </Label>
               <Badge variant={title.length > MAX_TITLE_LENGTH ? "destructive" : "secondary"}>
                 {title.length}/{MAX_TITLE_LENGTH}
@@ -191,7 +191,7 @@ export default function CreateIssueForm({ onSubmit, isSubmitting }: CreateIssueF
             <Textarea
               id="summary"
               value={summary}
-              placeholder="Provide a brief summary of your issue in 1-2 sentences..."
+              placeholder="Provide a brief summary..."
               onChange={(e) => handleChange("summary", e.target.value)}
               onBlur={() => handleBlur("summary")}
               className={`min-h-[100px] ${errors.summary ? "border-red-300 focus:ring-red-200" : "border-slate-300 focus:ring-blue-200"}`}
@@ -241,7 +241,7 @@ export default function CreateIssueForm({ onSubmit, isSubmitting }: CreateIssueF
               maxTags={5}
             />
             <div className="flex justify-between text-sm text-slate-500">
-              <p>Add up to 5 relevant tags to help others find your issue</p>
+              <p>Add up to 5 relevant tags to help others find the incident</p>
               <Badge variant="outline">{tags.length}/5</Badge>
             </div>
             {errors.tags && <FieldError message={errors.tags} />}
@@ -269,7 +269,7 @@ export default function CreateIssueForm({ onSubmit, isSubmitting }: CreateIssueF
             <Alert className="border-amber-200 bg-amber-50">
               <AlertCircle className="h-4 w-4 text-amber-600" />
               <AlertDescription className="text-amber-700">
-                Please fix the errors above before submitting your issue.
+                Please fix the errors above before submitting.
               </AlertDescription>
             </Alert>
           )}

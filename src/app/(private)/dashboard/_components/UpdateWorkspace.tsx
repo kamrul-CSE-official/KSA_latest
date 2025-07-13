@@ -158,7 +158,7 @@ function UpdateWorkspace({
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1, duration: 0.3 }}
                   >
-                    <h2 className="font-semibold text-xl">Update workspace</h2>
+                    <h2 className="font-semibold text-xl">Update kaizen idea</h2>
                     <p className="text-sm mt-2 text-muted-foreground">
                       This is a shared space where you can collaborate with your
                       team. You can always rename it later.
@@ -252,7 +252,7 @@ function UpdateWorkspace({
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the workspace
+              This action cannot be undone. This will permanently delete the kaizen idea.
               and all its contents.
             </AlertDialogDescription>
           </AlertDialogHeader>

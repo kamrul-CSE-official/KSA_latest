@@ -32,7 +32,7 @@ function WorkspacePage() {
           className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to dashboard
+          Back to workspace
         </Link>
         <Workspace />
       </motion.div>

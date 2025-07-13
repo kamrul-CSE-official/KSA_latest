@@ -219,7 +219,7 @@ export default function TemplateSelector({ onSelectTemplate }: TemplateSelectorP
                 </CardHeader>
                 <CardContent className="pt-0">
                   <CardDescription className="text-xs text-slate-600 line-clamp-2">
-                    Create a template to use in your issues.
+                    Create a template.
                   </CardDescription>
                 </CardContent>
               </Card>

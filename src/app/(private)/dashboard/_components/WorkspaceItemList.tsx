@@ -540,7 +540,7 @@ function WorkspaceItemList({
         {type === "my" && (
           <CreateWorkspace>
             <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm focus:ring-2 focus:ring-offset-2 gap-2">
-              Create Workspace <Plus />
+              Create Kaizen idea <Plus />
             </button>
           </CreateWorkspace>
         )}
@@ -550,14 +550,14 @@ function WorkspaceItemList({
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="my" className="w-full" onValueChange={setActiveTab}>
+      <Tabs defaultValue="all" className="w-full" onValueChange={setActiveTab}>
         <div className="flex items-center justify-between mb-4">
           <TabsList className="bg-white/20 border-white/30 backdrop-blur-sm shadow-md border p-1 rounded-2xl">
             <TabsTrigger
               value="all"
               className="px-5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
-              All Workspaces
+              All Kaizen ideas
               <Badge className="ml-2 bg-muted text-muted-foreground">
                 {workspaceList.length}
               </Badge>
@@ -566,7 +566,7 @@ function WorkspaceItemList({
               value="my"
               className="px-5 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
-              My Workspaces
+              My Ideas
               <Badge className="ml-2 bg-muted text-muted-foreground">
                 {myWorkspacesCount}
               </Badge>
@@ -614,17 +614,17 @@ function EmptyState({ router }: { router: any }) {
         <Users className="h-8 w-8 text-muted-foreground" />
       </div>
       <h3 className="text-lg font-semibold text-foreground mb-2">
-        No workspaces available
+        No Kaizen available
       </h3>
       <p className="text-sm text-muted-foreground max-w-md mb-6">
-        Create your first workspace to start organizing your ideas and
+        Create your first Kaizen to start organizing your ideas and
         collaborating with others.
       </p>
       <button
         onClick={() => router.push("/dashboard/create-workspace")}
         className="inline-flex items-center px-5 py-2 rounded-xl text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
       >
-        Create Workspace
+        Create Kaizen
       </button>
     </div>
   );
