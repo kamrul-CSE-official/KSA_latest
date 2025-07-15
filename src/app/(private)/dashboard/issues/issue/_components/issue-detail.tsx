@@ -427,31 +427,9 @@ export default function IssueDetail({
                 transition={{ delay: 0.2 }}
                 className="prose dark:prose-invert max-w-none"
               >
-                <Editor
-                  tinymceScriptSrc="/tinymce/tinymce.min.js"
-                  value={updatedContent}
-                  onEditorChange={(content) => {
-                    // Store the updated content in a state variable
-                    setUpdatedContent(content);
-                  }}
-                  init={{
-                    // readonly: true,
-                    disabled: true,
-                    statusbar: false,
-                    skin: false,
-                    content_css: false,
-                    height: 1000,
+                <div dangerouslySetInnerHTML={{ __html: updatedContent }} />
 
-                    toolbar:
-                      "undo redo | blocks | " +
-                      "bold italic forecolor backcolor | alignleft aligncenter " +
-                      "alignright alignjustify | bullist numlist outdent indent | " +
-                      "link image media table emoticons codesample | " +
-                      "removeformat help code fullscreen preview",
-                    content_style:
-                      "body { font-family:Helvetica,Arial,sans-serif; font-size:16px; padding: 1rem; }",
-                  }}
-                />
+
               </motion.div>
             )}
           </Suspense>

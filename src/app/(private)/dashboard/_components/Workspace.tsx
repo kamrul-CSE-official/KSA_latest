@@ -40,10 +40,7 @@ function WorkspaceList() {
   return (
     <div>
       <div className="flex justify-between">
-        {workspaceData?.length > 0 &&
-        workspaceData.filter(
-          (workspace: any) => workspace.EnterdBy == userData?.EmpID
-        ).length > 0 ? (
+        {workspaceData?.length > 0  ? (
           <CreateWorkspace>
             <Button className="mb-4">+ New Kaizen Idea</Button>
           </CreateWorkspace>

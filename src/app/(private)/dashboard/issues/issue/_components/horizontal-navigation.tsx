@@ -80,9 +80,11 @@ const HorizontalNavigation = ({ className, setLeftNavState, leftNavState, sulati
   }, [issueId, userDetails, issueShareReq, reqForSolution])
 
   const matchedUser = data?.find(
-    (user: { PersonID: number; CreatorID: number }) =>
-      user.PersonID === userDetails?.EmpID || user.CreatorID === userDetails?.EmpID,
-  )
+    (u: { PersonID: number; CreatorID: number }) =>
+      u.PersonID === userDetails?.EmpID || u.CreatorID === userDetails?.EmpID
+  );
+
+
 
   const filterRoot = sulationsData?.filter((sulation: { STATUS: number }) => sulation?.STATUS === 5)[0]?.Type || 0;
   const filterAssum = sulationsData?.filter((sulation: { STATUS: number }) => sulation?.STATUS === 6)[0]?.Type || 0;
