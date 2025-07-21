@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { Loader2 } from "lucide-react";
-import loadingAnimation from "../../../public/assets/lottie/loading.json";
+// import loadingAnimation from "../../../public/assets/lottie/loading.json";
 
 // Dynamically import Lottie for client-side only
 const Lottie = dynamic(() => import("lottie-react"), {
@@ -17,7 +17,8 @@ const Lottie = dynamic(() => import("lottie-react"), {
 export default function Loading() {
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-background/90 backdrop-blur-sm">
-      <Lottie animationData={loadingAnimation} loop />
+      <Loader2 className="w-12 h-12 animate-spin text-muted-foreground" />
+      <span className="mt-4 text-muted-foreground">Loading...</span>
     </div>
   );
 }

@@ -232,7 +232,7 @@ const NewIssueSolutions = ({ issue, isUpdate, setIsUpdate }: { issue: IIssue, is
 
       {/* Top Navigation */}
       {!isCreateMode && (
-        <header className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+        <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
           <SulationTopNav
             searchDeptmentWise={searchDepartmentWise}
             setDptSearch={handleDeptSearchChange}
@@ -248,7 +248,7 @@ const NewIssueSolutions = ({ issue, isUpdate, setIsUpdate }: { issue: IIssue, is
       {/* Page Content */}
       <main className="flex-1">
         {!isCreateMode ? (
-          <div className="space-y-6 max-w-7xl mx-auto">
+          <div className="space-y-6">
             {/* Content Section */}
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

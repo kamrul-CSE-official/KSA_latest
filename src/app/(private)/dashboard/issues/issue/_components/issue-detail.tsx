@@ -75,6 +75,7 @@ import "tinymce/plugins/preview";
 import "tinymce/skins/ui/oxide/skin.min.css";
 import Loading from "@/components/shared/Loading";
 import AttachmentCard from "./AttachmentCard";
+import { toast } from "sonner";
 
 type ISharedUser = {
   PersonID: string;
@@ -101,6 +102,10 @@ export default function IssueDetail({
   const [isAddingSolution, setIsAddingSolution] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState<number>(1);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [updatedTitle, setUpdatedTitle] = useState(currentIssue.TITLE);
+  const [updatedSummary, setUpdatedSummary] = useState(currentIssue.SUMMARY);
+
+
   const userDataInfo = useSelector((state: RootState) => state.user.userData);
   const [reqForSolution, { isLoading: solutionLoading }] =
     useIssuesSolutionsMutation();
@@ -110,7 +115,8 @@ export default function IssueDetail({
     getAttachFilePathReq({
       ParentID: currentIssue.ID,
     });
-  }, [getAttachFilePathReq, issue]);
+  }, [getAttachFilePathReq, currentIssue.ID]);
+
 
 
 
@@ -125,8 +131,13 @@ export default function IssueDetail({
 
   // Check if content has changed whenever updatedContent changes
   useEffect(() => {
-    setHasContentChanged(updatedContent !== currentIssue.CONTENT);
-  }, [updatedContent, currentIssue.CONTENT]);
+    setHasContentChanged(
+      updatedContent !== currentIssue.CONTENT ||
+      updatedTitle !== currentIssue.TITLE ||
+      updatedSummary !== currentIssue.SUMMARY
+    );
+  }, [updatedContent, updatedTitle, updatedSummary, currentIssue]);
+
 
   // Function to handle content update
   const handleUpdateContent = async () => {
@@ -135,18 +146,20 @@ export default function IssueDetail({
         ISSUE_ID: currentIssue.ID,
         CONTENT: updatedContent,
         USER_ID: userDataInfo?.EmpID,
-        Type: 1, // Type 1 is for updating content
+        TITLE: updatedTitle,
+        SUMMARY: updatedSummary,
+        Type: 1, // update
       });
 
       if (response) {
-        // Show success notification or feedback here if needed
         setHasContentChanged(false);
+        toast.success("Update succfull.");
       }
     } catch (error) {
       console.error("Error updating issue content:", error);
-      // Show error notification if needed
     }
   };
+
 
   // Function to handle issue deletion
   const handleDeleteIssue = async () => {
@@ -228,7 +241,7 @@ export default function IssueDetail({
           className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to all Incident
+          Back to all Incidents
         </Link>
         {currentIssue?.TAG_LIST?.split(",")?.length &&
           currentIssue?.TAG_LIST?.split(",")?.length > 0 && (
@@ -256,7 +269,12 @@ export default function IssueDetail({
           data-view-transition-name="page-title"
           className="text-3xl font-bold mb-4 leading-tight flex items-center justify-between"
         >
-          {currentIssue.TITLE}{" "}
+          {userDataInfo?.EmpID !== currentIssue.USER_ID ? currentIssue.TITLE : <input
+            className="text-3xl font-bold w-full bg-transparent focus:outline-none"
+            value={updatedTitle}
+            onChange={(e) => setUpdatedTitle(e.target.value)}
+          />}
+
           <div className="flex items-center justify-center gap-1">
             <div className="flex -space-x-1 overflow-hidden">
               {sharedUsers?.map((share: ISharedUser, i: number) => (
@@ -320,8 +338,17 @@ export default function IssueDetail({
             )}
           </div>
         </motion.div>
+        {userDataInfo?.EmpID === currentIssue.USER_ID ? <textarea
+          className="text-sm w-full bg-transparent focus:outline-none resize-none text-muted-foreground"
+          value={updatedSummary}
+          onChange={(e) => setUpdatedSummary(e.target.value)}
+          rows={2}
+        /> : <small className="text-gray-600 dark:text-gray-400">{currentIssue.SUMMARY}</small>}
 
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground mb-6">
+        <br />
+
+
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground my-6">
           <div className="flex items-center gap-2">
             <Avatar className="h-6 w-6 border">
               <AvatarImage
@@ -425,11 +452,15 @@ export default function IssueDetail({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="prose dark:prose-invert max-w-none"
+                className="w-full overflow-x-auto"
               >
-                <div dangerouslySetInnerHTML={{ __html: updatedContent }} />
-
-
+                <div className="prose dark:prose-invert max-w-full">
+                  <div
+                    className="w-full overflow-x-auto"
+                    style={{ wordBreak: "break-word", overflowWrap: "break-word" }}
+                    dangerouslySetInnerHTML={{ __html: updatedContent }}
+                  />
+                </div>
               </motion.div>
             )}
           </Suspense>
@@ -438,7 +469,10 @@ export default function IssueDetail({
           <div className="w-full space-y-3">
             <h3 className="font-semibold text-sm">Attachments</h3>
             {
-              data?.map((attach: any) => <AttachmentCard attachment={attach} />)
+              data?.map((attach: any, i: number) => (
+                <AttachmentCard key={attach?.ID || i} attachment={attach} />
+              ))
+
             }
           </div>
         </CardFooter>
